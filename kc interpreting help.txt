@@ -1,0 +1,4 @@
+There will be a finite number of ways to begin a line:
+	1.) Keyword (Specified in Keyword vector) - COULD LEAD TO EVALUATION
+	2.) Valid & unused variable name -> interpreter : assign as double
+	3.) Used variable name -> interpreter : (Reassign || just evaluate)

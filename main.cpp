@@ -1,0 +1,80 @@
+//
+//  main.cpp
+//  clc
+//
+//  Created by Grant Giesbrecht on 3/6/17.
+//  Copyright © 2017 Grant Giesbrecht. All rights reserved.
+//
+
+#include <iostream>
+#include <stdio.h>
+#include <string>
+
+#include "KInterp.hpp"
+#include "KVar.hpp"
+#include "KMatrix.hpp"
+#include "string_manip.hpp"
+#include "KIFunctions.hpp"
+#include "interpret_keywords.hpp"
+
+using namespace std;
+
+string this_filename_1 = "main.cpp";
+
+/*
+ + ans variable
+ - implied ans (KInterp action)
+ - save and read KV files
+ - fix strings (in parse, protect whitespace in strings by guaranteeing 2 things: 1.) all whitespace is preserved 2.) all double quotes are first character in their word (if whitespace permits - don't split where otherwise wouldn't).
+ + program execution - allow user to run programs and allow startup program to run
+ - save record
+ - save specific variables to file
+ - VIEW command - view contents of file without loading variables
+ - precision representation
+ - precision in loading and display
+ + semicolon processing
+ */
+
+int main(int argc, const char * argv[]){
+    
+    KVar kv;
+    kv.add_double("ans", 0);
+    string command_sequence = "> ";
+    all_ktype result;
+    
+    vector<func_id> functions;
+    define_functions(&functions);
+    
+    vector<record_entry> record;
+    
+    //Settings
+    bool print_errors = false;
+    
+    bool running = true;
+    string input;
+    record_entry temp_rcd;
+    all_ktype temp_akt;
+    while (running){
+        
+        //Get input
+        cout << command_sequence;
+        getline(cin, input);
+        
+        interpret_with_keywords(input, kv, result, functions, running, record, print_errors, false);
+
+    }
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+// This is the startup program for CLC 3.0
+// It is run each time CLC is started
+//
+// Created by Grant Giesbrecht on 16.3.2017
+
+run variables.clc -s -p

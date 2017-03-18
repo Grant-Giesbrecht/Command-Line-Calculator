@@ -1,0 +1,42 @@
+Greetings, this file discusses the progress made in KPack's Calculator.
+
+5.3.2017
+Working on 'interpret' still. Looks like there is some glitch with the return type. Could be due to my fake number analysis which is to be replaced. I think I'll ignore this
+move on, and trouble shoot any remaining problems when they come up. This will allow me to skip a lot of trouble shooting for a flawed and temporary system I am not going to
+keep and is only for development. [UPDATE] After working on it a little longer, it looks like these troubles won't go away without some real debugging. Although I am sure
+visual studio is quite capable, XCode is my favorite and I know how to use it well for this job. Therefore, my next recommended step is to get this running on my mac (which
+should be very easy but lets see if that's actually the case) and debug this with XCode. If I play my cards right and have a little luck, this thing might be up and running
+not to long from now. It would also be cleanly coded, depended only on Eigen and my own source code (easily installed!), and 100% cross platform. Also easily ported to simpler
+systems such as a Raspberry Pi. Then I could focus on KVar, KMatrix reboot, and maybe even KPlot.
+
+2.3.2017
+Double solution proposal is to not have minus signs; treat all minus signs as prepending a negative sign. If you then find two numbers in a row and the second is negative, interpret it as if subtraction was implied.
+I believe the function evaluation component is complete. Next step is parenthesis evaluation.
+
+14.2.2017
+Need to fix double interpreting in function 'str_to_double' in KInterpAux. Will have systematic problem concerning interpreting minus vs subtract. Will need serious thought and rework.
+
+13.2.2017
+Need to eliminate redundancy between CLIK and KInterpAux's str_to_<TYPE> functions. The next big big job is to test and inevitably fix the function evaluation component of 'interpret()'.
+This function evaluation block is draft-complete, meaning theoretically ready, but untested. Therefore test it, and the new funtions in KInter.hpp (space_and_parse() and inject_words_into_strvec())
+because they too are untested.
+
+9.2.2017
+Wrote and tested all successfully the "is this string a <VARIABLE_TYPE_HERE>? if so its value is ____" functions. Next step is to implement them. This is going to be
+more complicated that I originally anticipated because it will need to be able to evaluate multi-word arguments, and this my current system (implemented in KInterp.cpp) is
+a little bit too simplistic. I recommend using CLIK to solve this problem or at least part of it. This is more or less what it was designed for.
+
+8.2.2017
+I am working on the function evaluation component of KInterp. I have borrowed and modified the function system from clc-origional to accomodate all variable types in KPack.
+The next steps are:
+	1.) now that 'isnum()' is repaired, I should write the "is this string a <VARIABLE_TYPE_HERE>? If so, its value (represented as a string literal) is _____".
+	2.) Once those functions are complete, I would evaluate the function and replace its result with a literal.
+	3.) Continue to next step of interpreter function.
+
+4.2.2017
+detect_variable() fixed. Fixed issue with is_varname().
+
+3.2.2017
+Calculator is too crude, evaluation is poor. Replacing old systems with 'KInterp', which will interpret commands all in one funciton.
+Next step is to finish the function 'detect_variable()' in the Aux file. Then continue work on KInterp, then the calculator.
+It also needs a better name KC, which is kinda dumb. KInterp should be made semi-public in KPack.
