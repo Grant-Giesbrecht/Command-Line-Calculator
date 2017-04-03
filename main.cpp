@@ -23,16 +23,26 @@ string this_filename_1 = "main.cpp";
 
 /*
  + ans variable
- - implied ans (KInterp action)
- - save and read KV files
+ + implied ans (KInterp action)
+ + save and read KV files
+ - KV2 & KV3 I/O
  - fix strings (in parse, protect whitespace in strings by guaranteeing 2 things: 1.) all whitespace is preserved 2.) all double quotes are first character in their word (if whitespace permits - don't split where otherwise wouldn't).
  + program execution - allow user to run programs and allow startup program to run
  - save record
  - save specific variables to file
- - VIEW command - view contents of file without loading variables
+ + VIEW command - view contents of file without loading variables
  - precision representation
- - precision in loading and display
+ + precision in loading
  + semicolon processing
+ - update help files for help archives
+ - add logos and eggs
+ - add comment manipulation
+ - add header manipulation and viewing
+ - add settings
+    - display comments
+    - default file format (for storage)
+    - directories
+ 
  */
 
 int main(int argc, const char * argv[]){
@@ -42,13 +52,18 @@ int main(int argc, const char * argv[]){
     string command_sequence = "> ";
     all_ktype result;
     
+    double print_precision = 5;
+    double threshold = 1e5;
+    bool force_sci = false;
+    bool force_fixed = false;
+    
     vector<func_id> functions;
     define_functions(&functions);
     
     vector<record_entry> record;
     
-    //Settings
-    bool print_errors = false;
+    run_interpret("Resources/startup.clc", kv, result, functions, true, false, "", record, true, print_precision, threshold, force_sci, force_fixed);
+    record.clear();
     
     bool running = true;
     string input;
@@ -57,10 +72,10 @@ int main(int argc, const char * argv[]){
     while (running){
         
         //Get input
-        cout << command_sequence;
+        cout << command_sequence << flush;
         getline(cin, input);
         
-        interpret_with_keywords(input, kv, result, functions, running, record, print_errors, false);
+        interpret_with_keywords(input, kv, result, functions, running, record, false, print_precision, threshold, force_sci, force_fixed);
 
     }
     

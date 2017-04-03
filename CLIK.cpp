@@ -68,7 +68,15 @@ string next_phrase(string in, bool& success, int start_idx, char starter, char e
 		if (in[i] == starter){
 
 			if (in_string){ //End
-
+                if (starter == ender){
+                    success = true;
+                    *last_idx = i;
+                    return out;
+                }else{
+                    success = false;
+                    *last_idx = i;
+                    return "";
+                }
 			}else{ //Begin string
 				in_string = true;
 			}
@@ -99,18 +107,24 @@ string next_phrase(string in, bool& success, int start_idx, char starter, char e
 
 bool next_string(std::vector<std::string> in, std::string* value, int start_word, int* last_word){
 
-	string str = cat_tokens(in, start_word, " ");
-
-	bool success;
-	int end_idx;
-	*value = next_string(str, success, 0, &end_idx);
-
-    for (int i = start_word ; i < in.size() ; i++){
-        if (in[i][0] == '\"'){
-            *last_word = i;
-            break;
-        }
-    }
+    bool success = next_phrase(in, value, '\"', '\"', start_word, last_word);
+    
+    remove_end_whitespace(*value);
+    
+    return success;
+    
+//	string str = cat_tokens(in, start_word, " ");
+//
+//	bool success;
+//	int end_idx;
+//	*value = next_string(str, success, 0, &end_idx);
+//
+//    for (int i = start_word ; i < in.size() ; i++){
+//        if (in[i][0] == '\"'){
+//            *last_word = i;
+//            break;
+//        }
+//    }
     
 //	int total = 0;
 //	for (int i = start_word ; i < in.size(); i++ ){
@@ -120,8 +134,6 @@ bool next_string(std::vector<std::string> in, std::string* value, int start_word
 //            break;
 //		}
 //	}
-
-	return success;
 
 }
 
@@ -137,10 +149,13 @@ bool next_phrase(std::vector<std::string> in, std::string* value, char starter, 
     //01234567890123456789
     //00000000001111111111
 
+    bool starter_triggered;
     for (int i = start_word ; i < in.size() ; i++){
-        if (in[i][0] == ender){
+        if (in[i][0] == ender && ( ender != starter || starter_triggered)){
             *last_word = i;
             break;
+        }else if(in[i][0] == starter && starter == ender){
+            starter_triggered = true;
         }
     }
     
@@ -177,6 +192,7 @@ bool next_double(string in, double* value){
 
 	try{
 		*value = stod(in);
+        *value = strtod(in);
 	}catch(...){
 		*value = -1;
 		return false;

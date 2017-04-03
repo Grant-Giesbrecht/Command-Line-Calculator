@@ -1,4 +1,4 @@
-#For windows
+#For MacOS & Linux & UNIXs
 
 CC = g++ -std=c++11
 OBJS = kc_aux.o KMatrix.o stdutil.o string_manip.o CLIK.o KVar.o KInterp.o KIFunctions.o KInterpAux.o interpret_keywords.o
@@ -37,8 +37,8 @@ interpret_keywords.o: interpret_keywords.cpp
 	$(CC) -c interpret_keywords.cpp
 
 clean:
-	@del $(OBJS) > nul 2> nul
-	@del kc.exe > nul 2> nul
+	rm $(OBJS)
+	rm clc.exe
 
 fresh: clean all
 

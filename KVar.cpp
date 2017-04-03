@@ -1,4 +1,6 @@
 #include "KVar.hpp"
+#include "KInterpAux.hpp"
+#include "CLIK.hpp"
 
 #define VEC_DOUBLE 'd'
 #define VEC_MATRIX 'm'
@@ -17,10 +19,12 @@ using namespace std;
 
 KVar::KVar(){
     KVar:print_allowed = false;
+    print_comments = true;
 }
 
 KVar::KVar(string ofile){
     KVar::print_allowed = false;
+    print_comments = true;
 }
 
 KVar::~KVar(){
@@ -61,7 +65,10 @@ void KVar::set(int prop, bool val){
         case (KV_ALLOW_PRINT):
             KVar::print_allowed = false;
             break;
-		default:
+        case KV_PRINT_COMMENT:
+            KVar::print_comments = val;
+            break;
+        default:
 			IFPRINT cout << "ERROR: KVar::set() 'prop' not understood." << endl;
 			break;
 	}
@@ -76,302 +83,350 @@ void KVar::set(int prop, string val){
 \*-----------------------------------------------------*/
 
 bool KVar::contains(std::string var_id){
-	return get_var_index(var_id, NULL, NULL);
+	return get_var_index(var_id, NULL);
 }
 
 void KVar::clear(){
-	KVar::IDs.clear();
-	KVar::comments.clear();
-	KVar::double_vars.clear();
-	// KVar::kmatrix_vars.clear();
-	KVar::matrix_vars.clear();
-	KVar::string_vars.clear();
-	KVar::bool_vars.clear();
+    KVar::variables.clear();
+//	KVar::IDs.clear();
+//	KVar::comments.clear();
+//	KVar::double_vars.clear();
+//	// KVar::kmatrix_vars.clear();
+//	KVar::matrix_vars.clear();
+//	KVar::string_vars.clear();
+//	KVar::bool_vars.clear();
 }
 
 vector<string> KVar::get_variable_IDs(){
 	vector<string> out;
-	for(int i = 0 ; i < KVar::IDs.size() ; i++){
-		out.push_back(KVar::IDs[i].ID);
+	for(int i = 0 ; i < KVar::variables.size() ; i++){
+		out.push_back(KVar::variables[i].ID);
 	}
 	return out;
 }
 
 int KVar::num_variables(){
-	return KVar::IDs.size();
+	return (int)KVar::variables.size();
 }
 
 char KVar::get_var_type(string varname){
 
-	char type;
-	int x; //Just a filler variable for 'get_var_index()'.
-
-	get_var_index(varname, &x, &type);
-
-	return type;
+	int x;
+	get_var_index(varname, &x);
+    
+    return variables[x].type;
 }
 
 /*-----------------------------------------------------*\
 |--------------- MODIFICATION FUNCTIONS ----------------|
 \*-----------------------------------------------------*/
 
+bool KVar::add_variable(string var_id, double val, string comment){
+    
+    aktc temp;
+    temp.ID = var_id;
+    temp.type = 'd';
+    temp.d = val;
+    temp.comment = comment;
+    variables.push_back(temp);
+    
+    return true;
+}
+
+bool KVar::add_variable(string var_id, bool val, string comment){
+    
+    aktc temp;
+    temp.ID = var_id;
+    temp.type = 'b';
+    temp.b = val;
+    temp.comment = comment;
+    variables.push_back(temp);
+    
+    return true;
+}
+
+bool KVar::add_variable(string var_id, KMatrix val, string comment){
+    
+    aktc temp;
+    temp.ID = var_id;
+    temp.type = 'm';
+    temp.km = val;
+    temp.comment = comment;
+    variables.push_back(temp);
+    
+    return true;
+}
+
+bool KVar::add_variable(string var_id, Eigen::MatrixXd& val, string comment){
+    
+    aktc temp;
+    temp.ID = var_id;
+    temp.type = 'm';
+    temp.km = KMatrix(val);
+    temp.comment = comment;
+    variables.push_back(temp);
+    
+    return true;
+}
+
+bool KVar::add_variable(string var_id, string val, string comment){
+    
+    aktc temp;
+    temp.ID = var_id;
+    temp.type = 's';
+    temp.s = val;
+    temp.comment = comment;
+    variables.push_back(temp);
+    
+    return true;
+}
+
+bool KVar::set_variable(string var_id, double val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].d = val;
+    
+    return true;
+}
+
+bool KVar::set_variable(string var_id, bool val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].b = val;
+    
+    return true;
+}
+
+bool KVar::set_variable(string var_id, string val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].s = val;
+    
+    return true;
+}
+
+bool KVar::set_variable(string var_id, KMatrix val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].km = val;
+    
+    return true;
+}
+
+bool KVar::set_variable(string var_id, Eigen::MatrixXd& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].km = KMatrix(val);
+    
+    return true;
+}
+
+bool KVar::get_variable(string var_id, double& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    val = variables[x].d;
+    
+    return true;
+}
+
+bool KVar::get_variable(string var_id, string& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    val = variables[x].s;
+    
+    return true;
+}
+
+bool KVar::get_variable(string var_id, bool& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    val = variables[x].b;
+    
+    return true;
+}
+
+bool KVar::get_variable(string var_id, KMatrix& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    val = variables[x].km;
+    
+    return true;
+}
+
+bool KVar::get_variable(string var_id, Eigen::MatrixXd& val){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    val = variables[x].km.to_Eigen();
+    
+    return true;
+}
+
 bool KVar::add_double(std::string var_id, double val, string comment){
 
-	identifier ni;
-	ni.ID = var_id;
-	ni.type = VEC_DOUBLE;
-
-	KVar::double_vars.push_back(val);
-	KVar::IDs.push_back(ni);
-	KVar::comments.push_back(comment);
-
-	return true;
+    return add_variable(var_id, val, comment);
 }
 
 bool KVar::get_double(std::string var_id, double& out){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_DOUBLE){
-		return false;
-	}
-
-	out = double_vars[count_type(idx, type)-1];
-	return true;
+    return get_variable(var_id, out);
 }
 
 bool KVar::set_double(std::string var_id, double in){
     
-    int idx;
-    char type;
-    if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_DOUBLE){
-        return false;
-    }
+    return set_variable(var_id, in);
     
-    double_vars[count_type(idx, type)-1] = in;
-    return true;
 }
 
 bool KVar::add_matrix(std::string var_id, KMatrix& val, string comment){
 
-	identifier ni;
-	ni.ID = var_id;
-	ni.type = VEC_MATRIX;
-
-	KVar::matrix_vars.push_back(val.to_Eigen());
-	KVar::IDs.push_back(ni);
-	KVar::comments.push_back(comment);
-
-	return true;
+	return add_variable(var_id, val, comment);
 }
 
 bool KVar::get_matrix(std::string var_id, KMatrix& out){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_MATRIX){
-		return false;
-	}
-
-	out = matrix_vars[count_type(idx, type)-1];
-	return true;
+	return get_variable(var_id, out);
+    
 }
 
 bool KVar::set_matrix(std::string var_id, KMatrix in){
     
-    int idx;
-    char type;
-    if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_MATRIX){
-        return false;
-    }
+    return set_variable(var_id, in);
     
-    matrix_vars[count_type(idx, type)-1] = in.to_Eigen();
-    return true;
 }
 
 bool KVar::add_matrix(std::string var_id, Eigen::MatrixXd& val, string comment){
 
-	identifier ni;
-	ni.ID = var_id;
-	ni.type = VEC_MATRIX;
-
-	KVar::matrix_vars.push_back(val);
-	KVar::IDs.push_back(ni);
-	KVar::comments.push_back(comment);
-
-	return true;
+	return add_variable(var_id, val, comment);
 }
 
 bool KVar::get_matrix(std::string var_id, Eigen::MatrixXd& out){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_MATRIX){
-		return false;
-	}
-
-	out = matrix_vars[count_type(idx, type)-1];
-	return true;
+	return get_variable(var_id, out);
+    
 }
 
 bool KVar::set_matrix(std::string var_id, Eigen::MatrixXd in){
     
-    int idx;
-    char type;
-    if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_MATRIX){
-        return false;
-    }
+    return set_variable(var_id, in);
     
-    matrix_vars[count_type(idx, type)-1] = in;
-    return true;
 }
 
 bool KVar::add_string(std::string var_id, string val, string comment){
 
-	identifier ni;
-	ni.ID = var_id;
-	ni.type = VEC_STRING;
-
-	KVar::string_vars.push_back(val);
-	KVar::IDs.push_back(ni);
-	KVar::comments.push_back(comment);
-
-	return true;
+	return add_variable(var_id, val, comment);
+    
 }
 
 bool KVar::get_string(std::string var_id, string& out){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_STRING){
-		return false;
-	}
-
-	out = string_vars[count_type(idx, type)-1];
-	return true;
+	return get_variable(var_id, out);
+    
 }
 
 bool KVar::set_string(std::string var_id, string in){
     
-    int idx;
-    char type;
-    if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_STRING){
-        return false;
-    }
+    return set_variable(var_id, in);
     
-    string_vars[count_type(idx, type)-1] = in;
-    return true;
 }
 
 bool KVar::add_bool(std::string var_id, bool val, string comment){
 
-	identifier ni;
-	ni.ID = var_id;
-	ni.type = VEC_BOOL;
-
-	KVar::bool_vars.push_back(val);
-	KVar::IDs.push_back(ni);
-	KVar::comments.push_back(comment);
-
-	return true;
+	return add_variable(var_id, val, comment);
+    
 }
 
 bool KVar::get_bool(std::string var_id, bool& out){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_BOOL){
-		return false;
-	}
-
-	out = bool_vars[count_type(idx, type)-1];
-	return true;
+	return get_variable(var_id, out);
+    
 }
 
 bool KVar::set_bool(std::string var_id, bool in){
     
-    int idx;
-    char type;
-    if (!KVar::get_var_index(var_id, &idx, &type) || type != VEC_BOOL){
-        return false;
-    }
+    return set_variable(var_id, in);
     
-    bool_vars[count_type(idx, type)-1] = in;
-    return true;
 }
 
 string KVar::get_comment(std::string var_id, bool& success){
 
-	int idx;
-	char type;
-	if (!KVar::get_var_index(var_id, &idx, &type)){
-		success = false;
-		IFPRINT cout << "Failed to find specified variable" << endl;
-		return "";
-	}
-
-	success = true;
-	return KVar::comments[idx];
+    int x;
+    success = get_var_index(var_id, &x);
+    
+    return variables[x].comment;
 }
 
 string KVar::get_comment(std::string var_id){
-	bool temp;
+	
+    bool temp;
 	return get_comment(var_id, temp);
 }
 
 bool KVar::delete_var(std::string var_id){
     
-    /*
-     std::vector<identifier> IDs;
-     std::vector<std::string> comments; //Alligns with IDs in vector
-     std::vector<double> double_vars;
-     std::vector<Eigen::MatrixXd> matrix_vars;
-     std::vector<std::string> string_vars;
-     std::vector<bool> bool_vars;
-     */
-    
-    int idx;
-    char type;
-    if (!get_var_index(var_id, &idx, &type)){
+    int x;
+    if (!get_var_index(var_id, &x)){
         IFPRINT cout << "Failed to find specified variable" << endl;
         return false;
     }
     
-    int l_idx;
-    if (!get_var_lindex(var_id, &l_idx, &type)){
-        IFPRINT cout << "Failed to find specified variable" << endl;
-        return false;
-    }
-    
-    switch (type) {
-        case 'd':
-            double_vars.erase(double_vars.begin() + l_idx);
-            break;
-        case 'm':
-            matrix_vars.erase(matrix_vars.begin() + l_idx);
-            break;
-        case 'b':
-            bool_vars.erase(bool_vars.begin() + l_idx);
-            break;
-        case 's':
-            string_vars.erase(string_vars.begin() + l_idx);
-            break;
-        default:
-            return false;
-            break;
-    }
-    comments.erase(comments.begin() + idx);
-    IDs.erase(IDs.begin() + idx);
-    
+    variables.erase(variables.begin() + x);
     
     return true;
+}
+
+string KVar::get_header(){
+    return KVar::header;
+}
+
+void KVar::set_header(std::string hdr){
+    KVar::header = hdr;
 }
 
 /*-----------------------------------------------------*\
 |----------------- READ/WRITE FUNCTIONS ----------------|
 \*-----------------------------------------------------*/
 
-bool KVar::load_file(string filename, bool print_out){
+bool KVar::load_file_old(string filename, bool print_out){
 
 	//Determine the version used
 	ifstream filev(filename);
@@ -393,7 +448,7 @@ bool KVar::load_file(string filename, bool print_out){
 		if (tok[0] == "#VERSION"){
 			try{
 				if (tok.size() < 2) continue;
-				version = stof(tok[1]);
+				version = stod(tok[1]);
 				if (version > LATEST_VAR_VERSION){
 					IFPRINT cout << "WARNING: Using unknown file version: " << version << ". Interpreting as version " << LATEST_VAR_VERSION << " ." << endl;
 				}
@@ -451,7 +506,7 @@ bool KVar::load_file(string filename, bool print_out){
 						comment_buffer = comment_buffer + cat_tokens(parts, 6, " ");
 					}
 					try{
-						double temp = stod(parts[3]);
+						double temp = strtod(parts[3]);
 						cout << temp << endl;
 						add_double(parts[1], temp, comment_buffer);
 					}catch(...){
@@ -484,7 +539,8 @@ bool KVar::load_file(string filename, bool print_out){
 
 							double num;
 							try{
-								num = stod(parts[i]);
+                                num = stod(parts[i]);
+								num = strtod(parts[i]);
 							}catch(...){
 								num = -1;
 								IFPRINT cout << "SYNTAX ERROR: Failed to interpret matrix element: " << parts[i] << endl;
@@ -522,7 +578,8 @@ bool KVar::load_file(string filename, bool print_out){
 
 								double num;
 								try{
-									num = stod(parts[i]);
+                                    num = stod(parts[i]);
+									num = strtod(parts[i]);
 								}catch(...){
 									num = -1;
 									if (print_out) cout << "SYNTAX ERROR: Failed to interpret matrix element: " << parts[i] << endl;
@@ -598,8 +655,323 @@ bool KVar::load_file(string filename, bool print_out){
 	return true;
 }
 
-bool KVar::write_file(string filename){
-	return true;
+bool load_file(string filename, long* fail_line){
+ 
+    return true;
+}
+
+bool KVar::load_KV1(string filename, long* fail_line){
+    
+    ifstream file(filename);
+    if (!file.is_open()){
+        return false;
+    }
+    
+    string line;
+    vector<string> words;
+    bool in_header = false;
+    bool header_defined = false;
+    header = "";
+    bool first_line = true;
+    *fail_line = 0;
+    while (file.good()){
+        
+        //Prepare next line of input
+        getline(file, line);
+        (*fail_line)++;
+        if (line.length() == 0){ //Skip blank lines
+            continue;
+        }
+        words = parse(line, " "); //Parse
+        if (words.size() < 1 || words[0] == "//"){ //Skip comments
+            continue;
+        }
+        
+        //Comments are removed - now semicolons are separated
+        ensure_whitespace(line, "[;]\"");
+        ensure_whitespace_full(line, "//");
+        words = parse(line, " ");
+        
+        //Determine file version
+        double version;
+        if (first_line){
+            first_line = false;
+            if (words.size() != 2){
+                return false;
+            }
+            if (words[0] != "#VERSION"){
+                return false;
+            }
+            if (!str_to_double(words[1], version)){
+                return false;
+            }
+            continue;
+        }
+        
+        if(words[0] == "#HEADER"){
+            if (header_defined){
+                return false;
+            }
+            if (in_header){
+                header_defined = true;
+            }
+            in_header = !in_header;
+        }else if(in_header){
+            if (header.length() > 0){
+                header = header + '\n';
+            }
+            header = header + cat_tokens(words, 0, " ");
+        }else if (words[0] == "double"){
+            
+            string var_name;
+            double val;
+            string comment;
+            
+            //Ensure minimum size is met
+            if (words.size() <  5){
+                return false;
+            }
+            
+            //Save variable name
+            var_name = words[1];
+            
+            //Ensure equals sign is present
+            if (words[2] != "="){
+                return false;
+            }
+            
+            //Save value
+            if (!str_to_double(words[3], val)){
+                return false;
+            }
+            
+            //Ensure semicolon is present
+            if (words[4] != ";"){
+                return false;
+            }
+            
+            //Read comments
+            if (words.size() > 5){
+                if (words[5] != "//"){ //Ensure comment sign is present
+                    return false;
+                }
+                comment = cat_tokens(words, 6, " "); //Save comment
+            }
+            
+            
+            if (!add_variable(var_name, val, comment)){
+                return false;
+            }
+        }else if(words[0] == "matrix"){
+            
+            string var_name;
+            KMatrix val;
+            string comment;
+            
+            //Ensure minimum size is met - TYPE NAME = [ VALUE_1 ] ;
+            if (words.size() <  7){
+                return false;
+            }
+            
+            //Save variable name
+            var_name = words[1];
+            
+            //Ensure equals sign is present
+            if (words[2] != "="){
+                return false;
+            }
+            
+            //Save value
+            string km_str;
+            int lw;
+            if (!next_phrase(words, &km_str, '[', ']', 3, &lw)){
+                return false;
+            }
+            val = KMatrix(km_str);
+            
+            //Ensure semicolon is present
+            if (words[lw+1] != ";"){
+                return false;
+            }
+            
+            //Read comments
+            if (words.size() > lw+2){
+                if (words[lw+2] != "//"){ //Ensure comment sign is present
+                    return false;
+                }
+                comment = cat_tokens(words, lw+3, " "); //Save comment
+            }
+            
+            
+            if (!add_variable(var_name, val, comment)){
+                return false;
+            }
+            
+        }else if(words[0] == "string"){
+            
+            string var_name;
+            string val;
+            string comment;
+            
+            //Ensure minimum size is met - TYPE NAME = [ VALUE_1 ] ;
+            if (words.size() <  7){
+                return false;
+            }
+            
+            //Save variable name
+            var_name = words[1];
+            
+            //Ensure equals sign is present
+            if (words[2] != "="){
+                return false;
+            }
+            
+            //Save value
+            int lw;
+            if (!next_string(words, &val, 3, &lw)){
+                return false;
+            }
+            
+            //Ensure semicolon is present
+            if (words[lw+1] != ";"){
+                return false;
+            }
+            
+            //Read comments
+            if (words.size() > lw+2){
+                if (words[lw+2] != "//"){ //Ensure comment sign is present
+                    return false;
+                }
+                comment = cat_tokens(words, lw+3, " "); //Save comment
+            }
+            
+            
+            if (!add_variable(var_name, val, comment)){
+                return false;
+            }
+            
+        }else if(words[0] == "bool"){
+            
+            string var_name;
+            bool val;
+            string comment;
+            
+            //Ensure minimum size is met
+            if (words.size() <  5){
+                return false;
+            }
+            
+            //Save variable name
+            var_name = words[1];
+            
+            //Ensure equals sign is present
+            if (words[2] != "="){
+                return false;
+            }
+            
+            //Save value
+            if (!str_to_bool(words[3], val)){
+                return false;
+            }
+            
+            //Ensure semicolon is present
+            if (words[4] != ";"){
+                return false;
+            }
+            
+            //Read comments
+            if (words.size() > 5){
+                if (words[5] != "//"){ //Ensure comment sign is present
+                    return false;
+                }
+                comment = cat_tokens(words, 6, " "); //Save comment
+            }
+            
+            
+            if (!add_variable(var_name, val, comment)){
+                return false;
+            }
+        }else{
+            
+        }
+    }
+    
+    
+    return true;
+}
+
+
+/*
+ Writes all variables to a KV1 file by the name of 'filename'
+ 
+ filename - name of file to write (if it already exists it will be replaced)
+ 
+ Returns true if the write was successful
+ */
+bool KVar::write_KV1(string filename){
+	
+    ofstream file;
+    file.open(filename, std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open()){
+        return false;
+    }
+    
+    file << "#VERSION 1.0" << endl << endl;
+    
+    if (header.length() > 0){
+        file << "#HEADER" << endl;
+        file << header << endl;
+        file << "#HEADER" << endl << endl;
+    }
+    
+    for (int i = 0 ; i < variables.size() ; i++){
+        switch (variables[i].type) {
+            case 'd':
+                file << "double " << variables[i].ID << " = " << hp_string(variables[i].d) << ";";
+                if (variables[i].comment.length() > 0){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 'm':
+                file << "matrix " << variables[i].ID << " = " << variables[i].km.get_string() << ";";
+                if (variables[i].comment.length() > 0){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 'b':
+                file << "bool " << variables[i].ID << " = " << bool_to_str(variables[i].b) << ";";
+                if (variables[i].comment.length() > 0){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 's':
+                file << "string " << variables[i].ID << " = " << variables[i].s << ";";
+                if (variables[i].comment.length() > 0){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    file.close();
+    
+    return true;
+}
+
+bool KVar::write_KV2(std::string filename){
+    
+    return true;
+}
+
+bool KVar::write_KV3(std::string filename){
+    
+    return true;
 }
 
 /*-----------------------------------------------------*\
@@ -610,21 +982,25 @@ void KVar::print(int indent, bool use_spaces){
 
 	//Doubles
 	int counter = 0;
-	for (int i = 0 ; i < IDs.size() ; i++){
-		if (IDs[i].type == VEC_DOUBLE){
+	for (int i = 0 ; i < variables.size() ; i++){
+		if (variables[i].type == 'd'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "DOUBLES:" << endl; //Print header if first double
-			cout << indent_line(indent, use_spaces, false) << "\t" << IDs[i].ID << ": " << double_vars[counter] << endl; //Print name and value
+			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << hp_string(variables[i].d); //Print name and value
+            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            cout << endl;
 			counter++; //Increment counter
 		}
 	}
 
 	//Matricies
 	counter = 0;
-	for (int i = 0 ; i < IDs.size() ; i++){
-		if (IDs[i].type == VEC_MATRIX){
+	for (int i = 0 ; i < variables.size() ; i++){
+		if (variables[i].type == 'm'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "MATRICIES:" << endl; //Print header if first double
-			cout << indent_line(indent, use_spaces, false) << "\t" << IDs[i].ID << ": " << endl; //Print name and value
-			KMatrix km(matrix_vars[counter]);
+			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": "; //Print name and value
+            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            cout << endl;
+			KMatrix km(variables[i].km);
 			int mindent = indent;
 			if (!use_spaces) mindent *= 8;
 			mindent += 12;
@@ -635,20 +1011,24 @@ void KVar::print(int indent, bool use_spaces){
 
 	//Strings
 	counter = 0;
-	for (int i = 0 ; i < IDs.size() ; i++){
-		if (IDs[i].type == VEC_STRING){
+	for (int i = 0 ; i < variables.size() ; i++){
+		if (variables[i].type == 's'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "STRINGS:" << endl; //Print header if first double
-			cout << indent_line(indent, use_spaces, false) << "\t" << IDs[i].ID << ": " << string_vars[counter] << endl; //Print name and value
+			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << variables[i].s; //Print name and value
+            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
 			counter++; //Increment counter
+            cout << endl;
 		}
 	}
 
 	//Bools
 	counter = 0;
-	for (int i = 0 ; i < IDs.size() ; i++){
-		if (IDs[i].type == VEC_BOOL){
+	for (int i = 0 ; i < variables.size() ; i++){
+		if (variables[i].type == 'b'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "BOOLEANS:" << endl; //Print header if first double
-			cout << indent_line(indent, use_spaces, false) << "\t" << IDs[i].ID << ": " << bool_to_str(bool_vars[counter]) << endl; //Print name and value
+			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << bool_to_str(variables[i].b); //Print name and value
+            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            cout << endl;
 			counter++; //Increment counter
 		}
 	}
@@ -669,7 +1049,7 @@ Returns false if variable is not found - 'index' is set to -1 and 'type' to '\0'
 */
 bool KVar::get_var_lindex(string var_id, int* lindex, char* type){
 
-	if (!KVar::get_var_index(var_id, lindex, type)){
+	if (!KVar::get_var_index(var_id, lindex)){
 		return false;
 	}
 
@@ -682,20 +1062,16 @@ bool KVar::get_var_lindex(string var_id, int* lindex, char* type){
 Gives location information for variable represented by 'var_id'
 
 var_id - variable ID of the variable of interest
-index - the index FOR THE VECTOR KVar::IDs of the target variable (must use KVar::count_type() to get specific index or KVar::get_var_lindex())
-type - relays the datatype of the variable of interest
+index - the index of the variable 'var_id' in vector 'variables'
 
 Returns false if variable is not found - 'index' is set to -1 and 'type' to '\0'
 */
-bool KVar::get_var_index(string var_id, int* index, char* type){
+bool KVar::get_var_index(string var_id, int* index){
 
 	*index = -1;
-	*type = '\0';
-
-	for (int i = 0 ; i < IDs.size() ; i++){
-		if (IDs[i].ID == var_id){
+	for (int i = 0 ; i < variables.size() ; i++){
+		if (variables[i].ID == var_id){
 			*index = i;
-			*type = IDs[i].type;
 			return true;
 		}
 	}

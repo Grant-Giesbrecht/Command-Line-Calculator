@@ -11,6 +11,7 @@
 #include <iostream>
 #include "KInterp.hpp"
 #include "KInterpAux.hpp"
+#include "string_manip.hpp"
 
 #define IFPRINT if (!silence_output) cout
 
@@ -20,7 +21,7 @@ string this_filename_0 = "interpret_keywords.cpp";
 
 
 
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool print_errors, bool silence_output){
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, int print_precision, int threshold, bool force_scientific, bool force_fixed){
     
     record_entry temp_rcd;
     
@@ -37,6 +38,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
     for (int j = 0 ; j < sentences.size() ; j++){
     
         words = sentences[j];
+        if (words.size() < 1){
+            continue;
+        }
         
         //Scan for keywords - if non found, interpret as expression
         if (to_uppercase(words[0]) == "EXIT"){ //Exit
@@ -62,21 +66,178 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             system(CLEAR_COMMAND);
         }else if((words[0]) == "ls" || words[0] == "dir"){
             system(LIST_COMMAND);
-        }else if(to_uppercase(words[0]) == "LOAD"){
-            IFPRINT << indent_line(1) << "FILE: ";
-            string fn;
-            getline(cin, fn);
-            if (!kv.load_file(fn)){
-                IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'";
-            }else{
-                IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+        }else if(to_uppercase(words[0]) == "VIEW"){
+            KVar viewer;
+            
+            string fn = "";
+            int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
+            for (int i = 1 ; i < words.size() ; i++ ){
+                if (to_uppercase(words[i]) == "-KV1"){
+                    file_type = 1;
+                }else if(to_uppercase(words[i]) == "-KV2"){
+                    file_type = 2;
+                }else if(to_uppercase(words[i]) == "-KV3"){
+                    file_type = 3;
+                }else if(words[i][0] != '-'){
+                    fn = fn + words[i];
+                }else{
+                    IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
+                }
             }
+            
+            for (int i = 0 ; i < fn.length() ; i++){
+                if (fn[i] == ' ' || fn[i] == '\t'){
+                    fn = fn.substr(0, i) + fn.substr(i+1);
+                }
+            }
+            
+            if (fn.length() == 0){
+                IFPRINT << indent_line(1) << "FILE: ";
+                getline(cin, fn);
+            }
+            
+            long fail_line;
+            switch (file_type) {
+                case 1:
+                    if (!viewer.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                case 2:
+                    if (!viewer.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                case 3:
+                    if (!viewer.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                default:
+                    IFPRINT << indent_line(1) << "SOFTWARE ERROR: Unrecognized filetype detected." << endl;
+                    break;
+            }
+            string header = viewer.get_header();
+            if (header.length() > 0) IFPRINT << indent_line(1) << "HEADER: " << header << endl;
+            viewer.print(1);
+            
+        }else if(to_uppercase(words[0]) == "LOAD"){
+            
+            string fn = "";
+            int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
+            for (int i = 1 ; i < words.size() ; i++ ){
+                if (to_uppercase(words[i]) == "-KV1"){
+                    file_type = 1;
+                }else if(to_uppercase(words[i]) == "-KV2"){
+                    file_type = 2;
+                }else if(to_uppercase(words[i]) == "-KV3"){
+                    file_type = 3;
+                }else if(words[i][0] != '-'){
+                    fn = fn + words[i];
+                }else{
+                    IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
+                }
+            }
+            
+            for (int i = 0 ; i < fn.length() ; i++){
+                if (fn[i] == ' ' || fn[i] == '\t'){
+                    fn = fn.substr(0, i) + fn.substr(i+1);
+                }
+            }
+            
+            if (fn.length() == 0){
+                IFPRINT << indent_line(1) << "FILE: ";
+                getline(cin, fn);
+            }
+            
+            long fail_line;
+            switch (file_type) {
+                case 1:
+                    if (!kv.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                case 2:
+                    if (!kv.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                case 3:
+                    if (!kv.load_KV1(fn, &fail_line)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }
+                    break;
+                default:
+                    IFPRINT << indent_line(1) << "SOFTWARE ERROR: Unrecognized filetype detected." << endl;
+                    break;
+            }
+            
         }else if(to_uppercase(words[0]) == "SAVE"){
-            IFPRINT << "FILE: ";
-            string fn;
-            getline(cin, fn);
-            if (kv.write_file(fn)){
-                IFPRINT << "File '" + fn + "' write successful." << endl;
+            
+            string fn = "";
+            int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
+            for (int i = 1 ; i < words.size() ; i++ ){
+                if (to_uppercase(words[i]) == "-KV1"){
+                    file_type = 1;
+                }else if(to_uppercase(words[i]) == "-KV2"){
+                    file_type = 2;
+                }else if(to_uppercase(words[i]) == "-KV3"){
+                    file_type = 3;
+                }else if(words[i][0] != '-'){
+                    fn = fn + words[i];
+                }else{
+                    IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
+                }
+            }
+            
+            for (int i = 0 ; i < fn.length() ; i++){
+                if (fn[i] == ' ' || fn[i] == '\t'){
+                    fn = fn.substr(0, i) + fn.substr(i+1);
+                }
+            }
+            
+            if (fn.length() == 0){
+                IFPRINT << indent_line(1) << "FILE: ";
+                getline(cin, fn);
+            }
+            
+            switch(file_type){
+                case 1:
+                    if (kv.write_KV1(fn)){
+                        IFPRINT << indent_line(1) << "File '" + fn + "' write successful." << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "ERROR: File '" + fn + "' write failed!" << endl;
+                    }
+                    break;
+                case 2:
+                    if (kv.write_KV2(fn)){
+                        IFPRINT << indent_line(1) << "File '" + fn + "' write successful." << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "ERROR: File '" + fn + "' write failed!" << endl;
+                    }
+                    break;
+                case 3:
+                    if (kv.write_KV3(fn)){
+                        IFPRINT << indent_line(1) << "File '" + fn + "' write successful." << endl;
+                    }else{
+                        IFPRINT << indent_line(1) << "ERROR: File '" + fn + "' write failed!" << endl;
+                    }
+                    break;
+                default:
+                    IFPRINT << indent_line(1) << "SOFTWARE ERROR: Unrecognized filetype detected." << endl;
+                    break;
             }
         }else if(to_uppercase(words[0]) == "RUN"){
             bool silence = true;
@@ -93,9 +254,15 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }else if(to_uppercase(words[i]) == "-NP"){
                     persist = false;
                 }else if(words[i][0] != '-'){
-                    fn = words[i];
+                    fn = fn + words[i];
                 }else{
                     IFPRINT << "ERROR: Unrecognized flag '" + words[i] + "'";
+                }
+            }
+            
+            for (int i = 0 ; i < fn.length() ; i++){
+                if (fn[i] == ' ' || fn[i] == '\t'){
+                    fn = fn.substr(0, i) + fn.substr(i+1);
                 }
             }
             
@@ -104,7 +271,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 getline(cin, fn);
             }
             
-            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, print_errors, true)){
+            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, print_precision, threshold, force_scientific, force_fixed)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{
@@ -161,9 +328,16 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             
             bool count_start_beginning = false;
             double count = -1;
+            bool print_errors = false;
             for (int i = 1 ; i < words.size() ; i++){
                 if (to_uppercase(words[i]) == "-B"){
                     count_start_beginning = true;
+                }else if(to_uppercase(words[i]) == "-NB"){
+                    count_start_beginning = false;
+                }else if(to_uppercase(words[i]) == "-A"){
+                    print_errors = true;
+                }else if(to_uppercase(words[i]) == "-NA"){
+                    print_errors = false;
                 }else if(words[i][0] != '-'){
                     if (!str_to_double(words[i], count)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to interpret '" + words[i] + "' as number";
@@ -175,22 +349,69 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
             
-            unsigned long start = 0;
-            unsigned long end = record.size();
+//            unsigned long start = 0;
+//            unsigned long end = record.size();
+//            if (count != -1){
+//                if (count_start_beginning){
+//                    start = 0;
+//                    end = count;
+//                }else{
+//                    start = record.size() - count;
+//                    end = record.size();
+//                }
+//                if (end > record.size()){
+//                    end = record.size();
+//                }
+//            }
+            
+            int start = 0;
+            int end = (int)record.size()-1;
+            int ticker = 0;
             if (count != -1){
-                if (count_start_beginning){
-                    start = 0;
-                    end = count;
+                if (print_errors){
+                    if (count_start_beginning){
+                        start = 0;
+                        end = count -1;
+                    }else{
+                        start = record.size()-count;
+                        end = (int)record.size()-1;
+                    }
+                    if (start < 0){
+                        start = 0;
+                    }
+                    if (end > record.size()-1){
+                        end = (int)record.size()-1;
+                    }
                 }else{
-                    start = record.size() - count;
-                    end = record.size();
-                }
-                if (end > record.size()){
-                    end = record.size();
+                    if (count_start_beginning){
+                        for (int i = 0 ; i < record.size() ; i++){
+                            if (record[i].output.type != 'e' ){
+                                ticker++;
+                                if (ticker == count){
+                                    end = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }else{
+                        for (int i = (int)record.size()-1 ; i >= 0 ; i--){
+                            if (record[i].output.type != 'e'){
+                                ticker++;
+                                if (ticker == count){
+                                    start = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
             
-            for (unsigned long i = start ; i < end ; i++){
+            int num_printed = 0;
+            for (int i = start ; i <= end ; i++){
+//                if (count != -1 && num_printed >= count){
+//                    break;
+//                }
                 if (print_errors || record[i].output.type != 'e'){
                     IFPRINT << indent_line(1) << '[' << to_string(i) << "] " << record[i].command << endl;
                     switch (record[i].output.type) {
@@ -213,8 +434,10 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                             IFPRINT << "SOFTWARE ERROR: Unrecognized retrun type" << endl;
                             break;
                     }
+                    num_printed++;
                 }
             }
+            
         }else if(to_uppercase(words[0]) == "RELIGION"){
             kv.add_bool("religion", false);
             IFPRINT << indent_line(1) << bool_to_str(false) << endl;
@@ -239,7 +462,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }catch(...){}
                 }
             }else{
-                IFPRINT << indent_line(1) << akt_tostring(result, true) << endl;
+                IFPRINT << indent_line(1) << akt_tostring(result, print_precision, threshold) << endl;
                 kv.delete_var("ans");
                 switch(result.type){
                     case 'd':

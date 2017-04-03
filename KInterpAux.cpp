@@ -189,6 +189,8 @@ Returns true iff a double is found
 bool str_to_double(std::string input, double& output, string previous_word){
 
 	bool negative = false;
+    
+    cout << std::scientific;
 
 	if (previous_word == "-" && isnum(previous_word + input)){
 		negative = true;
@@ -196,7 +198,13 @@ bool str_to_double(std::string input, double& output, string previous_word){
 
 	if (!isnum(input)) return false;
 
-	output = atof(input.c_str());
+    try{
+        output = stod(input);
+        output = strtod(input);
+    }catch(...){
+        return false;
+    }
+//	output = strtod(input.c_str(), NULL);
 
 	if (negative){
 		output = output * -1;

@@ -1,5 +1,4 @@
 #include <vector>
-
 #include "KInterpAux.hpp"
 #include "KInterp.hpp"
 #include "string_manip.hpp"
@@ -12,7 +11,7 @@
 
 using namespace std;
 
- string this_file_name = "KInterp.cpp";
+string this_file_name = "KInterp.cpp";
 
 /*
 Interprets a string as a mathematical expression. Accepts variables (specified in the KVar object), and will return the result of the expression.
@@ -122,7 +121,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 					out.s = "ERROR: Failed to locate double variable '" + words[i] + "'";
 					return false;
 				}
-				words[i] = hp_string(double_out);
+				words[i] = hp_string(double_out, 309);
 			}else if(type == 'b'){
 				bool bool_out;
 				if (!vars.get_bool(words[i], bool_out)){
@@ -1019,8 +1018,28 @@ void inject_akt_into_aktvec(std::vector<all_ktype>& words, all_ktype inject, int
     words.insert(words.begin() + begin, inject);
 }
 
+string akt_tostring(all_ktype akt, int precision, int threshold){
+    
+    if (akt.type == 'd'){
+        char notation = select_notation(akt.d, threshold);
+        return hp_string(akt.d, precision, (notation == 's'));
+    }else if(akt.type == 'o'){
+        return akt.s;
+    }else if(akt.type == 's'){
+        return akt.s;
+    }else if(akt.type == 'b'){
+        return bool_to_str(akt.b);
+    }else if(akt.type == 'm'){
+        return akt.km.get_string();
+    }else if(akt.type == 'e'){
+        return akt.s;
+    }else{
+        return "UNDEFINED AKT TYPE";
+    }
+}
+
 /*
-Converts an 'all_ktype' to a string for printing. The 'formal' setting removes type identifiers for a final product, whereas normal operation is better for debugging.
+ Converts an 'all_ktype' to a string for printing. The 'formal' setting removes type identifiers for a final product, whereas normal operation is better for debugging.
  
  akt - all_ktype to convert to string
  formal - activate 'formal' setting. Removes all but the value contained by the all_ktype (Otherwise specifies type).
@@ -1047,7 +1066,7 @@ string akt_tostring(all_ktype akt, bool formal){
         }
     }else{
         if (akt.type == 'd'){
-            return to_string(akt.d);
+            return hp_string(akt.d);
         }else if(akt.type == 'o'){
             return akt.s;
         }else if(akt.type == 's'){
@@ -1065,7 +1084,7 @@ string akt_tostring(all_ktype akt, bool formal){
 }
 
 //Delete 'print_error
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool print_error, bool delete_comments){
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, int print_precision, int threshold, bool scientific_notation, bool force_fixed){
     
     //Open file
     ifstream file(filename);
@@ -1086,8 +1105,8 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
         if (delete_comments){
             remove_comments(s, "//");
         }
-        
-        interpret_with_keywords(s, vars, out, interp_functions, running, record, print_error, !print_results);
+    
+        interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, print_precision, threshold, scientific_notation, force_fixed);
         
         if (out.type == 'e'){
             if (!persist){
@@ -1126,8 +1145,12 @@ std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> i
         }
     }
 
-    if (sentences.size() == 0){
-        sentences.push_back(input);
+    if (last_word_dump < input.size()){
+        vector<string> temp_vector;
+        for (int j = last_word_dump ; j < input.size() ; j++){
+            temp_vector.push_back(input[j]);
+        }
+        sentences.push_back(temp_vector);
     }
     
     return sentences;

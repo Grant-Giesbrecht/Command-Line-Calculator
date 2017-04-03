@@ -50,6 +50,8 @@ typedef struct{
     all_ktype output;
 }record_entry;
 
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool print_errors, bool silence_output);
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool silence_output, int print_precision, int threshold, bool force_scientific, bool force_fixed);
+
+//void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool silence_output, int print_precision, bool scientific_notation);
 
 #endif /* interpret_keywords_hpp */

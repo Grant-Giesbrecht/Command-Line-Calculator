@@ -372,8 +372,7 @@ string str2 = "\"Hello world\" True [1, 2; 3, 4]";
 					token nt;
 					nt.s  = str_out;
 					tokens.push_back(nt);
-					char type;
-					if (!kv.get_var_index(words[pointer], NULL, &type)) return false;
+                    char type = kv.get_var_type(words[pointer]);
 					if (type == 'd'){
 						nt.type = 'D';
 						kv.get_double(words[pointer], double_out);

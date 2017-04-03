@@ -996,7 +996,7 @@ bool KMatrix::matrix_from_string(string input, MatrixXd& out, bool print_on){
 				return false;
 			}
 
-			values.push_back(stod(tokens[i]));
+			values.push_back(strtod(tokens[i]));
 			ticker++;
 			add_line = true;
 			phase = 'v'; //var added
