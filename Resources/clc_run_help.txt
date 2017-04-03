@@ -1,0 +1,21 @@
+---------------------------------------------------------
+---------------------- CLC RUN HELP ---------------------
+
+Description:
+    Runs a CLC program.
+
+Flags:
+    -p: persist - continue program execution even if a command raises an error
+    -np: not persist - halt program execution if a command raises and error
+    -s: silence - do not allow program to print to command line
+    -ns: not silence - allow program to print to command line just as if the commands
+      were typed into the command prompt manually
+    [string not beginning with '-']: filename - CLC will automatically load a CLC
+      program file of the name 'filename'. If filename is not given, a prompt will
+      ask for the filename.
+
+DEFAULTS: -NP -S
+
+Additional Help:
+    PROGRAM - help information on CLC programs and CLC program syntax
+    

@@ -1,0 +1,11 @@
+---------------------------------------------------------
+--------------------- CLC LSVAR HELP --------------------
+
+Description:
+    Lists all variables by printing them to the terminal.
+
+Additional Help:
+    SAVE - Save all variables to a KV file
+    READ - Read variables from a KV file
+    DELETE - Delete specific variables
+    CLVAR - Clear all variables

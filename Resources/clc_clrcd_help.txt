@@ -1,0 +1,10 @@
+---------------------------------------------------------
+--------------------- CLC CLRCD HELP --------------------
+
+Description:
+    Clears the record. The record contains a list of all commands entered
+    into CLC.
+
+Additional Help:
+    SVRCD - Save the record to a text file
+    PRCD - Print the record to the terminal

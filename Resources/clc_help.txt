@@ -1,0 +1,56 @@
+=========================================================
+================ COMMAND LINE CALCULATOR ================
+=========================================================
+
+VERSION: 3.0
+RELEASE DATE: 10.3.2017
+CREATED BY G. M. GIESBRECHT
+
+ABOUT:
+    The command line calculator (CLC) is a high-capacity calculator designed to run
+    the UNIX or MS-DOS command line. It supports variables, matricies, functions,
+    strings, booleans, data file I/O, running and creating programs, and saving
+    ASCII records of the calculator's output. It is designed to interface with the
+    scientific computing library KPack. Specifically, the KPack data types and
+    data files can be read, modified, and written by CLC.
+
+INSTRUCTIONS:
+    Arithmetic operations using the following operators listed in the 'operators'
+    section is permitted. C style syntax is used as much as possible, however
+    some abbreviations have been made. Variable type does not need to be specified
+    for doubles, and semicolons are optional at the end of statements.
+
+COMMANDS:
+    clear/cls:   Clears the screen
+    ldvar: Load variables from a KV file
+    svvar: Save all variables to a KV file
+    lsvar: List all variables
+    prcd: Print the record
+    clrcd: Clear the record
+    ldprg: Load a program
+    svprg: Save the current record as program
+    help: Display the help screen
+
+SPECIFIC TOPICS:
+    Enter 'help <TOPIC_NAME>' into command prompt for detailed descriptions of each
+    command.
+
+TOPIC NAMES:
+    PROGRAM
+    RUN
+
+OPERATORS:
+
+DATA TYPES:
+
+VARIABLES:
+
+STARTUP PROGRAM:
+
+RECORD:
+
+USER SETTINGS:
+
+CUSTOM FUNCTOINS:
+
+RUNNING PROGRAMS:
