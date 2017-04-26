@@ -3,4 +3,4 @@
 //
 // Created by Grant Giesbrecht on 16.3.2017
 
-run Resources/variables.clc -s -p
+run /Usr/local/resources/Resources/variables.clc -s -p

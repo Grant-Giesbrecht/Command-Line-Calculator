@@ -21,23 +21,41 @@ INSTRUCTIONS:
     for doubles, and semicolons are optional at the end of statements.
 
 COMMANDS:
-    clear/cls:   Clears the screen
-    ldvar: Load variables from a KV file
-    svvar: Save all variables to a KV file
-    lsvar: List all variables
-    prcd: Print the record
-    clrcd: Clear the record
-    ldprg: Load a program
-    svprg: Save the current record as program
-    help: Display the help screen
 
-SPECIFIC TOPICS:
-    Enter 'help <TOPIC_NAME>' into command prompt for detailed descriptions of each
-    command.
+    VARIABLE COMMANDS:
+        CLVAR: Clear all variables
+        DELETE: Delete a single variable
+        LOAD: Load variables from a KV file
+        LSVAR: List all variables
+        SAVE: Save calculator variables to a KV file
+        VIEW: Display contents of a KV file without loading file contents
+    RECORD COMMANDS:
+        CLRCD: Clear the record
+        PRCD: Print the record to terminal
+        SVRCD: Save record to a text file
+    SYSTEM COMMANDS:
+        CD: Change working directory
+        CLEAR: Clear terminal output
+        LS: List contents of working directory
+        PWD: Print full path to working directory
+    PROGRAM COMMANDS:
+        RUN: Run a CLC program from file
+        SVPRG: Save the record as an runable CLC file
+    CONTROL COMMANDS:
+        EXIT: Exit CLC
+        HELP: Display CLC help
+        SET: Set or view CLC settings
 
-TOPIC NAMES:
-    PROGRAM
-    RUN
+SPECIFIC HELP PAGES:
+
+    Enter 'help <TOPIC_NAME>' into command prompt for detailed descriptions of topics
+    and commands.
+
+    TOPIC NAMES:
+
+        CLVAR   DELETE  LOAD    LSVAR   SAVE    VIEW    CLRCD
+        PRCD    SVRCD   CD      CLEAR   LS      PWD     RUN
+        SVPRG   EXIT    HELP    SET
 
 OPERATORS:
 
