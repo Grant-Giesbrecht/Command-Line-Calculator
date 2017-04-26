@@ -39,11 +39,12 @@ void KVar::set(int prop, double val){
 		case(KV_COMMENT_STYLE):
 			KVar::comment_style = (int)val;
 			break;
-		// case():
-
-		// 	break;
-		// case():
-		// 	break;
+        case(KV_PRINT_PRECISION):
+            KVar::print_precision = val;
+            break;
+        case(KV_PRINT_THRESHOLD):
+            KVar::print_threshold = val;
+            break;
 		default:
 			IFPRINT cout << "ERROR: KVar::set() 'prop' not understood." << endl;
 			break;
@@ -980,13 +981,16 @@ bool KVar::write_KV3(std::string filename){
 
 void KVar::print(int indent, bool use_spaces){
 
+    string comment_string(" \tCMNT: "); //" CM\\:"
+    
 	//Doubles
 	int counter = 0;
 	for (int i = 0 ; i < variables.size() ; i++){
 		if (variables[i].type == 'd'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "DOUBLES:" << endl; //Print header if first double
-			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << hp_string(variables[i].d); //Print name and value
-            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            bool use_scientific_notation = (select_notation(variables[i].d, KVar::print_threshold) == 's');
+            cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << hp_string(variables[i].d, KVar::print_precision, use_scientific_notation); //Print name and value
+            if (print_comments && variables[i].comment.length() > 0) cout << comment_string << variables[i].comment;
             cout << endl;
 			counter++; //Increment counter
 		}
@@ -998,7 +1002,7 @@ void KVar::print(int indent, bool use_spaces){
 		if (variables[i].type == 'm'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "MATRICIES:" << endl; //Print header if first double
 			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": "; //Print name and value
-            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            if (print_comments && variables[i].comment.length() > 0) cout << comment_string << variables[i].comment;
             cout << endl;
 			KMatrix km(variables[i].km);
 			int mindent = indent;
@@ -1015,7 +1019,7 @@ void KVar::print(int indent, bool use_spaces){
 		if (variables[i].type == 's'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "STRINGS:" << endl; //Print header if first double
 			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << variables[i].s; //Print name and value
-            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            if (print_comments && variables[i].comment.length() > 0) cout << comment_string << variables[i].comment;
 			counter++; //Increment counter
             cout << endl;
 		}
@@ -1027,7 +1031,7 @@ void KVar::print(int indent, bool use_spaces){
 		if (variables[i].type == 'b'){
 			if (counter == 0) cout << indent_line(indent, use_spaces, false) << "BOOLEANS:" << endl; //Print header if first double
 			cout << indent_line(indent, use_spaces, false) << "\t" << variables[i].ID << ": " << bool_to_str(variables[i].b); //Print name and value
-            if (print_comments && variables[i].comment.length() > 0) cout << " \tCM\\:" << variables[i].comment;
+            if (print_comments && variables[i].comment.length() > 0) cout << comment_string << variables[i].comment;
             cout << endl;
 			counter++; //Increment counter
 		}

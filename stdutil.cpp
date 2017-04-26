@@ -28,7 +28,7 @@ bool print_file(std::string filename, int tabs){
     while (file.good()){
         getline(file, s);
         
-        cout << s << endl;
+        cout << indent_line(tabs) << s << endl;
     }
     
     return true;
@@ -91,4 +91,31 @@ int strvec_contains(vector<string> vec, string target){
 	}
 
 	return -1;
+}
+
+/*
+ Inserts tabs or spaces so all new lines are indented at least as far as specified by 'indentation'.
+ 
+ in - string in which to insert indentation
+ indentation - number of tabs (or spaces if specified by use_spaces) to insert after new lines
+ use_spaces - specifies indentation with spaces rather than tabs
+ 
+ Returns the modified string
+ */
+std::string indent_in_string(std::string in, int indentation, bool use_spaces){
+    
+    if (in[0] != '\n'){
+        in = indent_line(indentation, use_spaces) + in;
+    }
+    
+    for (int i = 0 ; i < in.length() ; i++){
+        if (in[i] == '\n'){
+            try{
+                in = in.substr(0, i+1) + indent_line(indentation, use_spaces) + in.substr(i+1);
+            }catch(...){}
+            i += indentation;
+        }
+    }
+    
+    return in;
 }

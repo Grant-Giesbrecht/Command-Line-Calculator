@@ -23,6 +23,8 @@
 #define KV_READ_COMMENTS 4
 #define KV_ALLOW_PRINT 5
 #define KV_PRINT_COMMENT 6
+#define KV_PRINT_PRECISION 7
+#define KV_PRINT_THRESHOLD 8
 
 #define KV_HEADER_COMMENT "KVar_Header_Comment_NOT_A_VARIABLE"
 
@@ -124,6 +126,8 @@ private:
 	bool double_space_comment;
 	bool print_allowed;
     bool print_comments;
+    double print_precision;
+    double print_threshold;
 
 	//Vectors
     std::vector<aktc> variables;

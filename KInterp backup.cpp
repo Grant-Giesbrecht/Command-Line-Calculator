@@ -355,18 +355,67 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 
     //Evaluate implied 'ans'
     
-    /*====================================================================*\
-    |================== EVALUATE SIMPLIFIED EXPRESSION ====================|
-    \*====================================================================*/
-    
-    //Evaluate exponents
+	//Evaluate simplified expression
 	all_ktype a, b;
     int start_idx = 0;
     int end_idx = 0;
 	for (int i = 0 ; i < tokens.size() ; i++){
 		if (tokens[i].type == 'o'){
-			if(tokens[i].s == "^"){
+			if (tokens[i].s == "+"){
+                //Determine 'a'
+				if (i == 0){
+					out.type = 'e';
+					out.s = "SOFTWARE ERROR: Implied 'ans' failed to evaluate. This error was detected in file '" + this_file_name + "'";
+					return false;
+				}else{
+					a = tokens[i-1];
+					start_idx = i-1;
+				}
                 
+                //Determine 'b'
+				if (i+1 >= tokens.size()){
+					out.type = 'e';
+					out.s = "ERROR: Operator '+' requires second argument.";
+                    return false;
+				}else{
+					b = tokens[i+1];
+					end_idx = i+1;
+				}
+
+				//Perform operation
+				if (a.type == 'd' && b.type =='d'){ //Double + double
+					a.d = a.d + b.d;
+                }else if(a.type == 'd' && b.type == 'm'){ //Double + matrix
+                    for (int r = 0 ; r < b.km.rows() ; r++){
+                        for (int c = 0 ; c < b.km.cols() ; c++){
+                            b.km(r, c) += a.d;
+                        }
+                    }
+                    a.km = b.km;
+                    a.type = 'm';
+                }else if(a.type == 'm' && b.type == 'd'){ //matrix + double
+                    for (int r = 0 ; r < b.km.rows() ; r++){
+                        for (int c = 0 ; c < b.km.cols() ; c++){
+                            a.km(r, c) += b.d;
+                        }
+                    }
+                    a.type = 'm';
+                }else if(a.type == 'm' && b.type == 'm'){ //Matrix + Matrix
+					a.km = a.km + b.km;
+                    a.type = 'm';
+				}else if(a.type == 's' && b.type == 's'){ //String + String
+					a.s = a.s + b.s;
+                    a.type = 's';
+                }else{
+                    out.type = 'e';
+                    out.s = "ERROR: Addition operator (+) can only operate on doubles, matricies, and strings.";
+                    return false;
+                }
+                
+                inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
+                i = start_idx;
+                
+			}else if(tokens[i].s == "-"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -380,7 +429,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
-                    out.s = "ERROR: Operator '^' requires second argument.";
+                    out.s = "ERROR: Operator '-' requires second argument.";
                     return false;
                 }else{
                     b = tokens[i+1];
@@ -388,40 +437,46 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 }
                 
                 //Perform operation
-                if (a.type == 'd' && b.type =='d'){ //Double ^ double
-                    a.d = pow(a.d, b.d);
+                if (a.type == 'd' && b.type =='d'){ //Double - double
+                    a.d = a.d - b.d;
                     a.type = 'd';
-                }else if(a.type == 'd' && b.type == 'm'){ //Double ^ matrix
+                }else if(a.type == 'd' && b.type == 'm'){ //Double - matrix
+                    vector<vector<double> > d_to_km;
+                    vector<double> mid_vec;
                     for (int r = 0 ; r < b.km.rows() ; r++){
                         for (int c = 0 ; c < b.km.cols() ; c++){
-                            b.km(r, c) = pow(b.km(r,c), a.d);
+                            mid_vec.push_back(a.d);
                         }
+                        d_to_km.push_back(mid_vec);
                     }
-                    a.km = b.km;
+                    KMatrix temp_km(d_to_km);
+                    a.km = b.km - temp_km;
                     a.type = 'm';
-                }else if(a.type == 'm' && b.type == 'd'){ //matrix ^ double
+                }else if(a.type == 'm' && b.type == 'd'){ //matrix - double
+                    vector<vector<double> > d_to_km;
+                    vector<double> mid_vec;
                     for (int r = 0 ; r < b.km.rows() ; r++){
                         for (int c = 0 ; c < b.km.cols() ; c++){
-                            a.km(r, c) = pow(a.km(r, c), b.d);
+                            mid_vec.push_back(b.d);
                         }
+                        d_to_km.push_back(mid_vec);
                     }
+                    KMatrix temp_km(d_to_km);
+                    a.km = a.km - temp_km;
+                    a.type = 'm';
+                }else if(a.type == 'm' && b.type == 'm'){ //Matrix - Matrix
+                    a.km = a.km - b.km;
                     a.type = 'm';
                 }else{
                     out.type = 'e';
-                    out.s = "ERROR: Exponent operator (^) can only operate on doubles and matricies.";
+                    out.s = "ERROR: Subtraction operator (-) can only operate on doubles and matricies.";
                     return false;
                 }
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-			}
-        }
-	}
-    
-    //Evaluate Multiplication, division, modulus
-    for (int i = 0 ; i < tokens.size() ; i++){
-        if (tokens[i].type == 'o'){
-            if(tokens[i].s == "*"){
+                
+            }else if(tokens[i].s == "*"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -526,7 +581,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "%"){
+			}else if(tokens[i].s == "%"){
                 
                 //Determine 'a'
                 if (i == 0){
@@ -576,68 +631,8 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
                 
-            }
-        }
-    }
-    
-    //Evaluate addition & subtration
-    for (int i = 0 ; i < tokens.size() ; i++){
-        if (tokens[i].type == 'o'){
-            if (tokens[i].s == "+"){
-                //Determine 'a'
-                if (i == 0){
-                    out.type = 'e';
-                    out.s = "SOFTWARE ERROR: Implied 'ans' failed to evaluate. This error was detected in file '" + this_file_name + "'";
-                    return false;
-                }else{
-                    a = tokens[i-1];
-                    start_idx = i-1;
-                }
+			}else if(tokens[i].s == "^"){
                 
-                //Determine 'b'
-                if (i+1 >= tokens.size()){
-                    out.type = 'e';
-                    out.s = "ERROR: Operator '+' requires second argument.";
-                    return false;
-                }else{
-                    b = tokens[i+1];
-                    end_idx = i+1;
-                }
-                
-                //Perform operation
-                if (a.type == 'd' && b.type =='d'){ //Double + double
-                    a.d = a.d + b.d;
-                }else if(a.type == 'd' && b.type == 'm'){ //Double + matrix
-                    for (int r = 0 ; r < b.km.rows() ; r++){
-                        for (int c = 0 ; c < b.km.cols() ; c++){
-                            b.km(r, c) += a.d;
-                        }
-                    }
-                    a.km = b.km;
-                    a.type = 'm';
-                }else if(a.type == 'm' && b.type == 'd'){ //matrix + double
-                    for (int r = 0 ; r < b.km.rows() ; r++){
-                        for (int c = 0 ; c < b.km.cols() ; c++){
-                            a.km(r, c) += b.d;
-                        }
-                    }
-                    a.type = 'm';
-                }else if(a.type == 'm' && b.type == 'm'){ //Matrix + Matrix
-                    a.km = a.km + b.km;
-                    a.type = 'm';
-                }else if(a.type == 's' && b.type == 's'){ //String + String
-                    a.s = a.s + b.s;
-                    a.type = 's';
-                }else{
-                    out.type = 'e';
-                    out.s = "ERROR: Addition operator (+) can only operate on doubles, matricies, and strings.";
-                    return false;
-                }
-                
-                inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
-                i = start_idx;
-                
-            }else if(tokens[i].s == "-"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -651,7 +646,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
-                    out.s = "ERROR: Operator '-' requires second argument.";
+                    out.s = "ERROR: Operator '^' requires second argument.";
                     return false;
                 }else{
                     b = tokens[i+1];
@@ -659,53 +654,33 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 }
                 
                 //Perform operation
-                if (a.type == 'd' && b.type =='d'){ //Double - double
-                    a.d = a.d - b.d;
+                if (a.type == 'd' && b.type =='d'){ //Double ^ double
+                    a.d = pow(a.d, b.d);
                     a.type = 'd';
-                }else if(a.type == 'd' && b.type == 'm'){ //Double - matrix
-                    vector<vector<double> > d_to_km;
-                    vector<double> mid_vec;
+                }else if(a.type == 'd' && b.type == 'm'){ //Double ^ matrix
                     for (int r = 0 ; r < b.km.rows() ; r++){
                         for (int c = 0 ; c < b.km.cols() ; c++){
-                            mid_vec.push_back(a.d);
+                            b.km(r, c) = pow(b.km(r,c), a.d);
                         }
-                        d_to_km.push_back(mid_vec);
                     }
-                    KMatrix temp_km(d_to_km);
-                    a.km = b.km - temp_km;
+                    a.km = b.km;
                     a.type = 'm';
-                }else if(a.type == 'm' && b.type == 'd'){ //matrix - double
-                    vector<vector<double> > d_to_km;
-                    vector<double> mid_vec;
+                }else if(a.type == 'm' && b.type == 'd'){ //matrix ^ double
                     for (int r = 0 ; r < b.km.rows() ; r++){
                         for (int c = 0 ; c < b.km.cols() ; c++){
-                            mid_vec.push_back(b.d);
+                            a.km(r, c) = pow(a.km(r, c), b.d);
                         }
-                        d_to_km.push_back(mid_vec);
                     }
-                    KMatrix temp_km(d_to_km);
-                    a.km = a.km - temp_km;
-                    a.type = 'm';
-                }else if(a.type == 'm' && b.type == 'm'){ //Matrix - Matrix
-                    a.km = a.km - b.km;
                     a.type = 'm';
                 }else{
                     out.type = 'e';
-                    out.s = "ERROR: Subtraction operator (-) can only operate on doubles and matricies.";
+                    out.s = "ERROR: Exponent operator (^) can only operate on doubles and matricies.";
                     return false;
                 }
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-                
-            }
-        }
-    }
-    
-    //Evaluate &&, ||, !
-    for (int i = 0 ; i < tokens.size() ; i++){
-        if (tokens[i].type == 'o'){
-            if(tokens[i].s == "&&"){
+			}else if(tokens[i].s == "&&"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -737,7 +712,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "||"){
+			}else if(tokens[i].s == "||"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -769,18 +744,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "!" && tokens.size() > (i+1) && tokens[i+1].type == 'b' ){
-                a = tokens[i+1];
-                a.b = !a.b;
-                inject_akt_into_aktvec(tokens, a, i, i+1);
-            }
-        }
-    }
-    
-    //Evaluate ==, !=, >=, <=, >, <
-    for (int i = 0 ; i < tokens.size() ; i++){
-        if (tokens[i].type == 'o'){
-            if(tokens[i].s == "=="){
+			}else if(tokens[i].s == "=="){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -812,7 +776,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "!="){
+			}else if(tokens[i].s == "!="){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -844,7 +808,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == ">="){
+			}else if(tokens[i].s == ">="){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -876,7 +840,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "<="){
+			}else if(tokens[i].s == "<="){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -908,7 +872,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == ">"){
+			}else if(tokens[i].s == ">"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -940,7 +904,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }else if(tokens[i].s == "<"){
+			}else if(tokens[i].s == "<"){
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -972,9 +936,9 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-            }
+			}
         }
-    }
+	}
     
     if (tokens.size() == 1){
         out.type = tokens[0].type;
@@ -1040,15 +1004,10 @@ void inject_words_into_strvec(std::vector<std::string>& words, std::string injec
 }
 
 /*
-Deletes the 'all_ktypes' in 'words' between 'begin' and 'end'. Inserts 'inject' where the values were removed.
- 
-words - vector to modify
-inject - all_ktype to insert into 'words'
-begin - index to begin removing items from 'words' and at which to locate 'inject'
-end - index at which to stop eliminating items from 'words'
 
-Void return
-*/
+ 
+ Void return
+ */
 void inject_akt_into_aktvec(std::vector<all_ktype>& words, all_ktype inject, int begin, int end){
     
     //Clear items in 'words' that are to be erased

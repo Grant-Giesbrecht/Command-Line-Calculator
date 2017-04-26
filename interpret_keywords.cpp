@@ -12,6 +12,8 @@
 #include "KInterp.hpp"
 #include "KInterpAux.hpp"
 #include "string_manip.hpp"
+#include "settings_menu.hpp"
+#include <unistd.h>
 
 #define IFPRINT if (!silence_output) cout
 
@@ -19,9 +21,7 @@ using namespace std;
 
 string this_filename_0 = "interpret_keywords.cpp";
 
-
-
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, int print_precision, int threshold, bool force_scientific, bool force_fixed){
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings){
     
     record_entry temp_rcd;
     
@@ -48,24 +48,37 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(to_uppercase(words[0]) == "HELP"){
             
             for (int i = 1 ; i < words.size() ; i++){
-                if (!print_file("Resources/clc_" + to_lowercase(words[i]) + "_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_" + to_lowercase(words[i]) + "_help.txt", 1)){
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize help subtopic '" + words[i] + "'" << endl;
                 }
             }
             if (words.size() == 1){
-                if (!print_file("Resources/clc_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_help.txt", 1)){
                     IFPRINT << indent_line(1) << "SOFTWARE ERROR: Failed to locate file: 'clc_help.txt'" << endl;
+                    cout << string(RESOURCE_DIR) + "Resources/clc_help.txt" << endl;
                 }
             }
+        }else if(to_uppercase(words[0]) == "LOGO"){
+            print_file(string(RESOURCE_DIR) + "Resources/CLC_logo.txt", 1);
         }else if(to_uppercase(words[0]) == "LSVAR"){
             kv.print(1);
         }else if(to_uppercase(words[0]) == "CLVAR"){
             kv.clear();
             IFPRINT << indent_line(1) << "All variables cleared" << endl;
-        }else if((words[0]) == "clear" || (words[0]) == "cls"){
+        }else if(to_uppercase(words[0]) == "CLEAR" || to_uppercase(words[0]) == "CLS"){
             system(CLEAR_COMMAND);
-        }else if((words[0]) == "ls" || words[0] == "dir"){
+        }else if(to_uppercase(words[0]) == "LS" || to_uppercase(words[0]) == "DIR"){
             system(LIST_COMMAND);
+        }else if(to_uppercase(words[0]) == "CD"){
+            chdir(cat_tokens(words, 1, " ").c_str());
+        }else if(to_uppercase(words[0]) == "HOME"){
+            chdir(settings.home_dir.c_str());
+        }else if(to_uppercase(words[0]) == "SAVE_DIR"){
+            chdir(settings.save_dir.c_str());
+        }else if(to_uppercase(words[0]) == "PWD"){
+            system("pwd");
+        }else if(to_uppercase(words[0]) == "ABE"){
+            print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
         }else if(to_uppercase(words[0]) == "VIEW"){
             KVar viewer;
             
@@ -124,7 +137,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     break;
             }
             string header = viewer.get_header();
-            if (header.length() > 0) IFPRINT << indent_line(1) << "HEADER: " << header << endl;
+            if (header.length() > 0) IFPRINT << indent_line(1) << "HEADER: \n" << indent_in_string(header, 2) << endl;
             viewer.print(1);
             
         }else if(to_uppercase(words[0]) == "LOAD"){
@@ -271,7 +284,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 getline(cin, fn);
             }
             
-            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, print_precision, threshold, force_scientific, force_fixed)){
+            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{
@@ -437,7 +450,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     num_printed++;
                 }
             }
-            
+        
+        }else if(to_uppercase(words[0]) == "SET"){
+            run_settings_menu(settings);
+            kv.set(KV_PRINT_THRESHOLD, settings.threshold);
+            kv.set(KV_PRINT_PRECISION, (double)settings.precision);
         }else if(to_uppercase(words[0]) == "RELIGION"){
             kv.add_bool("religion", false);
             IFPRINT << indent_line(1) << bool_to_str(false) << endl;
@@ -448,7 +465,24 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             record.clear();
             IFPRINT << indent_line(1) << "Record cleared." << endl;
         }else if(to_uppercase(words[0]) == "SVRCD"){
-            //Save record as text file
+            string filename = "record.rcd";
+            for (int i = 1 ; i < words.size() ; i++){
+                if (to_uppercase(words[i]) == "-F"){
+                    if (words.size() - 1 == i) continue;
+                    filename = words[i+1];
+                }else if(to_uppercase(words[i]) == "-H"){
+                    if (filename.length() < settings.home_dir.length() || filename.substr(0, settings.home_dir.length()) != settings.home_dir){
+                        if (settings.home_dir[settings.home_dir.length()-1] != '/'){
+                            filename = settings.home_dir + '/' + filename;
+                        }else{
+                            filename = settings.home_dir + filename;
+                        }
+                    }
+                }else{
+                    
+                }
+            }
+            save_record(filename, record, settings);
         }else{  //If not keyword, evaluate expression
             //Evaluate expression
             if (!interpret(cat_tokens(words, 0, " "), kv, result, functions, true)){
@@ -462,7 +496,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }catch(...){}
                 }
             }else{
-                IFPRINT << indent_line(1) << akt_tostring(result, print_precision, threshold) << endl;
+                IFPRINT << indent_line(1) << akt_tostring(result, settings.precision, settings.threshold) << endl;
                 kv.delete_var("ans");
                 switch(result.type){
                     case 'd':
@@ -492,4 +526,59 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }
     }
 }
+
+bool save_record(std::string filename, std::vector<record_entry> record, program_settings settings){
+    
+    fstream file;
+    file.open(filename, std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open()){
+        return false;
+    }
+    
+    //Save date and time if asked
+    if (settings.svrcd_lcltm){
+        time_t now = time(0);
+        char* dt = ctime(&now);
+        file << "LOCAL: " << dt;
+    }
+    if (settings.svrcd_utctm){
+        time_t now = time(0);
+        tm *gmtm = gmtime(&now);
+        char* dt = asctime(gmtm);
+        file << "UTC: "<< dt;
+    }
+    if (settings.svrcd_utctm || settings.svrcd_lcltm){
+        file << endl;
+    }
+    
+    for (int i = 0 ; i < record.size() ; i++){
+        file << record[i].command << endl;
+        file << "\t" << akt_tostring(record[i].output, settings.precision, settings.threshold) << endl;
+    }
+    
+    file.close();
+    
+    return true;
+}
+
+bool save_program(std::string filename, std::vector<record_entry> record, program_settings settings){
+    
+    fstream file;
+    file.open(filename, std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open()){
+        return false;
+    }
+    
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
 

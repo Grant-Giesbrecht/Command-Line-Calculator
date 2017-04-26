@@ -15,6 +15,11 @@ Returns first detected string, empty string upon fail
 */
 string next_string(string in, bool& success, int start_idx, int* last_idx, bool allow_before){
 
+    int last_idx_if_null;
+    if (last_idx == NULL){
+        last_idx = &last_idx_if_null;
+    }
+    
 	string out = "";
 	bool in_string = false;
 

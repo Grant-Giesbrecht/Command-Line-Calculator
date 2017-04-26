@@ -9,13 +9,18 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <unistd.h>
 
+#include "configuration.hpp"
 #include "KInterp.hpp"
 #include "KVar.hpp"
 #include "KMatrix.hpp"
 #include "string_manip.hpp"
 #include "KIFunctions.hpp"
 #include "interpret_keywords.hpp"
+#include "settings_menu.hpp"
+
+
 
 using namespace std;
 
@@ -49,20 +54,21 @@ int main(int argc, const char * argv[]){
     
     KVar kv;
     kv.add_double("ans", 0);
-    string command_sequence = "> ";
     all_ktype result;
     
-    double print_precision = 5;
-    double threshold = 1e5;
-    bool force_sci = false;
-    bool force_fixed = false;
+    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR};
+    load_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
+    kv.set(KV_PRINT_THRESHOLD, settings.threshold);
+    kv.set(KV_PRINT_PRECISION, (double)settings.precision);
+    
+    chdir(settings.home_dir.c_str());
     
     vector<func_id> functions;
     define_functions(&functions);
     
     vector<record_entry> record;
     
-    run_interpret("Resources/startup.clc", kv, result, functions, true, false, "", record, true, print_precision, threshold, force_sci, force_fixed);
+    run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings);
     record.clear();
     
     bool running = true;
@@ -72,12 +78,14 @@ int main(int argc, const char * argv[]){
     while (running){
         
         //Get input
-        cout << command_sequence << flush;
+        cout << settings.command_sequence << flush;
         getline(cin, input);
         
-        interpret_with_keywords(input, kv, result, functions, running, record, false, print_precision, threshold, force_sci, force_fixed);
+        interpret_with_keywords(input, kv, result, functions, running, record, false, settings);
 
     }
+    
+    save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
     
     return 0;
 }
