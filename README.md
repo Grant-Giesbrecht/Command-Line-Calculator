@@ -9,7 +9,7 @@ some very nice features that make it a little more than your average calculator.
 boolean operations (what?), and even operations on strings (why?). The rationale behind this is two-fold.
 
   1. CLC is designed to be a front end of sorts for the scientific computing library KPack. CLC allows the user to view, read, modify,
-    and write the KV files used by KPack. This symbiotic relationship between CLC and KPack makes them both more useful and powerful tools.
+    and write the KV files used by KPack. This symbiotic relationship between CLC and KPack makes them both more useful and powerful tools. If you are unfamiliar with KPack and KV files, I highly recommend you check out KPack on GitHub, but the short version is that its a library primarily for C++ and Java with really nice KV data files, plotting, MCU control, and matrix manipulation!
   2. Octave/MATLAB is really annoying to use (at least from the perspective of a C/C++/Java/etc/actual programming language programmer who
     is required to use MATLAB/Octave frequently for academic/professional applications) and expensive! CLC provides a nice, C-style syntax 
     calculator that can perform many duties that would otherwise be prone to gobbling up by Octave/MATLAB (or maybe Python which isn't evil
