@@ -1,4 +1,0 @@
-//This program is designed with the sole purpose of testing multicommand lines in CLC programs
-
-clvar; c =3;
-a = 5; matrix mm = [1, 2; 3, 10]; bool b = true; string ss = "schultzstoffel"
