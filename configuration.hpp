@@ -14,7 +14,7 @@
 #define CLEAR_COMMAND "cls"
 #define LIST_COMMAND "dir"
 #define SYSTEM_OS "MS Windows"
-#define HOME_DIR "C:\"
+#define HOME_DIR "C:\\"
 #define RESOURCE_DIR "C:\resources/CLC_3V0/"
 #else
 #define CLEAR_COMMAND "clear"
