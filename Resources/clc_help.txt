@@ -28,6 +28,8 @@ COMMANDS:
         LOAD: Load variables from a KV file
         LSVAR: List all variables
         SAVE: Save calculator variables to a KV file
+	SHDR: Set Header
+	VHDR: View Header
         VIEW: Display contents of a KV file without loading file contents
     RECORD COMMANDS:
         CLRCD: Clear the record
@@ -55,7 +57,7 @@ SPECIFIC HELP PAGES:
 
         CLVAR   DELETE  LOAD    LSVAR   SAVE    VIEW    CLRCD
         PRCD    SVRCD   CD      CLEAR   LS      PWD     RUN
-        SVPRG   EXIT    HELP    SET
+        SVPRG   EXIT    HELP    SET	VHDR	SHDR
 
 OPERATORS:
 
