@@ -22,6 +22,3 @@ Still not convinved? Here are some delicious features to sell your calculator pa
   4. Can execute programs!
   5. Fully open-source, well commented, neat, dare I say poetic (except poetry is dumb, so no) code is easy to modify should you so desire.
   6. Makes a record of your calculations so you can save your work as a text file if/when you come up with a Grand Unified Field Theory!
-  7. There is a dinosaur right below this line, and it may or may not have layed an egg (on easter, wink wink nod nod) in CLC...
-  
-  >> ASCII DINOSAUR GOES HERE <<
