@@ -25,6 +25,7 @@
 #define KV_PRINT_COMMENT 6
 #define KV_PRINT_PRECISION 7
 #define KV_PRINT_THRESHOLD 8
+#define KV_OVERWRITE_ON_LOAD 9
 
 #define KV_HEADER_COMMENT "KVar_Header_Comment_NOT_A_VARIABLE"
 
@@ -128,6 +129,7 @@ private:
     bool print_comments;
     double print_precision;
     double print_threshold;
+    bool overwrite_variables_on_load;
 
 	//Vectors
     std::vector<aktc> variables;

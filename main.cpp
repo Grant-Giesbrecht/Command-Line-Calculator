@@ -20,8 +20,6 @@
 #include "interpret_keywords.hpp"
 #include "settings_menu.hpp"
 
-
-
 using namespace std;
 
 string this_filename_1 = "main.cpp";
@@ -56,7 +54,10 @@ int main(int argc, const char * argv[]){
     kv.add_double("ans", 0);
     all_ktype result;
     
-    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR};
+    string in_header = "";
+    string out_header = "";
+    
+    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR, true, false};
     load_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
     kv.set(KV_PRINT_THRESHOLD, settings.threshold);
     kv.set(KV_PRINT_PRECISION, (double)settings.precision);
@@ -68,8 +69,12 @@ int main(int argc, const char * argv[]){
     
     vector<record_entry> record;
     
-    run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings);
-    record.clear();
+    run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings, in_header, out_header);
+    if (settings.hide_startup_sequence){
+        record.clear();
+        in_header = "";
+        out_header = "";
+    }
     
     bool running = true;
     string input;
@@ -81,7 +86,7 @@ int main(int argc, const char * argv[]){
         cout << settings.command_sequence << flush;
         getline(cin, input);
         
-        interpret_with_keywords(input, kv, result, functions, running, record, false, settings);
+        interpret_with_keywords(input, kv, result, functions, running, record, false, settings, in_header, out_header);
 
     }
     

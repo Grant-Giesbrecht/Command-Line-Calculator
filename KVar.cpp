@@ -20,11 +20,17 @@ using namespace std;
 KVar::KVar(){
     KVar:print_allowed = false;
     print_comments = true;
+    KVar::read_comments = true;
+    KVar::save_comments = true;
+    KVar::overwrite_variables_on_load = false;
 }
 
 KVar::KVar(string ofile){
     KVar::print_allowed = false;
     print_comments = true;
+    KVar::read_comments = true;
+    KVar::save_comments = true;
+    KVar::overwrite_variables_on_load = false;
 }
 
 KVar::~KVar(){
@@ -69,6 +75,9 @@ void KVar::set(int prop, bool val){
         case KV_PRINT_COMMENT:
             KVar::print_comments = val;
             break;
+        case KV_OVERWRITE_ON_LOAD:
+            KVar::overwrite_variables_on_load =  val;
+            break;
         default:
 			IFPRINT cout << "ERROR: KVar::set() 'prop' not understood." << endl;
 			break;
@@ -84,7 +93,8 @@ void KVar::set(int prop, string val){
 \*-----------------------------------------------------*/
 
 bool KVar::contains(std::string var_id){
-	return get_var_index(var_id, NULL);
+    int unused_int;
+	return get_var_index(var_id, &unused_int);
 }
 
 void KVar::clear(){
@@ -402,6 +412,18 @@ string KVar::get_comment(std::string var_id){
 	return get_comment(var_id, temp);
 }
 
+bool KVar::set_comment(std::string var_id, string nc){
+    
+    int x;
+    if (!get_var_index(var_id, &x)){
+        return false;
+    }
+    
+    variables[x].comment = nc;
+    
+    return true;
+}
+
 bool KVar::delete_var(std::string var_id){
     
     int x;
@@ -668,6 +690,11 @@ bool KVar::load_KV1(string filename, long* fail_line){
         return false;
     }
     
+    long backup_fail_line;
+    if (fail_line == NULL){
+        fail_line = &backup_fail_line;
+    }
+    
     string line;
     vector<string> words;
     bool in_header = false;
@@ -735,6 +762,11 @@ bool KVar::load_KV1(string filename, long* fail_line){
             
             //Save variable name
             var_name = words[1];
+            if (KVar::contains(var_name)){ //Avoid repeat variables...
+                if (overwrite_variables_on_load){
+                    KVar::delete_var(var_name); //Delete repeat if requested
+                }else continue; //Otherwise don't load new variable
+            }
             
             //Ensure equals sign is present
             if (words[2] != "="){
@@ -756,7 +788,9 @@ bool KVar::load_KV1(string filename, long* fail_line){
                 if (words[5] != "//"){ //Ensure comment sign is present
                     return false;
                 }
-                comment = cat_tokens(words, 6, " "); //Save comment
+                if (read_comments){
+                    comment = cat_tokens(words, 6, " "); //Save comment
+                }
             }
             
             
@@ -776,6 +810,11 @@ bool KVar::load_KV1(string filename, long* fail_line){
             
             //Save variable name
             var_name = words[1];
+            if (KVar::contains(var_name)){ //Avoid repeat variables...
+                if (overwrite_variables_on_load){
+                    KVar::delete_var(var_name); //Delete repeat if requested
+                }else continue; //Otherwise don't load new variable
+            }
             
             //Ensure equals sign is present
             if (words[2] != "="){
@@ -800,7 +839,9 @@ bool KVar::load_KV1(string filename, long* fail_line){
                 if (words[lw+2] != "//"){ //Ensure comment sign is present
                     return false;
                 }
-                comment = cat_tokens(words, lw+3, " "); //Save comment
+                if (read_comments){
+                    comment = cat_tokens(words, lw+3, " "); //Save comment
+                }
             }
             
             
@@ -821,6 +862,11 @@ bool KVar::load_KV1(string filename, long* fail_line){
             
             //Save variable name
             var_name = words[1];
+            if (KVar::contains(var_name)){ //Avoid repeat variables...
+                if (overwrite_variables_on_load){
+                    KVar::delete_var(var_name); //Delete repeat if requested
+                }else continue; //Otherwise don't load new variable
+            }
             
             //Ensure equals sign is present
             if (words[2] != "="){
@@ -843,7 +889,9 @@ bool KVar::load_KV1(string filename, long* fail_line){
                 if (words[lw+2] != "//"){ //Ensure comment sign is present
                     return false;
                 }
-                comment = cat_tokens(words, lw+3, " "); //Save comment
+                if (read_comments){
+                    comment = cat_tokens(words, lw+3, " "); //Save comment
+                }
             }
             
             
@@ -864,6 +912,11 @@ bool KVar::load_KV1(string filename, long* fail_line){
             
             //Save variable name
             var_name = words[1];
+            if (KVar::contains(var_name)){ //Avoid repeat variables...
+                if (overwrite_variables_on_load){
+                    KVar::delete_var(var_name); //Delete repeat if requested
+                }else continue; //Otherwise don't load new variable
+            }
             
             //Ensure equals sign is present
             if (words[2] != "="){
@@ -885,7 +938,9 @@ bool KVar::load_KV1(string filename, long* fail_line){
                 if (words[5] != "//"){ //Ensure comment sign is present
                     return false;
                 }
-                comment = cat_tokens(words, 6, " "); //Save comment
+                if (read_comments){
+                    comment = cat_tokens(words, 6, " "); //Save comment
+                }
             }
             
             
@@ -929,28 +984,28 @@ bool KVar::write_KV1(string filename){
         switch (variables[i].type) {
             case 'd':
                 file << "double " << variables[i].ID << " = " << hp_string(variables[i].d) << ";";
-                if (variables[i].comment.length() > 0){
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 'm':
                 file << "matrix " << variables[i].ID << " = " << variables[i].km.get_string() << ";";
-                if (variables[i].comment.length() > 0){
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 'b':
                 file << "bool " << variables[i].ID << " = " << bool_to_str(variables[i].b) << ";";
-                if (variables[i].comment.length() > 0){
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 's':
-                file << "string " << variables[i].ID << " = " << variables[i].s << ";";
-                if (variables[i].comment.length() > 0){
+                file << "string " << variables[i].ID << " = \"" << variables[i].s << "\";";
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
@@ -966,6 +1021,54 @@ bool KVar::write_KV1(string filename){
 }
 
 bool KVar::write_KV2(std::string filename){
+    
+    ofstream file;
+    file.open(filename, std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+    if (!file.is_open()){
+        return false;
+    }
+    
+    
+    file << "KV2>VERSION2.0<>";
+    file << header << endl;
+    file << "<";
+    
+    for (int i = 0 ; i < variables.size() ; i++){
+        switch (variables[i].type) {
+            case 'd':
+                file << ">d$" << variables[i].ID << " = " << hp_string(variables[i].d) << ";";
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 'm':
+                file << "matrix " << variables[i].ID << " = " << variables[i].km.get_string() << ";";
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 'b':
+                file << "bool " << variables[i].ID << " = " << bool_to_str(variables[i].b) << ";";
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            case 's':
+                file << "string " << variables[i].ID << " = \"" << variables[i].s << "\";";
+                if (variables[i].comment.length() > 0 && KVar::save_comments){
+                    file << " //" << variables[i].comment;
+                }
+                file << endl;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    file.close();
     
     return true;
 }

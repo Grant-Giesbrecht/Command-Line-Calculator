@@ -29,6 +29,7 @@ void run_settings_menu(program_settings& settings){
         cout << indent_line(1) << "> " << flush;
         getline(cin, input);
         vector<string> words = parse(input, " ");
+        if (words.size() == 0) continue; //Skip if just carriage return
         string upin = to_uppercase(words[0]);
         
         if (upin == "EXIT"){
@@ -121,6 +122,11 @@ void run_settings_menu(program_settings& settings){
                 }
             }
             
+            //Add '/' to directory if not there
+            if (input[input.length()-1] != '\\' && input[input.length()-1] != '/'){
+                input = input + '/';
+            }
+            
             //Interpret, check, and apply new value
             settings.home_dir = input;
             
@@ -142,6 +148,11 @@ void run_settings_menu(program_settings& settings){
                 if (!success){
                     cout << "ERROR: New value must be a string (surrounded by double quotes)" << endl;
                 }
+            }
+            
+            //Add '/' to directory if not there
+            if (input[input.length()-1] != '\\' && input[input.length()-1] != '/'){
+                input = input + '/';
             }
             
             //Interpret, check, and apply new value
@@ -187,6 +198,28 @@ void run_settings_menu(program_settings& settings){
                 str_to_bool(input, out);
             }
             settings.svrcd_utctm = out;
+        }else if(upin == "10" || upin == "HIDE_STARTUP"){
+            bool out;
+            if (words.size() > 1){
+                str_to_bool(words[1], out);
+            }else{
+                cout << indent_line(2) << "New value (bool): " << flush;
+                getline(cin, input);
+                str_to_bool(input, out);
+            }
+            settings.hide_startup_sequence = out;
+        }else if(upin == "11" || upin == "PRINT_DIR_CD"){
+            bool out;
+            if (words.size() > 1){
+                str_to_bool(words[1], out);
+            }else{
+                cout << indent_line(2) << "New value (bool): " << flush;
+                getline(cin, input);
+                str_to_bool(input, out);
+            }
+            settings.print_dir_cd = out;
+        }else if(upin == "PRINT_CODES"){
+            
         }else if(upin == "SAVE"){
             save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
         }else{
@@ -212,6 +245,8 @@ void show_settings(program_settings settings){
     cout << indent_line(2) << "7. Save UTC (Time) in Record: \t" << bool_to_str(settings.svrcd_utctm) << endl;
     cout << indent_line(2) << "8. Home Directory: \t'" << settings.home_dir << "'" << endl;
     cout << indent_line(2) << "9. Save Directory: \t'" << settings.save_dir << "'" << endl;
+    cout << indent_line(2) << "10. Hide Startup Sequence: \t" << bool_to_str(settings.hide_startup_sequence) << endl;
+    cout << indent_line(2) << "11. Print directory after cd: \t" << bool_to_str(settings.print_dir_cd) << endl;
 }
 
 bool load_settings(std::string filename, program_settings& settings){
@@ -282,8 +317,20 @@ bool load_settings(std::string filename, program_settings& settings){
                 IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
             }
             settings.svrcd_utctm = out;
+        }else if(words[0] == "HIDE_STARTUP"){
+            bool out;
+            if (!str_to_bool(words[1], out)){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
+            settings.hide_startup_sequence = out;
+        }else if(words[0] == "PRINT_DIR_CD"){
+            bool out;
+            if (!str_to_bool(words[1], out)){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
+            settings.print_dir_cd = out;
         }else{
-            IFPRINTERR cout << "SOFTWARE ERROR: Failed to recognize setting '" << words[0] << "'" << endl;
+            /*IFPRINTERR*/ cout << "SOFTWARE ERROR: Failed to recognize setting '" << words[0] << "'" << endl;
         }
         
     }
@@ -310,6 +357,8 @@ bool save_settings(std::string filename, program_settings& settings){
     file << "RCD_UTC " << bool_to_str(settings.svrcd_utctm) << endl;
     file << "HOME_DIR " << settings.home_dir << endl;
     file << "SAVE_DIR " << settings.save_dir << endl;
+    file << "HIDE_STARTUP " << bool_to_str(settings.hide_startup_sequence) << endl;
+    file << "PRINT_DIR_CD " << bool_to_str(settings.print_dir_cd) << endl;
     
     file.close();
     

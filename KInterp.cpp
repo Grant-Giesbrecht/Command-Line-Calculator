@@ -25,8 +25,14 @@ Returns true if evaluation completed successfully and without error. Else return
 bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> interp_functions, bool allow_print){
 
 	//Process input string (Ensure whitespace and parse)
-	vector<string> words = space_and_parse(input);
+	vector<string> words = space_and_parse_negatives(input);
 
+    for (int i = 0 ; i < words.size() ; i++){
+        if (words[i] == ""){
+            words.erase(words.begin()+i);
+        }
+    }
+    
 	//Test Point 1
 	// for (int i = 0 ; i < words.size() ; i++){
 	// 	std::cout << ">" << words[i] << "<" << endl;
@@ -106,7 +112,11 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
     
     //Check for implied 'ans'
     if (words.size() > 0 && words[0].size() > 0 && str_to_op(words[0])){
-        words.insert(words.begin(), "ans");
+        if (words[0] == "-"){
+            words.insert(words.begin(), "0");
+        }else{
+            words.insert(words.begin(), "ans");
+        }
     }
 
 	//Convert variables to literals
@@ -1008,13 +1018,58 @@ vector<std::string> space_and_parse(std::string input){
 	ensure_whitespace_full(input, "//");
 	ensure_whitespace_full(input, "||");
 	ensure_whitespace_full(input, "&&");
-
-	//Whitespace for minus sign
-
-
+    
 	vector<string> words = parse(input, " ");
 	return words;
 
+}
+
+/*
+ Ensures appropriate whitespace and parsing for the KInterp function 'interpret()' and handles negatives specially.
+ 
+ input - string to space and parse
+ 
+ returns the parsed vector of words
+ */
+vector<std::string> space_and_parse_negatives(std::string input){
+    
+    //Process input string (Ensure whitespace and parse)
+    ensure_whitespace(input, "[](){};+/*=^%!");
+    ensure_whitespace_full(input, "//");
+    ensure_whitespace_full(input, "||");
+    ensure_whitespace_full(input, "&&");
+    
+    	//Whitespace for minus sign
+        for (int i = 0 ; i < input.length() ; i++){
+            if (input[i] == '-'){ //Add whitespace if character is '-' & next condition is met...
+                char last_character = ' ';
+                int char_index = i;
+                while(last_character == ' ' && char_index > 0){
+                    last_character = input[--char_index];
+                }
+                if (i > 0 && is_negative_restricted_character(last_character)){ //Don't add whitespace if previous character exists and is a restricted character
+                    continue;
+                }else if(i == 0) continue;
+        
+                input = input.substr(0, i) + ' ' + input[i] + ' ' + input.substr(i+1);
+                i++;
+            }
+        }
+    
+        //Ensure whitespace duplicates are removed
+        for (int i = 0 ; i < input.length() ; i++){
+            if (input[i] == ' ' && i > 0 && input[i-1] == ' '){
+                input = input.substr(0, i) + input.substr(i+1);
+            }
+        }
+    
+    vector<string> words = parse(input, " ");
+    return words;
+    
+}
+
+bool is_negative_restricted_character(char c){
+    return (c == 'e' || c == 'E' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%' || c == '=' || c == '(' || c == '[' || c == '{' || c == ';');
 }
 
 /*
@@ -1125,7 +1180,7 @@ string akt_tostring(all_ktype akt, bool formal){
 }
 
 //Delete 'print_error
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings){
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header){
     
     //Open file
     ifstream file(filename);
@@ -1147,7 +1202,7 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
             remove_comments(s, "//");
         }
     
-        interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, settings);
+        interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, settings, in_header, out_header);
         
         if (out.type == 'e'){
             if (!persist){
