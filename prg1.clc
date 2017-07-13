@@ -1,4 +1,0 @@
-clvar
-a = 4
-matrix var = [1, 2; 3, 4]
-bool b1 = true

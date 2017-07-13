@@ -45,6 +45,15 @@ clean:
 
 fresh: clean all
 
+install: installer
+	./installer
+
+uninstall: installer
+	./installer UNINSTALL
+
+installer: installer.cpp
+	$(CC) -o installer installer.cpp
+
 #Development specific targets
 test: test.cpp $(OBJS)
 	$(CC) -o test test.cpp $(OBJS)

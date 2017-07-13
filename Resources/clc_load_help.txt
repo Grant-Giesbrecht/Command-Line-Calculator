@@ -1,0 +1,20 @@
+---------------------------------------------------------
+--------------------- CLC LOAD HELP ---------------------
+
+Description:
+    Loads a KV data file. All contents are saved to the calculator
+
+Flags:
+    -KV1: Interpret file as KV1 file
+    -KV2: Interpret file as KV2 file
+    -KV3: Interpret file as KV3 file
+	-V: Verbatim - do not add KV extension if not specified
+	-NV: If no extension is given in filename, add KV1, 2, or 3
+    [NO FLAG]: Interprets as filename, spaces not allowed.
+
+DEFAULTS: -KV1 -NV
+
+Additional Help:
+    SAVE - Save a KV file
+    VIEW - View contents of KV file without loading into calculator
+    LSVAR - List all variables loaded in the calculator
