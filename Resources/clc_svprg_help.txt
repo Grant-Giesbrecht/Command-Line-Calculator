@@ -1,8 +1,10 @@
 ---------------------------------------------------------
 --------------------- CLC SVPRG HELP --------------------
 
-Description:
+                   >> NOT IMPLEMENTED <<
 
+Description:
+    WILL save the current record as an CLC runnable program.
 
 Flags:
 

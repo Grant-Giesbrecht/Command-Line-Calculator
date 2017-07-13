@@ -1,0 +1,17 @@
+---------------------------------------------------------
+-------------------- CLC SETCOM HELP --------------------
+
+Description:
+    Sets the comment of a variable. To remove a variable’s comment,
+    enter a new comment that is blank (zero characters).
+
+Flags:
+    [NO FLAG]: Interprets as variable name(s) whose comment is to be
+      changed. Listing multiple variable names will change all their
+      comments simultaneously.
+
+Additional Help:
+    SHDR - Set the write header
+    VHDR - View the read and write headers
+    LSVAR - List all variables
+
