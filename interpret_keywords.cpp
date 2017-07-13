@@ -21,7 +21,7 @@ using namespace std;
 
 string this_filename_0 = "interpret_keywords.cpp";
 
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings){
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings, string& in_header, string& out_header){
     
     record_entry temp_rcd;
     
@@ -61,6 +61,24 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(to_uppercase(words[0]) == "LOGO"){
             print_file(string(RESOURCE_DIR) + "Resources/CLC_logo.txt", 1);
         }else if(to_uppercase(words[0]) == "LSVAR"){
+            
+            bool print_comments = true;
+            for (int i = 1 ; i < words.size() ; i++ ){
+                if (to_uppercase(words[i]) == "-C"){
+                    print_comments = true;
+                }else if (to_uppercase(words[i]) == "-NC"){
+                    print_comments = false;
+                }else{
+                    IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
+                }
+            }
+            
+            if (print_comments){
+                kv.set(KV_PRINT_COMMENT, true);
+            }else{
+                kv.set(KV_PRINT_COMMENT, false);
+            }
+            
             kv.print(1);
         }else if(to_uppercase(words[0]) == "CLVAR"){
             kv.clear();
@@ -68,7 +86,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(to_uppercase(words[0]) == "CLEAR" || to_uppercase(words[0]) == "CLS"){
             system(CLEAR_COMMAND);
         }else if(to_uppercase(words[0]) == "LS" || to_uppercase(words[0]) == "DIR"){
-            system(LIST_COMMAND);
+            system(string(string(LIST_COMMAND) + " " + cat_tokens(words, 1, " ")).c_str());
         }else if(to_uppercase(words[0]) == "CD"){
             chdir(cat_tokens(words, 1, " ").c_str());
         }else if(to_uppercase(words[0]) == "HOME"){
@@ -77,12 +95,42 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             chdir(settings.save_dir.c_str());
         }else if(to_uppercase(words[0]) == "PWD"){
             system("pwd");
+        }else if(to_uppercase(words[0]) == "SETCOM"){
+            
+            if (words.size() > 1){
+                
+                string cmt;
+                IFPRINT << indent_line(1) << "NEW COMMENT: ";
+                getline(cin, cmt);
+                
+                for (int i = 1 ; i < words.size() ; i++){
+                    if (!kv.set_comment(words[i], cmt)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to set comment of variable '" + words[i] + "'" << endl;
+                    }
+                }
+            }else{
+                IFPRINT << indent_line(1) << "VARIABLE: ";
+                string usr_input;
+                getline(cin, usr_input);
+                string cmt;
+                IFPRINT << indent_line(1) << "NEW COMMENT: ";
+                getline(cin, cmt);
+                vector<string> del_vars = parse(usr_input, " ");
+                for (int i = 0 ; i < del_vars.size() ; i++){
+                    if (!kv.set_comment(del_vars[i], cmt)){
+                        IFPRINT << indent_line(1) << "ERROR: Failed to set comment of variable '" + words[i] + "'" << endl;
+                    }
+                }
+            }
+            
         }else if(to_uppercase(words[0]) == "ABE"){
             print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
         }else if(to_uppercase(words[0]) == "VIEW"){
             KVar viewer;
             
             string fn = "";
+            bool read_comment = true;
+            bool verbatim = false;
             int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
             for (int i = 1 ; i < words.size() ; i++ ){
                 if (to_uppercase(words[i]) == "-KV1"){
@@ -91,6 +139,14 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     file_type = 2;
                 }else if(to_uppercase(words[i]) == "-KV3"){
                     file_type = 3;
+                }else if(to_uppercase(words[i]) == "-V"){
+                    verbatim = true;
+                }else if(to_uppercase(words[i]) == "-NC"){
+                    read_comment = false;
+                }else if(to_uppercase(words[i]) == "-C"){
+                    read_comment = true;
+                }else if(to_uppercase(words[i]) == "-NV"){
+                    verbatim = false;
                 }else if(words[i][0] != '-'){
                     fn = fn + words[i];
                 }else{
@@ -109,26 +165,48 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 getline(cin, fn);
             }
             
+            if (read_comment){
+                viewer.set(KV_READ_COMMENTS, true);
+            }else{
+                viewer.set(KV_READ_COMMENTS, false);
+            }
+            
+            //Add KV1, 2, or 3 extension if !verbatim and no extension
+            string extension = "";
+            if (!verbatim && fn.find('.') == string::npos){
+                KVar kv_test;
+                if (kv_test.load_KV1(fn+".KV1")){
+                    extension = ".KV1";
+                    fn = fn + extension;
+                }else if (kv_test.load_KV1(fn+".KV2")){
+                    extension = ".KV2";
+                    fn = fn + extension;
+                }else if(kv_test.load_KV1(fn+".KV3")){
+                    extension = ".KV3";
+                    fn = fn + extension;
+                }
+            }
+            
             long fail_line;
             switch (file_type) {
                 case 1:
                     if (!viewer.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
                     }
                     break;
                 case 2:
                     if (!viewer.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
                     }
                     break;
                 case 3:
                     if (!viewer.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
                     }
                     break;
@@ -143,6 +221,8 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(to_uppercase(words[0]) == "LOAD"){
             
             string fn = "";
+            bool load_comments = true;
+            bool verbatim = false;
             int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
             for (int i = 1 ; i < words.size() ; i++ ){
                 if (to_uppercase(words[i]) == "-KV1"){
@@ -153,6 +233,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     file_type = 3;
                 }else if(words[i][0] != '-'){
                     fn = fn + words[i];
+                }else if(to_uppercase(words[i]) == "-V"){
+                    verbatim = true;
+                }else if(to_uppercase(words[i]) == "-NV"){
+                    verbatim = false;
+                }else if(to_uppercase(words[i]) == "-NC"){
+                    load_comments = false;
+                }else if(to_uppercase(words[i]) == "-C"){
+                    load_comments = true;
+                }else if(to_uppercase(words[i]) == "-SCI" || to_uppercase(words[i]) == "-SCIENTIFIC"){
+                    fn = string(RESOURCE_DIR) + "Resources/scientific.kv1";
+                }else if(to_uppercase(words[i]) == "-STD" || to_uppercase(words[i]) == "-STANDARD"){
+                    fn = string(RESOURCE_DIR) + "Resources/standard.kv1";
                 }else{
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
@@ -169,27 +261,58 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 getline(cin, fn);
             }
             
+            if (load_comments){
+                kv.set(KV_READ_COMMENTS, true);
+            }else{
+                kv.set(KV_READ_COMMENTS, false);
+            }
+            
+            //Add KV1, 2, or 3 extension if !verbatim and no extension
+            string extension = "";
+            if (!verbatim && fn.find('.') == string::npos){
+                KVar kv_test;
+                if (kv_test.load_KV1(fn+".KV1")){
+                    extension = ".KV1";
+                    fn = fn + extension;
+                }else if (kv_test.load_KV1(fn+".KV2")){
+                    extension = ".KV2";
+                    fn = fn + extension;
+                }else if(kv_test.load_KV1(fn+".KV3")){
+                    extension = ".KV3";
+                    fn = fn + extension;
+                }
+            }
+            
             long fail_line;
             switch (file_type) {
                 case 1:
                     if (!kv.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
+                        in_header = kv.get_header();
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }else{
+                        in_header = kv.get_header();
                     }
                     break;
                 case 2:
                     if (!kv.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
+                        in_header = kv.get_header();
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }else{
+                        in_header = kv.get_header();
                     }
                     break;
                 case 3:
                     if (!kv.load_KV1(fn, &fail_line)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to load file: '" + fn + "'.\n" << indent_line(2) << "Failed on line " << to_string(fail_line) << '.' << endl;
-                    }else{
+                    }else if(extension != ""){
+                        in_header = kv.get_header();
                         IFPRINT << indent_line(1) << "File '" + fn + "' read successfully." << endl;
+                    }else{
+                        in_header = kv.get_header();
                     }
                     break;
                 default:
@@ -200,7 +323,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(to_uppercase(words[0]) == "SAVE"){
             
             string fn = "";
+            bool save_comments = true;
+            bool append_save_dir = false;
+            bool append_home_dir = false;
             int file_type = 1; //1 = KV1, 2 = KV2, 3 = KV3
+            kv.set_header(out_header);
             for (int i = 1 ; i < words.size() ; i++ ){
                 if (to_uppercase(words[i]) == "-KV1"){
                     file_type = 1;
@@ -208,6 +335,16 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     file_type = 2;
                 }else if(to_uppercase(words[i]) == "-KV3"){
                     file_type = 3;
+                }else if(to_uppercase(words[i]) == "-SD" || to_uppercase(words[i]) == "-SAVE_DIR"){
+                    append_save_dir = true;
+                    append_home_dir = false;
+                }else if(to_uppercase(words[i]) == "-H" || to_uppercase(words[i]) == "-HOME_DIR" || to_uppercase(words[i]) == "-HOME" ){
+                    append_save_dir = false;
+                    append_home_dir = true;
+                }else if(to_uppercase(words[i]) == "-C"){
+                    save_comments = true;
+                }else if(to_uppercase(words[i]) == "-NC"){
+                    save_comments = false;
                 }else if(words[i][0] != '-'){
                     fn = fn + words[i];
                 }else{
@@ -224,6 +361,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             if (fn.length() == 0){
                 IFPRINT << indent_line(1) << "FILE: ";
                 getline(cin, fn);
+            }
+            
+            if (append_save_dir){
+                fn = settings.save_dir + fn;
+            }else if(append_home_dir){
+                fn = settings.home_dir + fn;
+            }
+            
+            if (save_comments){
+                kv.set(KV_SAVE_COMMENTS, true);
+            }else{
+                kv.set(KV_SAVE_COMMENTS, false);
             }
             
             switch(file_type){
@@ -252,6 +401,39 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "SOFTWARE ERROR: Unrecognized filetype detected." << endl;
                     break;
             }
+        }else if(to_uppercase(words[0]) == "VHDR"){
+            if (in_header != ""){
+                IFPRINT << indent_line(1) << "READ HEADER: " << endl;
+                IFPRINT << indent_in_string(in_header, 2) << endl;
+            }
+            if (out_header != ""){
+                IFPRINT << indent_line(1) << "WRITE HEADER: " << endl;
+                IFPRINT << indent_in_string(out_header, 2) << endl;
+            }
+        }else if(to_uppercase(words[0]) == "SHDR"){
+            
+            string hdr = "";
+            bool copy_in_header = false;
+            for (int i = 1 ; i < words.size() ; i++ ){
+                if (to_uppercase(words[i]) == "-IN"){
+                    copy_in_header = true;
+//                }else if(words[i][0] != '-'){
+//                    hdr = hdr + words[i];
+                }else{
+                    IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
+                }
+            }
+            
+            if (copy_in_header){
+                out_header = in_header;
+            }
+            
+            if (hdr.length() == 0){
+                IFPRINT << indent_line(1) << "HEADER: ";
+                getline(cin, hdr);
+            }
+            
+            out_header = hdr;
         }else if(to_uppercase(words[0]) == "RUN"){
             bool silence = true;
             string fn = "";
@@ -284,7 +466,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 getline(cin, fn);
             }
             
-            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings)){
+            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings, in_header, out_header)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{
@@ -485,7 +667,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             save_record(filename, record, settings);
         }else{  //If not keyword, evaluate expression
             //Evaluate expression
-            if (!interpret(cat_tokens(words, 0, " "), kv, result, functions, true)){
+            string feed_string = cat_tokens(words, 0, " ");
+//            ensure_whitespace(feed_string, "-");
+            if (!interpret(feed_string, kv, result, functions, true)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{

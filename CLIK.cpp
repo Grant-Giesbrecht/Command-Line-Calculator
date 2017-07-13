@@ -154,7 +154,7 @@ bool next_phrase(std::vector<std::string> in, std::string* value, char starter, 
     //01234567890123456789
     //00000000001111111111
 
-    bool starter_triggered;
+    bool starter_triggered = false;
     for (int i = start_word ; i < in.size() ; i++){
         if (in[i][0] == ender && ( ender != starter || starter_triggered)){
             *last_word = i;

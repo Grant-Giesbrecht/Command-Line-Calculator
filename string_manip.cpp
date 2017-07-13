@@ -327,89 +327,89 @@ double strtod(std::string input, bool* success){
     
     return stod(input);
     
-    double x = 0;
-    bool neg = false;
-    int start = 0;
-    
-    //Remove excess whitespace
-    for (int i = 0 ; i < input.length() ; i++){
-        if (input[i] == ' ' || input[i] == '\t'){
-            input = input.substr(0, i) + input.substr(i+1);
-            i--;
-        }
-    }
-    
-    //Look for negatives
-    if (input[0] == '-'){
-        neg = true;
-        start = 1;
-    }
-    
-    //Read 1st number (before sceintific notation component)
-    
-    //Determine length of number
-    bool decimal_used = false;
-    int pt_idx = -1;
-    int end = -1;
-    
-    for (int i = start ; i < input.length() ; i++){
-        if (input [i] == '.'){
-            if (decimal_used){
-                return -1;
-                if (success != NULL) *success = false;
-            }
-            decimal_used = true;
-            pt_idx = i;
-        }else if((i+1 == input.length() && end == -1) || input[i+1] == 'e' || input[i+1] == 'E'){
-            end = i;
-        }else if(!isnum(input.substr(i, 1))){
-            //pass
-        }
-    }
-    if (!decimal_used){
-        pt_idx = end+1;
-    }
-    
-    //Calculate value of first number
-    if (start != pt_idx){
-        int place = 0;
-        for (int i = start ; i < pt_idx ; i++ ){
-            x = x*10 + ( ((int)input[i])-48 );
-            place++;
-        }
-        //        double decimal = 0; //Alternate evaluation meathod - faster and potentially less accurate in some situation
-        //        for (int i = end ; i > pt_idx ; i--){
-        //            decimal += ( ((int)input[i])-48 );
-        //            decimal /= 10;
-        //        }
-        place = -1;
-        for (int i = pt_idx+1 ; i <= end ; i++){
-            x += pow(10, place) * ( ((int)input[i])-48 );
-            place--;
-        }
-    }
-    
-    //Negate negatives
-    if (neg){
-        x = -1 * x;
-    }
-    
-    //Evalute power of 10
-    if (end != input.length()-1){
-        if (end + 2 > input.length()){
-            if (success != NULL) *success = false;
-            return -1;
-        }
-        bool subsuccess;
-        double power = strtod(input.substr(end+2), &subsuccess);
-        if (!subsuccess){
-            if (success != NULL) *success = false;
-            return -1;
-        }
-        x *= pow(10, power);
-    }
-    
-    return x;
+//    double x = 0;
+//    bool neg = false;
+//    int start = 0;
+//    
+//    //Remove excess whitespace
+//    for (int i = 0 ; i < input.length() ; i++){
+//        if (input[i] == ' ' || input[i] == '\t'){
+//            input = input.substr(0, i) + input.substr(i+1);
+//            i--;
+//        }
+//    }
+//    
+//    //Look for negatives
+//    if (input[0] == '-'){
+//        neg = true;
+//        start = 1;
+//    }
+//    
+//    //Read 1st number (before sceintific notation component)
+//    
+//    //Determine length of number
+//    bool decimal_used = false;
+//    int pt_idx = -1;
+//    int end = -1;
+//    
+//    for (int i = start ; i < input.length() ; i++){
+//        if (input [i] == '.'){
+//            if (decimal_used){
+//                return -1;
+//                if (success != NULL) *success = false;
+//            }
+//            decimal_used = true;
+//            pt_idx = i;
+//        }else if((i+1 == input.length() && end == -1) || input[i+1] == 'e' || input[i+1] == 'E'){
+//            end = i;
+//        }else if(!isnum(input.substr(i, 1))){
+//            //pass
+//        }
+//    }
+//    if (!decimal_used){
+//        pt_idx = end+1;
+//    }
+//    
+//    //Calculate value of first number
+//    if (start != pt_idx){
+//        int place = 0;
+//        for (int i = start ; i < pt_idx ; i++ ){
+//            x = x*10 + ( ((int)input[i])-48 );
+//            place++;
+//        }
+//        //        double decimal = 0; //Alternate evaluation meathod - faster and potentially less accurate in some situation
+//        //        for (int i = end ; i > pt_idx ; i--){
+//        //            decimal += ( ((int)input[i])-48 );
+//        //            decimal /= 10;
+//        //        }
+//        place = -1;
+//        for (int i = pt_idx+1 ; i <= end ; i++){
+//            x += pow(10, place) * ( ((int)input[i])-48 );
+//            place--;
+//        }
+//    }
+//    
+//    //Negate negatives
+//    if (neg){
+//        x = -1 * x;
+//    }
+//    
+//    //Evalute power of 10
+//    if (end != input.length()-1){
+//        if (end + 2 > input.length()){
+//            if (success != NULL) *success = false;
+//            return -1;
+//        }
+//        bool subsuccess;
+//        double power = strtod(input.substr(end+2), &subsuccess);
+//        if (!subsuccess){
+//            if (success != NULL) *success = false;
+//            return -1;
+//        }
+//        x *= pow(10, power);
+//    }
+//    
+//    return x;
 }
 
 void select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix){
