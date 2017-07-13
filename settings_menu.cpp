@@ -218,8 +218,29 @@ void run_settings_menu(program_settings& settings){
                 str_to_bool(input, out);
             }
             settings.print_dir_cd = out;
+        }else if(upin == "12" || upin == "OVERWRITE_ON_LOAD"){
+            bool out;
+            if (words.size() > 1){
+                str_to_bool(words[1], out);
+            }else{
+                cout << indent_line(2) << "New value (bool): " << flush;
+                getline(cin, input);
+                str_to_bool(input, out);
+            }
+            settings.overwrite_on_load = out;
         }else if(upin == "PRINT_CODES"){
-            
+            cout << indent_line(2) << "1: PRECISION" << endl;
+            cout << indent_line(2) << "2: THRESHOLD" << endl;
+            cout << indent_line(2) << "3: COMMAND_SEQUENCE" << endl;
+            cout << indent_line(2) << "4: FORCE_SCI" << endl;
+            cout << indent_line(2) << "5: FORCE_FIX" << endl;
+            cout << indent_line(2) << "6: RCD_LOCAL" << endl;
+            cout << indent_line(2) << "7: RCD_UTC" << endl;
+            cout << indent_line(2) << "8: HOME_DIR" << endl;
+            cout << indent_line(2) << "9: SAVE_DIR" << endl;
+            cout << indent_line(2) << "10: HIDE_STARTUP" << endl;
+            cout << indent_line(2) << "11: PRINT_DIR_CD" << endl;
+            cout << indent_line(2) << "12: OVERWRITE_ON_LOAD" << endl;
         }else if(upin == "SAVE"){
             save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
         }else{
@@ -247,6 +268,7 @@ void show_settings(program_settings settings){
     cout << indent_line(2) << "9. Save Directory: \t'" << settings.save_dir << "'" << endl;
     cout << indent_line(2) << "10. Hide Startup Sequence: \t" << bool_to_str(settings.hide_startup_sequence) << endl;
     cout << indent_line(2) << "11. Print directory after cd: \t" << bool_to_str(settings.print_dir_cd) << endl;
+    cout << indent_line(2) << "12. Overwrite variables on conflict load: \t" << bool_to_str(settings.overwrite_on_load) << endl;
 }
 
 bool load_settings(std::string filename, program_settings& settings){
@@ -329,6 +351,12 @@ bool load_settings(std::string filename, program_settings& settings){
                 IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
             }
             settings.print_dir_cd = out;
+        }else if(words[0] == "OVERWRITE_ON_LOAD"){
+            bool out;
+            if (!str_to_bool(words[1], out)){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
+            settings.overwrite_on_load = out;
         }else{
             /*IFPRINTERR*/ cout << "SOFTWARE ERROR: Failed to recognize setting '" << words[0] << "'" << endl;
         }
@@ -359,6 +387,7 @@ bool save_settings(std::string filename, program_settings& settings){
     file << "SAVE_DIR " << settings.save_dir << endl;
     file << "HIDE_STARTUP " << bool_to_str(settings.hide_startup_sequence) << endl;
     file << "PRINT_DIR_CD " << bool_to_str(settings.print_dir_cd) << endl;
+    file << "OVERWRITE_ON_LOAD " << bool_to_str(settings.overwrite_on_load) << endl;
     
     file.close();
     

@@ -23,6 +23,8 @@ KVar::KVar(){
     KVar::read_comments = true;
     KVar::save_comments = true;
     KVar::overwrite_variables_on_load = false;
+    KVar::print_precision = 8;
+    KVar::print_threshold = 1e5;
 }
 
 KVar::KVar(string ofile){
@@ -31,6 +33,8 @@ KVar::KVar(string ofile){
     KVar::read_comments = true;
     KVar::save_comments = true;
     KVar::overwrite_variables_on_load = false;
+    KVar::print_precision = 8;
+    KVar::print_threshold = 1e5;
 }
 
 KVar::~KVar(){

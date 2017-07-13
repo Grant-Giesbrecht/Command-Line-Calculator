@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]){
     string in_header = "";
     string out_header = "";
     
-    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR, true, false};
+    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR, true, false, true};
     load_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
     kv.set(KV_PRINT_THRESHOLD, settings.threshold);
     kv.set(KV_PRINT_PRECISION, (double)settings.precision);

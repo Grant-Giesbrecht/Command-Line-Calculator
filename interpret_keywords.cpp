@@ -127,6 +127,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
         }else if(to_uppercase(words[0]) == "VIEW"){
             KVar viewer;
+            viewer.set(KV_OVERWRITE_ON_LOAD, true);
+            viewer.set(KV_PRINT_THRESHOLD, settings.threshold);
+            viewer.set(KV_PRINT_PRECISION, (double)settings.precision);
             
             string fn = "";
             bool read_comment = true;
@@ -219,6 +222,8 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             viewer.print(1);
             
         }else if(to_uppercase(words[0]) == "LOAD"){
+            
+            kv.set(KV_OVERWRITE_ON_LOAD, settings.overwrite_on_load);
             
             string fn = "";
             bool load_comments = true;
@@ -658,6 +663,14 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                             filename = settings.home_dir + '/' + filename;
                         }else{
                             filename = settings.home_dir + filename;
+                        }
+                    }
+                }else if(to_uppercase(words[i]) == "-S"){
+                    if (filename.length() < settings.save_dir.length() || filename.substr(0, settings.save_dir.length()) != settings.save_dir){
+                        if (settings.save_dir[settings.save_dir.length()-1] != '/'){
+                            filename = settings.save_dir + '/' + filename;
+                        }else{
+                            filename = settings.save_dir + filename;
                         }
                     }
                 }else{
