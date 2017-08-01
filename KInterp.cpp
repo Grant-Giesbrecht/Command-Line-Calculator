@@ -1135,6 +1135,43 @@ string akt_tostring(all_ktype akt, int precision, int threshold){
 }
 
 /*
+notation_type - if:
+    'f' - fixed notation
+    's' - Scientific notation
+    'x' - select notation based on threshold
+*/
+string akt_tostring(all_ktype akt, int precision, int threshold, char notation_type){
+    
+    if (akt.type == 'd'){
+        char notation;
+        switch(notation_type){ //Select notation
+            case('f'):
+                notation = 'f';
+                break;
+            case('s'):
+                notation = 's';
+                break;
+            default:
+                notation = select_notation(akt.d, threshold);
+                break;
+        }
+        return hp_string(akt.d, precision, (notation == 's'));
+    }else if(akt.type == 'o'){
+        return akt.s;
+    }else if(akt.type == 's'){
+        return akt.s;
+    }else if(akt.type == 'b'){
+        return bool_to_str(akt.b);
+    }else if(akt.type == 'm'){
+        return akt.km.get_string();
+    }else if(akt.type == 'e'){
+        return akt.s;
+    }else{
+        return "UNDEFINED AKT TYPE";
+    }
+}
+
+/*
  Converts an 'all_ktype' to a string for printing. The 'formal' setting removes type identifiers for a final product, whereas normal operation is better for debugging.
  
  akt - all_ktype to convert to string

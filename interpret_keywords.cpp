@@ -693,7 +693,15 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }catch(...){}
                 }
             }else{
-                IFPRINT << indent_line(1) << akt_tostring(result, settings.precision, settings.threshold) << endl;
+                char notation_type;
+                if (settings.force_sci){
+                    notation_type = 's';
+                }else if (settings.force_fixed){
+                    notation_type = 'f';
+                }else{
+                    notation_type = 'x'; //Automatically select based on value
+                }
+                IFPRINT << indent_line(1) << akt_tostring(result, settings.precision, settings.threshold, notation_type) << endl;
                 kv.delete_var("ans");
                 switch(result.type){
                     case 'd':

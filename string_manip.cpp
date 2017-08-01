@@ -412,30 +412,50 @@ double strtod(std::string input, bool* success){
 //    return x;
 }
 
-void select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix){
+/*
+
+*/
+char select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix){
     
-    cout.precision(precision);
-    
-    if (force_sci || num > threshold){
+    // cout.precision(precision);
+
+    if (force_sci){
         cout << std::scientific;
-    }else if(force_fix || num >= 1){
+        return 's';
+    }else if(force_fix){
         cout << std::fixed;
-    }else{
-        if (num < 1/threshold){
-            cout << std::scientific;
-        }else{
-            cout << std::fixed;
-        }
-        //Show as much as possible is 'precision' digits, with as few characters
-        //If #_1 > prec, sci & ignore #_2
-        //If #_1 < prec && NONZERO: fixed
-        //   If #_2 > prec-length(#_1), show #_2
-        //   If #_2 < prec-length(#_1), ignore #_2
-        //IF #_1 == 0:
-        //   If #_2 < prec, sci
-        //   If #_2 > prec, fixed
-        
+        return 'f';
     }
+
+    char ret = select_notation(num, threshold);
+    if (ret == 's'){
+        cout << std::scientific;
+    }else{
+        cout << std::fixed;
+    }
+
+    return ret;
+    
+    // if (force_sci || num > threshold){
+    //     cout << std::scientific;
+    // }else if(force_fix || num >= 1){
+    //     cout << std::fixed;
+    // }else{
+    //     if (num < 1/threshold){
+    //         cout << std::scientific;
+    //     }else{
+    //         cout << std::fixed;
+    //     }
+    //     //Show as much as possible is 'precision' digits, with as few characters
+    //     //If #_1 > prec, sci & ignore #_2
+    //     //If #_1 < prec && NONZERO: fixed
+    //     //   If #_2 > prec-length(#_1), show #_2
+    //     //   If #_2 < prec-length(#_1), ignore #_2
+    //     //IF #_1 == 0:
+    //     //   If #_2 < prec, sci
+    //     //   If #_2 > prec, fixed
+        
+    // }
     
 }
 

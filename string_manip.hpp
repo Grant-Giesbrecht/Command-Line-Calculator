@@ -34,7 +34,7 @@ std::string hp_string(double input, int precision=15, bool scientific=false);
 
 double strtod(std::string input, bool* success=NULL);
 
-void select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix);
+char select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix);
 
 char select_notation(double num, int threshold);
 

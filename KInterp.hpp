@@ -22,6 +22,8 @@ void inject_akt_into_aktvec(std::vector<all_ktype>& words, all_ktype inject, int
 
 std::string akt_tostring(all_ktype akt, int precision, int threshold);
 
+std::string akt_tostring(all_ktype akt, int precision, int threshold, char notation);
+
 std::string akt_tostring(all_ktype akt, bool formal=false);
 
 //bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments=false, int print_precision=15, bool scientific_notation=false);

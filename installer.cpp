@@ -98,6 +98,11 @@ int install(){
 		cout << "Executable successfully transfered to /usr/bin\n\n\tINSTALLATION COMPLETE" << endl;
 	}
 
+	//----------------------------------------------------------------------------------
+	//------------------ Set permissions so files are editable by all
+
+	system("sudo chmod u=rwx,g=rw,o=rw /usr/local/resources/CLC_3V0/Resources/*");
+
 	system("rm *.outfile");
 
 	return 0;
