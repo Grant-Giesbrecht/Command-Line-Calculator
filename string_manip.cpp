@@ -441,6 +441,7 @@ void select_notation(double num, int precision, int threshold, bool force_sci, b
 
 char select_notation(double num, int threshold){
     
+    num = abs(num);
     
     if (num > threshold){
         return 's';
