@@ -19,3 +19,4 @@ double c = 3e8; //m/s
 double e = 2.71828182845904523536028747135266249775;
 double grav = 6.67408e-11; //m^3/(Kg s^2) Univ. grav. constant
 double Kb = 1.38064852e-23; //m^2 Kg /s^2 /K Boltzmann's Constant
+double R = 8.3145; //J/mol K
