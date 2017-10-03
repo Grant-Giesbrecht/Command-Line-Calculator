@@ -2,8 +2,7 @@
 --------------------- CLC PRCD HELP ---------------------
 
 Description:
-    Prints the record to the terminal. The record catalogues all
-    commands entered into CLC.
+    Print the record to the terminal.
 
 Flags:
     -A: All - Show all non-keyword commands, including those which raised errors

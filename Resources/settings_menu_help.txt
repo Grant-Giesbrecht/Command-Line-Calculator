@@ -9,5 +9,6 @@ Note: Strings must be surrounded by quote marks (").
 Commands:
     Exit: Exit help menu
     Help: Show help menu
+    Print_codes: Print the verbal codes to adjust fields
     Save: Force save program settings (all settings automaticly save when CLC closes).
     View: Display all settings and their values

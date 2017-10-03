@@ -9,3 +9,4 @@ HOME_DIR /Users/ggiesbrecht/Desktop/
 SAVE_DIR /Users/ggiesbrecht/Desktop/EXPANSION FOLDER/Buffer/
 HIDE_STARTUP True
 PRINT_DIR_CD False
+OVERWRITE_ON_LOAD True
