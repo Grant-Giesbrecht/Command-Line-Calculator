@@ -53,7 +53,7 @@ string next_string(string in, bool& success, int start_idx, int* last_idx, bool 
 /*
 Reads a string (defined by being enclosed in 'starter' char and 'ender' char) and returns the detected string.
 
-in - input string in which to look for a enclosed string
+in - input string in which to look for a enclosed phrase
 success - Returns true if string detected
 start_idx - index in 'in' at which to begin scan
 last_idx - index at which first detected string ended (aka index of closing quotes)
@@ -112,6 +112,8 @@ string next_phrase(string in, bool& success, int start_idx, char starter, char e
 
 bool next_string(std::vector<std::string> in, std::string* value, int start_word, int* last_word){
 
+    //std::string next_phrase(std::string in, bool& success, int start_idx, char starter, char ender, int* last_idx=NULL, bool allow_before=false);
+//    bool next_phrase(std::vector<std::string> in, std::string* value, char starter, char ender, int start_word, int* last_word);
     bool success = next_phrase(in, value, '\"', '\"', start_word, last_word);
     
     remove_end_whitespace(*value);
@@ -142,27 +144,89 @@ bool next_string(std::vector<std::string> in, std::string* value, int start_word
 
 }
 
+/*
+ Locates the next phrase contained by 'starter' and 'ender'. Looks for phrase in 'in', and outputs phrase's origional form from 'in_full' into the pointer 'value'. Phrase search begins at 'start_word', and continues through the end or until the phrase is found.
+ 
+ in - vector or strings containing the words of 'in_full'.
+ in_full - origional form of 'in', from which the detected phrase's actual value will be drawn.
+ value - outputs the phrase that was detected
+ starter - starting character for the phrase
+ ender - ending character for the phrase
+ last_word - returns the last word in 'in' that was used in the detected phrase
+ last_index - returns index of last character in last used word in phrase, input index of end of last used word (if this function was run multiple times. Only function is to prevent identical words from being mistaken for eachother. Enter 0 if you don't wish to use this feature).
+ allow_before - if true, function will not fail if non whitespace occurs before detected string
+ 
+ Returns true if a phrase was detected
+ */
+bool next_phrase(std::vector<std::string> in, std::string in_full, std::string* value, char starter, char ender, int start_word, int* last_word, int* last_index, bool allow_before){
+    
+    bool success;
+//    int last_idx;
+
+    if (*last_index < 0) *last_index = 0;
+    
+//    string next_phrase(string in, bool& success, int start_idx, char starter, char ender, int* last_idx, bool allow_before)
+    
+    //Find index of 'in_full' at which to begin search for phrase (convert start_word (w/ respect to 'in') to start_idx (w/ respect to 'in_full').
+    int start_idx = idx_from_word_idx(in_full, in, start_word, POSITION_WORD_START, *last_index);
+    
+    //Find phrase
+    *value = next_phrase(in_full, success, start_idx, starter, ender, last_index, allow_before);
+//    *value = next_phrase(in_full, success, start_idx, starter, ender, &last_idx, allow_before);
+//    string next_phrase(string in, bool& success, int start_idx, char starter, char ender, int* last_idx, bool allow_before)
+    
+    if (!success) return false;
+    
+    //Find last word
+    *last_word = word_idx_from_idx(in_full, in, *last_index, start_word);
+//    *last_word = word_idx_from_idx(in_full, in, last_idx, start_idx);
+    //int word_idx_from_idx(std::string str_in, std::vector<std::string> words_in, int str_idx){
+    
+//    int lw = 0;
+//    for (int i = 0; i < last_idx ; i++){
+//        if (in_full[i] == ' '){
+//            lw++;
+//        }
+//    }
+//    *last_word = lw;
+    
+    return true;
+    
+}
+
 bool next_phrase(std::vector<std::string> in, std::string* value, char starter, char ender, int start_word, int* last_word){
 
 	string str = cat_tokens(in, start_word, " ");
 
 	bool success;
-	int end_idx;
-	*value = next_phrase(str, success, 0, starter, ender, &end_idx);
+    int last_idx;
+//	int end_idx;
+    
+    //std::string next_phrase(std::string in, bool& success, int start_idx, char starter, char ender, int* last_idx=NULL, bool allow_before=false);
+    //    bool next_phrase(std::vector<std::string> in, std::string* value, char starter, char ender, int start_word, int* last_word);
+    *value = next_phrase(str, success, 0, starter, ender, &last_idx);
     
     //[1 + 2 + 3]
     //01234567890123456789
     //00000000001111111111
 
-    bool starter_triggered = false;
-    for (int i = start_word ; i < in.size() ; i++){
-        if (in[i][0] == ender && ( ender != starter || starter_triggered)){
-            *last_word = i;
-            break;
-        }else if(in[i][0] == starter && starter == ender){
-            starter_triggered = true;
+    int lw = 0;
+    for (int i = 0; i < last_idx ; i++){
+        if (str[i] == ' '){
+            lw++;
         }
     }
+    *last_word = lw;
+    
+    //    bool starter_triggered = false;
+//    for (int i = start_word ; i < in.size() ; i++){
+//        if (in[i][0] == ender && ( ender != starter || starter_triggered)){
+//            *last_word = i;
+//            break;
+//        }else if(in[i][0] == starter && starter == ender){
+//            starter_triggered = true;
+//        }
+//    }
     
 //    *last_word = -1;
 //    bool whitespace = true;
@@ -228,3 +292,98 @@ bool next_bool(string in, bool* value){
 		return false;
 	}
 }
+
+/*
+ Return the index of the character in 'str_in' at which word at index 'word_idx' in 'words_in' starts or ends, depending on 
+ 'position_on_word'.
+ 
+ PARAMETERS:
+ str_in - string whose index returned is where word 'word_idx' is
+ words_in - vector of strings input. string of index 'word_idx' will be found in 'str_in'.
+ word_idx - index of word in 'words_in' to find in 'str_in'.
+ position_on_word - specify if beginning or end position of word should be reported.
+    OPTIONS:
+    POSITION_WORD_START - Return character index at start of word
+    POSITION_WORD_END - Return character index at end of word
+ minimum_idx - index of 'str_in' at which to begin search for 'words_in[word_idx]'.
+ 
+ Returns the index where the word specified by 'word_idx' in 'words_in' exists. Returns -1 if error occurs.
+ */
+int idx_from_word_idx(std::string str_in, std::vector<std::string> words_in, int word_idx, int position_on_word, int minimum_idx){
+    
+    //Set target
+    string target = words_in[word_idx];
+//    cout << "Target size: " << target.length() << endl;
+    //Find word
+    for (int i = minimum_idx ; i <= str_in.length()-target.length() ; i++){
+        if (str_in.substr(i, target.length()) == target){ //Check for match
+            return (position_on_word == POSITION_WORD_END)? (i+(int)target.length()-1) : i ;
+        }
+    }
+    
+    return -1;
+}
+
+/*
+ Returns the index of the word in 'words_in' that contains the character indicated by 'str_idx' in 'str_in'
+ 
+ PARAMETERS:
+ str_in - string in which to specify index to translate to word index
+ words_in - vector of string words, whose index will be returned
+ str_idx - index of the character in 'str_in' designating a word in 'words_in'
+ start_word_min - word in 'words_in' at which to start searching for match with 'str_in''s specified word.
+ 
+ Returns -1 if no match, returns -2 if whitespace matched. Else returns the index of the word in 'words_in' matching the specified char 
+ in str_in.
+ */
+int word_idx_from_idx(std::string str_in, std::vector<std::string> words_in, int str_idx, int start_word_min){
+    
+        // word_idx_from_idx(in_full, in, last_idx, start_idx);
+    
+    //Return an error if the index is out of bounds
+    if (str_idx >= str_in.length() || str_idx < 0) return -1;
+    
+    //Return error if the start_idx_min is out of bounds
+//    if (start_idx_min < 0 || str_idx < start_idx_min) return -1;
+    if (start_word_min < 0 || str_idx < start_word_min) return -1;
+    
+    //Return -2 if matching whitespace
+    if (str_in[str_idx] == ' ' || str_in[str_idx] == '\t') return -2;
+    
+    //LOOKUP: The Promise
+    
+    //================================== Find word specified in 'str_in' ==============================================
+    
+    //Find end index of specified word in 'str_in'
+    int start_idx = 0;
+    int end_idx = (int)str_in.length()-1;
+    for (int a = str_idx ; a < str_in.length() ; a++){
+        if (str_in[a] == ' ' || str_in[a] == '\t'){
+            end_idx = a-1;
+            break;
+        }
+    }
+    
+    //Find beginning of specified word in 'str_in'
+//    for (int a = str_idx ; a >= start_idx_min ; a--){
+    for (int a = str_idx ; a >= 0 ; a--){
+        if (str_in[a] == ' ' || str_in[a] == '\t'){
+            start_idx = a+1;
+            break;
+        }
+    }
+    
+    string target = str_in.substr(start_idx, (end_idx - start_idx + 1));
+    
+    //Check for matches between specified word and 'words_in'
+    for (int i = start_word_min ; i < words_in.size() ; i++){
+        if (words_in[i] == target){
+            return i;
+        }
+    }
+    
+    return -1;
+}
+
+
+

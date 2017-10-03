@@ -58,6 +58,9 @@ public:
 	bool set_col(int c, KMatrix& in);
 	bool set_col(int c, std::string in);
 	bool set_col(int c, std::vector<double> v);
+    void add_double(double d);
+    void multiply_double(double d);
+    void power_double(double d);
 	Eigen::MatrixXd to_Eigen();
 	std::string get_string();
 

@@ -36,6 +36,60 @@ void ensure_whitespace(string& in, string targets){
 }
 
 /*
+ Ensures that space characters sandwich all the target characters in the string 'in' unless those characters are constituting a protected target.
+ 
+ in - string in which to ensure targets surrounded by whitespace
+ targets - characters to surround with whitespace
+ protected_targets - vector of strings where each string defines a protected target. eg a sequence of characters that will not be broken up.
+ 
+ Void return
+ */
+void ensure_whitespace_protected(string& in, string targets, vector<string> protected_targets){
+    
+    //Add whitespace buffer around all target characters
+    for (int i = 0 ; i < in.length() ; i++){
+        if (targets.find(in[i]) != string::npos){ //Found in string
+            
+            //Check for protected targets
+            bool pt = false;
+            for (int j = 0 ; j < protected_targets.size() ; j++){ //Iterate through each protected target to check for match
+                for (int k = 0; k < protected_targets[j].length() ; k++){ //Iterate through each character in PT to see if match possible
+                    if (protected_targets[j][k] == in[i]){ //Match possible, explicitly check
+                        if ( i-k >= 0 && protected_targets[j] == in.substr(i-k, protected_targets[j].length())){
+//                            cout << "PT:\t" << in << endl;
+//                            cout << "\t";
+//                            for (int l = 0; l < i ; l++){
+//                                cout << ' ';
+//                            }
+//                            cout << '^' << endl;
+                            pt = true; //Was match, flag not to add whitespace
+                        }
+                        string s = in.substr(i-k, protected_targets[j].length());
+                        int a;
+                        int b  = 4;
+                    }
+                }
+            }
+            
+            //Add whitespace
+            if (!pt){
+                in = in.substr(0, i) + " " + in[i] + " " + in.substr(i+1);
+                i++;
+            }
+        }
+    }
+    
+    //Remove excess white space - no consecutive spaces
+    for (int i = 0; i+1 < in.length() ; i++){
+        if (in[i] == ' ' && in[i+1] == ' '){
+            in = in.substr(0, i) + in.substr(i+1);
+            i--;
+        }
+    }
+    
+}
+
+/*
  Ensures that space characters sandwich the target string in the string 'in'
  
  in - string in which to ensure targets surrounded by whitespace
@@ -478,8 +532,22 @@ char select_notation(double num, int threshold){
     
 }
 
+std::string add_space_indicators(std::string input){
+    return add_space_indicators(input, "");
+}
 
-
+std::string add_space_indicators(std::string input, std::string indentation){
+    string out;
+    out = indentation + input + indentation + "\n";
+    for (int i = 0 ; i < input.length(); i++){
+        if (input[i] == ' '){
+            out = out + '^';
+        }else{
+            out = out + ' ';
+        }
+    }
+    return out;
+}
 
 
 

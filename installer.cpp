@@ -90,12 +90,12 @@ int install(){
 	}
 
 	//----------------------------------------------------------------------------------
-	//------------------ Move executable to /usr/bin
+	//------------------ Move executable to /usr/local/bin
 
-	if (system("sudo mv clc /usr/bin/clc 1> out.out 2> error.outfile") != 0){
-		cout << "ERROR: Failed to move executable to /usr/bin" << endl;
+	if (system("sudo mv clc /usr/local/bin/clc 1> out.out 2> error.outfile") != 0){
+		cout << "ERROR: Failed to move executable to /usr/local/bin" << endl;
 	}else{
-		cout << "Executable successfully transfered to /usr/bin\n\n\tINSTALLATION COMPLETE" << endl;
+		cout << "Executable successfully transfered to /usr/local/bin\n\n\tINSTALLATION COMPLETE" << endl;
 	}
 
 	//----------------------------------------------------------------------------------

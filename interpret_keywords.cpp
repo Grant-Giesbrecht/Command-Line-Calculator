@@ -29,11 +29,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
     if (input.length() == 0){
         return;
     }
-    
+        
     //Parse words - not evaluation quality parse, just to determine if keyword active or if interpretation is required
-    vector<string> words_complete = space_and_parse(input);
+    vector<string> words_complete = space_and_parse_protected(input);
     vector<string> words;
     vector<vector<string> > sentences = form_sentences(words_complete);
+    
+//    for (int s = 0 ; s < sentences.size() ; s++){
+//        cout << "Sentence[" << s << "]: " << endl;
+//        for (int w = 0 ; w < sentences[s].size() ; w++){
+//            cout << "\t" << sentences[s][w] << endl;
+//        }
+//    }
     
     for (int j = 0 ; j < sentences.size() ; j++){
     
@@ -506,6 +513,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
         }else if(to_uppercase(words[0]) == "SVPRG"){
+            cout << "SOFTWARE ERROR: Feature not created. Check for updates from Mos-Fett on \'github.com\'." << endl;
         }else if(to_uppercase(words[0]) == "DELETE"){
             if (words.size() > 1){
                 for (int i = 1 ; i < words.size() ; i++){
@@ -646,7 +654,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             kv.add_bool("religion", false);
             IFPRINT << indent_line(1) << bool_to_str(false) << endl;
         }else if(to_uppercase(words[0]) == "MATLAB"){
-            kv.add_string("MATLAB", "Spawn of satan");
+            kv.add_string("MATLAB", "Worst 'programming language' in the history of the universe.");
             IFPRINT << indent_line(1) << "Spawn of satan" << endl;
         }else if(to_uppercase(words[0]) == "CLRCD"){
             record.clear();
@@ -682,7 +690,10 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             //Evaluate expression
             string feed_string = cat_tokens(words, 0, " ");
 //            ensure_whitespace(feed_string, "-");
+//            cout << "Feed string: " << feed_string << endl;
+//            cout << "Input: " << input << endl;
             if (!interpret(feed_string, kv, result, functions, true)){
+//            if (!interpret(input, kv, result, functions, true)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{

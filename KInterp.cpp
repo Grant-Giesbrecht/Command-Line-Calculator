@@ -1288,11 +1288,3 @@ std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> i
     
     return sentences;
 }
-
-
-
-
-
-
-
-

@@ -12,6 +12,8 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, std::vector<func_i
 
 std::vector<std::string> space_and_parse(std::string input);
 
+std::vector<std::string> space_and_parse_protected(std::string input);
+
 std::vector<std::string> space_and_parse_negatives(std::string input);
 
 bool is_negative_restricted_character(char c); //Just intended for use in space_and_parse for sytaxtual clarity

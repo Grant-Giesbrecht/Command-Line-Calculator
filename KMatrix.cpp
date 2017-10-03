@@ -622,6 +622,30 @@ bool KMatrix::set_col(int r, vector<double> v){
 	return true;
 }
 
+void KMatrix::add_double(double d){
+    for (int r = 0 ; r < KMatrix::rows() ; r++){
+        for (int c = 0 ; c < KMatrix::cols() ; c++){
+            mtrx(r, c) = mtrx(r, c) + d;
+        }
+    }
+}
+
+void KMatrix::multiply_double(double d){
+    for (int r = 0 ; r < KMatrix::rows() ; r++){
+        for (int c = 0 ; c < KMatrix::cols() ; c++){
+            mtrx(r, c) = mtrx(r, c) * d;
+        }
+    }
+}
+
+void KMatrix::power_double(double d){
+    for (int r = 0 ; r < KMatrix::rows() ; r++){
+        for (int c = 0 ; c < KMatrix::cols() ; c++){
+            mtrx(r, c) = pow(mtrx(r, c), d);
+        }
+    }
+}
+
 /*
 Creates a one line string representing the matrix. It can be interpreted by KMatrix string interpreters.
 
