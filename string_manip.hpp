@@ -10,6 +10,8 @@ std::vector<std::string> parse(std::string input, std::string delin);
 
 void ensure_whitespace(std::string& in, std::string targets);
 
+void ensure_whitespace_protected(std::string& in, std::string targets, std::vector<std::string> protected_targets);
+
 void ensure_whitespace_full(std::string& in, std::string multichar_target);
 
 void remove_end_whitespace(std::string& io);
@@ -34,8 +36,12 @@ std::string hp_string(double input, int precision=15, bool scientific=false);
 
 double strtod(std::string input, bool* success=NULL);
 
-void select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix);
+char select_notation(double num, int precision, int threshold, bool force_sci, bool force_fix);
 
 char select_notation(double num, int threshold);
+
+std::string add_space_indicators(std::string);
+
+std::string add_space_indicators(std::string, std::string indentation);
 
 #endif

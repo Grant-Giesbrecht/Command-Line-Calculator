@@ -11,6 +11,30 @@ void define_functions(std::vector<func_id>* functions);
 
 all_ktype abs(std::vector<all_ktype> args); //double abs(double x)
 
+all_ktype sin(std::vector<all_ktype> args); //double sin(double x)
+
+all_ktype cos(std::vector<all_ktype> args); //double cos(double x)
+
+all_ktype tan(std::vector<all_ktype> args); //double tan(double x)
+
+all_ktype csc(std::vector<all_ktype> args); //double csc(double x)
+
+all_ktype sec(std::vector<all_ktype> args); //double sec(double x)
+
+all_ktype cot(std::vector<all_ktype> args); //double cot(double x)
+
+all_ktype asin(std::vector<all_ktype> args); //double asin(double x)
+
+all_ktype acos(std::vector<all_ktype> args); //double acos(double x)
+
+all_ktype atan(std::vector<all_ktype> args); //double atan(double x)
+
+all_ktype acsc(std::vector<all_ktype> args); //double acsc(double x)
+
+all_ktype asec(std::vector<all_ktype> args); //double asec(double x)
+
+all_ktype acot(std::vector<all_ktype> args); //double acot(double x)
+
 all_ktype transpose(std::vector<all_ktype> args); //matrix abs(matrix x)
 
 all_ktype inverse(std::vector<all_ktype> args); //matrix inverse(matrix x)

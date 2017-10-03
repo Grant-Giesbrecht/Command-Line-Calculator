@@ -48,6 +48,7 @@ typedef struct{
     std::string save_dir;
     bool hide_startup_sequence;
     bool print_dir_cd;
+    bool overwrite_on_load;
 }program_settings;
 
 void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool silence_output, program_settings& settings, std::string& in_header, std::string& out_header);

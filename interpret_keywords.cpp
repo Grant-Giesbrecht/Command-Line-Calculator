@@ -29,11 +29,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
     if (input.length() == 0){
         return;
     }
-    
+        
     //Parse words - not evaluation quality parse, just to determine if keyword active or if interpretation is required
-    vector<string> words_complete = space_and_parse(input);
+    vector<string> words_complete = space_and_parse_protected(input);
     vector<string> words;
     vector<vector<string> > sentences = form_sentences(words_complete);
+    
+//    for (int s = 0 ; s < sentences.size() ; s++){
+//        cout << "Sentence[" << s << "]: " << endl;
+//        for (int w = 0 ; w < sentences[s].size() ; w++){
+//            cout << "\t" << sentences[s][w] << endl;
+//        }
+//    }
     
     for (int j = 0 ; j < sentences.size() ; j++){
     
@@ -127,6 +134,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
         }else if(to_uppercase(words[0]) == "VIEW"){
             KVar viewer;
+            viewer.set(KV_OVERWRITE_ON_LOAD, true);
+            viewer.set(KV_PRINT_THRESHOLD, settings.threshold);
+            viewer.set(KV_PRINT_PRECISION, (double)settings.precision);
             
             string fn = "";
             bool read_comment = true;
@@ -219,6 +229,8 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             viewer.print(1);
             
         }else if(to_uppercase(words[0]) == "LOAD"){
+            
+            kv.set(KV_OVERWRITE_ON_LOAD, settings.overwrite_on_load);
             
             string fn = "";
             bool load_comments = true;
@@ -501,6 +513,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
         }else if(to_uppercase(words[0]) == "SVPRG"){
+            cout << "SOFTWARE ERROR: Feature not created. Check for updates from Mos-Fett on \'github.com\'." << endl;
         }else if(to_uppercase(words[0]) == "DELETE"){
             if (words.size() > 1){
                 for (int i = 1 ; i < words.size() ; i++){
@@ -641,7 +654,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             kv.add_bool("religion", false);
             IFPRINT << indent_line(1) << bool_to_str(false) << endl;
         }else if(to_uppercase(words[0]) == "MATLAB"){
-            kv.add_string("MATLAB", "Spawn of satan");
+            kv.add_string("MATLAB", "Worst 'programming language' in the history of the universe.");
             IFPRINT << indent_line(1) << "Spawn of satan" << endl;
         }else if(to_uppercase(words[0]) == "CLRCD"){
             record.clear();
@@ -660,6 +673,14 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                             filename = settings.home_dir + filename;
                         }
                     }
+                }else if(to_uppercase(words[i]) == "-S"){
+                    if (filename.length() < settings.save_dir.length() || filename.substr(0, settings.save_dir.length()) != settings.save_dir){
+                        if (settings.save_dir[settings.save_dir.length()-1] != '/'){
+                            filename = settings.save_dir + '/' + filename;
+                        }else{
+                            filename = settings.save_dir + filename;
+                        }
+                    }
                 }else{
                     
                 }
@@ -669,7 +690,10 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             //Evaluate expression
             string feed_string = cat_tokens(words, 0, " ");
 //            ensure_whitespace(feed_string, "-");
+//            cout << "Feed string: " << feed_string << endl;
+//            cout << "Input: " << input << endl;
             if (!interpret(feed_string, kv, result, functions, true)){
+//            if (!interpret(input, kv, result, functions, true)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
                 }else{
@@ -680,7 +704,15 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }catch(...){}
                 }
             }else{
-                IFPRINT << indent_line(1) << akt_tostring(result, settings.precision, settings.threshold) << endl;
+                char notation_type;
+                if (settings.force_sci){
+                    notation_type = 's';
+                }else if (settings.force_fixed){
+                    notation_type = 'f';
+                }else{
+                    notation_type = 'x'; //Automatically select based on value
+                }
+                IFPRINT << indent_line(1) << akt_tostring(result, settings.precision, settings.threshold, notation_type) << endl;
                 kv.delete_var("ans");
                 switch(result.type){
                     case 'd':

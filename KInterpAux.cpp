@@ -242,7 +242,7 @@ Determines if input is an operator +-/*%^&=><!|
 
 input - string to analyze
 
-Returns true if 'input'
+Returns true if 'input' is an operator
 */
 bool str_to_op(std::string input){
 	if (input == "+" || input == "-" || input == "/" || input == "*" || input == "^" || input == "%" || input == "!" || input == "||" || input == "&&" || input == "==" || input == "!=" || input == ">=" || input == "<=" || input == "=" || input == ">" || input == "<"){

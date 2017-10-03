@@ -12,6 +12,8 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, std::vector<func_i
 
 std::vector<std::string> space_and_parse(std::string input);
 
+std::vector<std::string> space_and_parse_protected(std::string input);
+
 std::vector<std::string> space_and_parse_negatives(std::string input);
 
 bool is_negative_restricted_character(char c); //Just intended for use in space_and_parse for sytaxtual clarity
@@ -21,6 +23,8 @@ void inject_words_into_strvec(std::vector<std::string>& words, std::string injec
 void inject_akt_into_aktvec(std::vector<all_ktype>& words, all_ktype inject, int begin, int end);
 
 std::string akt_tostring(all_ktype akt, int precision, int threshold);
+
+std::string akt_tostring(all_ktype akt, int precision, int threshold, char notation);
 
 std::string akt_tostring(all_ktype akt, bool formal=false);
 
