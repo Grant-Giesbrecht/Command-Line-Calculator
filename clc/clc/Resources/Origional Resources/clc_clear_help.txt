@@ -1,5 +1,0 @@
----------------------------------------------------------
---------------------- CLC CLEAR HELP --------------------
-
-Description:
-    Clears the command prompt. Command 'CLEAR' and 'CLS' are interchangable.

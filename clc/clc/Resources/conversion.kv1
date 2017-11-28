@@ -1,4 +1,0 @@
-#VERSION 1.0
-
-double Kg_per_amu = 1.66054e-27;
-double angstrom_per_nm = 10;
