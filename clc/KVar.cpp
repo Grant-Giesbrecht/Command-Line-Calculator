@@ -7,6 +7,11 @@
 #define VEC_STRING 's'
 #define VEC_BOOL 'b'
 
+#define DOUBLE_MARK "d"
+#define MATRIX_MARK "m"
+#define STRING_MARK "s"
+#define BOOL_MARK "b"
+
 #define IFPRINT if (KVar::print_allowed)
 
 #define LATEST_VAR_VERSION 1.0
@@ -734,15 +739,16 @@ bool KVar::load_KV1(string filename, long& fail_line){
         if (line.length() == 0){ //Skip blank lines
             continue;
         }
-        words = parse(line, " "); //Parse
-        if (words.size() < 1 || words[0] == "//"){ //Skip comments
-            continue;
-        }
+//        words = parse(line, " "); //Parse
         
         //Comments are removed - now semicolons are separated
         ensure_whitespace(line, "[;]\"");
         ensure_whitespace_full(line, "//");
         words = parse(line, " ");
+        
+        if (words.size() < 1 || words[0] == "//"){ //Skip comments
+            continue;
+        }
         
         //Determine file version
         double version;
@@ -773,14 +779,14 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 header = header + '\n';
             }
             header = header + cat_tokens(words, 0, " ");
-        }else if (words[0] == "double"){
+        }else if (words[0] == DOUBLE_MARK){
             
             string var_name;
             double val;
             string comment;
             
-            //Ensure minimum size is met
-            if (words.size() <  5){
+            //Ensure minimum size is met TYPE NAME VALUE ;
+            if (words.size() <  4){
                 return false;
             }
             
@@ -792,24 +798,19 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 }else continue; //Otherwise don't load new variable
             }
             
-            //Ensure equals sign is present
-            if (words[2] != "="){
-                return false;
-            }
-            
             //Save value
-            if (!str_to_double(words[3], val)){
+            if (!str_to_double(words[2], val)){
                 return false;
             }
             
             //Ensure semicolon is present
-            if (words[4] != ";"){
+            if (words[3] != ";"){
                 return false;
             }
             
             //Read comments
-            if (words.size() > 5){
-                if (words[5] != "//"){ //Ensure comment sign is present
+            if (words.size() > 4){
+                if (words[4] != "//"){ //Ensure comment sign is present
                     return false;
                 }
                 if (read_comments){
@@ -821,14 +822,14 @@ bool KVar::load_KV1(string filename, long& fail_line){
             if (!add_variable(var_name, val, comment)){
                 return false;
             }
-        }else if(words[0] == "matrix"){
+        }else if(words[0] == MATRIX_MARK){
             
             string var_name;
             KMatrix val;
             string comment;
             
-            //Ensure minimum size is met - TYPE NAME = [ VALUE_1 ] ;
-            if (words.size() <  7){
+            //Ensure minimum size is met - TYPE NAME [ VALUE_1 ] ;
+            if (words.size() <  6){
                 return false;
             }
             
@@ -838,23 +839,18 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 if (overwrite_variables_on_load){
                     KVar::delete_var(var_name); //Delete repeat if requested
                 }else continue; //Otherwise don't load new variable
-            }
-            
-            //Ensure equals sign is present
-            if (words[2] != "="){
-                return false;
             }
             
             //Save value
             string km_str;
             int lw;
-            if (!next_phrase(words, &km_str, '[', ']', 3, &lw)){
+            if (!next_phrase(words, &km_str, '[', ']', 2, &lw)){
                 return false;
             }
             val = KMatrix(km_str);
             
             //Ensure semicolon is present
-            if (words[lw+1] != ";"){
+            if (words.size() <= lw+1 || words[lw+1] != ";"){
                 return false;
             }
             
@@ -873,14 +869,14 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 return false;
             }
             
-        }else if(words[0] == "string"){
+        }else if(words[0] == STRING_MARK){
             
             string var_name;
             string val;
             string comment;
             
-            //Ensure minimum size is met - TYPE NAME = [ VALUE_1 ] ;
-            if (words.size() <  7){
+            //Ensure minimum size is met - TYPE NAME " VALUE_1 " ;
+            if (words.size() <  6){
                 return false;
             }
             
@@ -892,19 +888,14 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 }else continue; //Otherwise don't load new variable
             }
             
-            //Ensure equals sign is present
-            if (words[2] != "="){
-                return false;
-            }
-            
             //Save value
             int lw;
-            if (!next_string(words, &val, 3, &lw)){
+            if (!next_string(words, &val, 2, &lw)){
                 return false;
             }
             
             //Ensure semicolon is present
-            if (words[lw+1] != ";"){
+            if (words.size() <= lw+1 || words[lw+1] != ";"){
                 return false;
             }
             
@@ -923,14 +914,14 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 return false;
             }
             
-        }else if(words[0] == "bool"){
+        }else if(words[0] == BOOL_MARK){
             
             string var_name;
             bool val;
             string comment;
             
-            //Ensure minimum size is met
-            if (words.size() <  5){
+            //Ensure minimum size is met TYPE NAME VALUE ;
+            if (words.size() <  4){
                 return false;
             }
             
@@ -942,23 +933,18 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 }else continue; //Otherwise don't load new variable
             }
             
-            //Ensure equals sign is present
-            if (words[2] != "="){
-                return false;
-            }
-            
             //Save value
-            if (!str_to_bool(words[3], val)){
+            if (!str_to_bool(words[2], val)){
                 return false;
             }
             
             //Ensure semicolon is present
-            if (words[4] != ";"){
+            if (words[3] != ";"){
                 return false;
             }
             
             //Read comments
-            if (words.size() > 5){
+            if (words.size() > 4){
                 if (words[5] != "//"){ //Ensure comment sign is present
                     return false;
                 }
@@ -972,7 +958,7 @@ bool KVar::load_KV1(string filename, long& fail_line){
                 return false;
             }
         }else{
-            
+            return false;
         }
     }
     
@@ -1007,28 +993,28 @@ bool KVar::write_KV1(string filename){
     for (int i = 0 ; i < variables.size() ; i++){
         switch (variables[i].type) {
             case 'd':
-                file << "double " << variables[i].ID << " = " << hp_string(variables[i].d) << ";";
+                file << DOUBLE_MARK << " " << variables[i].ID << " " << hp_string(variables[i].d) << ";";
                 if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 'm':
-                file << "matrix " << variables[i].ID << " = " << variables[i].km.get_string() << ";";
+                file << MATRIX_MARK << " " << variables[i].ID << " " << variables[i].km.get_string() << ";";
                 if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 'b':
-                file << "bool " << variables[i].ID << " = " << bool_to_str(variables[i].b) << ";";
+                file << BOOL_MARK << " " << variables[i].ID << " " << bool_to_str(variables[i].b) << ";";
                 if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
                 file << endl;
                 break;
             case 's':
-                file << "string " << variables[i].ID << " = \"" << variables[i].s << "\";";
+                file << STRING_MARK << " " << variables[i].ID << " \"" << variables[i].s << "\";";
                 if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }

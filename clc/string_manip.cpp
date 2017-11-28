@@ -855,7 +855,7 @@ bool next_phrase(std::vector<std::string> in, std::string* value, char starter, 
     //01234567890123456789
     //00000000001111111111
     
-    int lw = 0;
+    int lw = start_word;
     for (int i = 0; i < last_idx ; i++){
         if (str[i] == ' '){
             lw++;
