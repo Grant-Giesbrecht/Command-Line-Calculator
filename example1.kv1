@@ -1,0 +1,32 @@
+#VERSION 1.0
+//The above line specifies the version and must be the first line in every KV1 file.
+
+//btw, this is a comment because it is following a double foreward slash
+
+#HEADER
+Every character inbetween
+the two header macros are considered
+to make up the header. The header is an 
+optional component of a 
+KV1 file and describes the file and its contents.
+//Comments here are do nothing - they are included in the header.
+#HEADER
+
+//This is now outside of the header.
+
+
+//Variable declarations begin below.
+
+double pi = 3.1415926535; //This is a variable description. This variable is pi incase you were wondering...
+
+string best_quote = "Do. Or do not. There is no try.\n\t- Yoda";
+
+matrix identity_single_line = [1, 0, 0; 0, 1, 0; 0, 0, 1]; //Variable descirptions do NOT require semicolons at the end.
+
+matrix identity_multi_line = [1, 0, 0;
+							  0, 1, 0;
+							  0, 0, 1];
+
+bool coke_is_better_than_pepsi = True;
+
+// Variable declarations do not require empty lines inbetween them.

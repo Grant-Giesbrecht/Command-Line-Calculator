@@ -1,0 +1,25 @@
+---------------------------------------------------------
+--------------------- CLC VIEW HELP ---------------------
+
+Description:
+    Displays the contents of a KV file. Does not load the file contents into the
+    calculator.
+    
+Flags:
+    -C: Show comments
+    -H || -HOME: Append HOME_DIR to filename beginning
+    -KV1: Interpret file as KV1 file
+    -KV2: Interpret file as KV2 file
+    -KV3: Interpret file as KV3 file
+    -NC: Hide comments
+    -S || -SAVE_DIR: Append SAVE_DIR to filename beginning
+	-V: Verbatim - do not add KV extension if not specified
+	-NV: If no extension is given in filename, add KV1, 2, or 3
+    [NO FLAG]: Interprets as filename, spaces are eliminated
+
+DEFAULTS: -KV1 -NV -C
+
+Additional Help:
+    SAVE - Save a KV file
+    LOAD - Load contents of KV file into calculator
+    LSVAR - List all variables loaded in the calculator

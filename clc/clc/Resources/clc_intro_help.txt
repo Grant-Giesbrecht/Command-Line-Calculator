@@ -1,0 +1,12 @@
+================ COMMAND LINE CALCULATOR ================
+================ INTRODUCTORY HELP PAGE =================
+
+This program is a simple and powerful calcualtor that runs in the command line.
+This is the introductory help page. For more information on clc and how to use
+the clc integrated help system, enter either 'help help' for detailed
+information about the help command or 'help -verbose' for a more in-depth
+overview of CLC.
+
+VERSION: 3.0
+RELEASE DATE: 16.11.2017
+CREATED BY G. M. GIESBRECHT

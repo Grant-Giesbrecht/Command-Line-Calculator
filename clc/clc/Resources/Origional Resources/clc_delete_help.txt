@@ -1,0 +1,17 @@
+---------------------------------------------------------
+-------------------- CLC DELETE HELP --------------------
+
+Description:
+    Deletes specific variables. If no variable names are specified in the
+    call of the command, a prompt will ask the user for the variable name(s)
+    to delete.
+
+Flags:
+    [variable_name] variable_name - name of the variable to delete. Multiple
+      arguments can be passed as this parameter (eg. 'delete pi h').
+
+Additional Help:
+    CLVAR - Clear all variables
+    SAVE - Write all variables to a KV file
+    READ - Read variables in from a KV file
+    LSVAR - List all variables

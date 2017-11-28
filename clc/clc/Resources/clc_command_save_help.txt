@@ -1,0 +1,23 @@
+---------------------------------------------------------
+--------------------- CLC SAVE HELP ---------------------
+
+Description:
+    Saves all variables loaded in the calculator to a KV file.
+
+Flags:
+    -C: Save with comments
+    -KV1: Save as KV1 file
+    -KV2: Save as KV2 file
+    -KV3: Save as KV3 file
+    -NC: Do not save comments
+    -SD || -SAVE_DIR: Append the SAVE_DIR to filename
+    -H || -HOME: Append home directory to filename
+    [NO FLAG]: Interprets as filename, spaces are eliminated
+
+DEFAULTS: -C -KV1
+
+Additional Help:
+    LOAD - Load contents of KV file into calculator
+    LSVAR - List all variables loaded in the calculator
+    SAVE - Save a KV file
+    VIEW - View contents of KV file without loading into calculator

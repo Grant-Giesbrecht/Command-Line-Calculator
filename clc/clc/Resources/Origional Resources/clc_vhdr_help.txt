@@ -1,0 +1,13 @@
+---------------------------------------------------------
+--------------------- CLC VHDR HELP ---------------------
+
+Description:
+    Displays the headers loaded in CLC. The read header is the header from the
+    most recently read KV file and the write header is the header to be written
+    to the next KV file.
+
+Additional Help:
+    SHDR - Set the write header
+    SAVE - Save a KV file
+    LOAD - Load contents of KV file into calculator
+

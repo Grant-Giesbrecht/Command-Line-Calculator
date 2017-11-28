@@ -1,0 +1,21 @@
+---------------------------------------------------------
+--------------------- CLC PRCD HELP ---------------------
+
+Description:
+    Prints the record to the terminal. The record catalogues all
+    commands entered into CLC.
+
+Flags:
+    -A: All - Show all non-keyword commands, including those which raised errors
+    -NA: Not All - Show only the non-keyword commands which didn't raise an error
+    -B: Beginning - When displaying only a section of the record, start counting from
+      the beginning of the record
+    -NB: Not Beginning - When displating only a section of the record, start counting
+      from the rear of the record
+
+DEFAULTS: -NA -NB
+
+Additional Help:
+    CLRCD - Clear record
+    SVRCD - Save record
+    RECORD - (TOPIC) The calculator record

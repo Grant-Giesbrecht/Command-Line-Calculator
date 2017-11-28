@@ -1,0 +1,10 @@
+----- Settings Menu Help ------
+
+Enter setting name or ID number to adjust value. 'View' command shows
+setting values and their ID numbers.
+
+Commands:
+    Exit: Exit help menu
+    Help: Show help menu
+    Save: Force save program settings (all settings automaticly save when CLC closes).
+    View: Display all settings and their valuese

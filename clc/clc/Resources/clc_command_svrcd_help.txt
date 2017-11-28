@@ -1,0 +1,16 @@
+---------------------------------------------------------
+--------------------- CLC SVRCD HELP --------------------
+
+Description:
+    Saves the record to a text file.
+
+Flags:
+    -H || -HOME: Append home directory to filename beginning
+    -SD || -SAVE_DIR: Append SAVE_DIR directory to filename beginning
+    [NO FLAG]: Interprets following words as filename, spaces are eliminated
+
+Additional Help:
+    CLRCD - Clear record
+    PRCD - Print record
+    RECORD - (TOPIC) The calculator record
+
