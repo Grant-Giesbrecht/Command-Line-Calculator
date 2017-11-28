@@ -9,7 +9,7 @@
 
 #define IFPRINT if (KVar::print_allowed)
 
-#define LATEST_VAR_VERSION 2.0
+#define LATEST_VAR_VERSION 1.0
 
 using namespace std;
 
@@ -103,6 +103,7 @@ bool KVar::contains(std::string var_id){
 
 void KVar::clear(){
     KVar::variables.clear();
+    header = "";
 //	KVar::IDs.clear();
 //	KVar::comments.clear();
 //	KVar::double_vars.clear();
