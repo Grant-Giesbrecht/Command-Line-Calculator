@@ -77,4 +77,6 @@ int idx_from_word_idx(std::string str_in, std::vector<std::string> words_in, int
 
 int word_idx_from_idx(std::string str_in, std::vector<std::string> words_in, int str_idx, int start_idx=0);
 
+std::string vdtos(std::vector<double> vin, std::string delim);
+
 #endif

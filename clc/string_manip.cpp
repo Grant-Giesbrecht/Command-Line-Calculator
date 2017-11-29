@@ -997,7 +997,19 @@ int word_idx_from_idx(std::string str_in, std::vector<std::string> words_in, int
     return -1;
 }
 
+// ORIGIONAL AGAIN
 
+std::string vdtos(vector<double> vin, std::string delim){
+    
+    std::string out = "";
+    size_t vins = vin.size();
+    for (size_t i = 0 ; i < vins ; i++){
+        if (out.length() > 0) out = out + delim;
+        out = out + to_string(vin[i]);
+    }
+    
+    return out;
+}
 
 
 
