@@ -6,18 +6,18 @@ This file contains variables commonly used in sciences.
 #HEADER
 
 //Variables
-double pi = 3.1415926535;
-double h = 6.62607004e-34; //(m^2 kg/2) Plank's constant
-double h_bar = 1.054571800e-34; //J*s
-double m_e = 9.10938356e-31; //Kg
-double m_p = 1.6726219e-27; //Kg
-double m_n = 1.674929e-27; //Kg
-double q_e = -1.6021766208e-19; //C
-double q_p = 1.6021766208e-19; //C
-double avagadro = 6.0221409e23;
-double c = 3e8; //m/s
-double e = 2.71828182845904523536028747135266249775;
-double grav = 6.67408e-11; //(m^3/(Kg s^2) ) Univ. grav. constant
-double Kb = 1.38064852e-23; //(m^2 Kg /s^2 /K) Boltzmann's Constant
-double R = 8.3145; //J/mol K
-double epsilon_0 = 8.85418782e-12;  //(m^-3 kg^-1 s^4 A^2) Permittivity of free space
+d pi 3.1415926535;
+d h 6.62607004e-34; //(m^2 kg/2) Plank's constant
+d h_bar 1.054571800e-34; //J*s
+d m_e 9.10938356e-31; //Kg
+d m_p 1.6726219e-27; //Kg
+d m_n 1.674929e-27; //Kg
+d q_e -1.6021766208e-19; //C
+d q_p 1.6021766208e-19; //C
+d avagadro 6.0221409e23;
+d c 3e8; //m/s
+d e 2.71828182845904523536028747135266249775;
+d grav 6.67408e-11; //(m^3/(Kg s^2) ) Univ. grav. constant
+d Kb 1.38064852e-23; //(m^2 Kg /s^2 /K) Boltzmann's Constant
+d R 8.3145; //J/mol K
+d epsilon_0 8.85418782e-12;  //(m^-3 kg^-1 s^4 A^2) Permittivity of free space

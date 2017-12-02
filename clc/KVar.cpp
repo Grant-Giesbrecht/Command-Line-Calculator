@@ -993,7 +993,7 @@ bool KVar::write_KV1(string filename){
     for (int i = 0 ; i < variables.size() ; i++){
         switch (variables[i].type) {
             case 'd':
-                file << DOUBLE_MARK << " " << variables[i].ID << " " << hp_string(variables[i].d) << ";";
+                file << DOUBLE_MARK << " " << variables[i].ID << " " << hp_string(variables[i].d) << ";"; //Is not accurate w/ small numbers
                 if (variables[i].comment.length() > 0 && KVar::save_comments){
                     file << " //" << variables[i].comment;
                 }
