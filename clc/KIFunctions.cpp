@@ -36,6 +36,18 @@ void define_functions(vector<func_id>* functions){
     temp.identifier = "sqrt";
     temp.description = "";
     functions->push_back(temp);
+    temp.function = ln;
+    temp.identifier = "ln";
+    temp.description = "";
+    functions->push_back(temp);
+    temp.function = nostd_log; //Note: nostd_ prepends because log exists in standard namespace
+    temp.identifier = "log";
+    temp.description = "";
+    functions->push_back(temp);
+    temp.function = logBase;
+    temp.identifier = "logBase";
+    temp.description = "";
+    functions->push_back(temp);
     
     //Add trig functions to list
     temp.function = sin;
@@ -710,3 +722,91 @@ all_ktype determinant(std::vector<all_ktype> args){ //double determinant(matrix 
     
     return ret;
 }
+
+/*
+ Function for interpreted function 'double ln(double x)'
+ 
+ double ln(double x):
+ Calculates the natural log of x
+ 
+ x - double whose ln to calculate
+ 
+ returns ln of x
+ */
+all_ktype ln(vector<all_ktype> args){
+    
+    all_ktype ret;
+    
+    //Verify args
+    if (args.size() != 1 || args[0].type != 'd'){
+        ret.s = "ERROR: Function 'ln()' requires a single double value as an argument.";
+        ret.type = 'e';
+        return ret;
+    }
+    
+    //Create return variable
+    ret.d = log(args[0].d); //Calculate abs()
+    ret.type = 'd';
+    
+    return ret;
+}
+
+/*
+ Function for interpreted function 'double log(double x)'
+ 
+ double log(double x):
+ Calculates the log of x
+ 
+ x - double whose log base 10 to calculate
+ 
+ returns log of x
+ */
+all_ktype nostd_log(vector<all_ktype> args){
+    
+    all_ktype ret;
+    
+    //Verify args
+    if (args.size() != 1 || args[0].type != 'd'){
+        ret.s = "ERROR: Function 'log()' requires a single double value as an argument.";
+        ret.type = 'e';
+        return ret;
+    }
+    
+    //Create return variable
+    ret.d = log10(args[0].d); //Calculate abs()
+    ret.type = 'd';
+    
+    return ret;
+}
+
+/*
+ Function for interpreted function 'double ln(double x)'
+ 
+ double ln(double x):
+ Calculates the natural log of x
+ 
+ x - double whose ln to calculate
+ 
+ returns ln of x
+ */
+all_ktype logBase(vector<all_ktype> args){
+    
+    all_ktype ret;
+    
+    //Verify args
+    if (args.size() != 2 || args[0].type != 'd' || args[1].type != 'd'){
+        ret.s = "ERROR: Function 'logBase()' requires two double values as arguments.";
+        ret.type = 'e';
+        return ret;
+    }
+    
+    //Create return variable
+    ret.d = log(args[0].d)/log(args[1].d); //Calculate abs()
+    ret.type = 'd';
+    
+    return ret;
+}
+
+all_ktype log(std::vector<all_ktype> args); //double log(double x);
+
+all_ktype logBase(std::vector<all_ktype> args); //double ln(double x, double base);

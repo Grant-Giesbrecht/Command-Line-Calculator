@@ -57,7 +57,13 @@ all_ktype is_invertable(std::vector<all_ktype> args); //bool is_invertable(matri
 
 all_ktype determinant(std::vector<all_ktype> args); //double determinant(matrix x);
 
-all_ktype test_fn_delete_me(std::vector<all_ktype> args); //double test_fn_delete_me(double a, double b);
+all_ktype ln(std::vector<all_ktype> args); //double ln(double x);
+
+all_ktype nostd_log(std::vector<all_ktype> args); //double log(double x);
+
+all_ktype logBase(std::vector<all_ktype> args); //double ln(double x, double base);
+
+
 
 #endif
 
