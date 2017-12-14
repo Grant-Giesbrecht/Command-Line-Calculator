@@ -683,6 +683,49 @@ string KMatrix::get_string(){
 }
 
 /*-----------------------------------------------------*\
+|---------------- STATISTICAL FUNCTIONS ----------------|
+\*-----------------------------------------------------*/
+
+/*
+ Returns the maximum value stored in the matrix. If no values stored, will return -1.
+ 
+ Returns the maximum value.
+ */
+double KMatrix::max(){
+    
+    double max = -1;
+    
+    for (int r = 0 ; r < rows() ; r++){
+        for (int c = 0; c < cols() ; c++){
+            if ( operator()(r, c) > max){
+                max = operator()(r, c);
+            }
+        }
+    }
+    
+    return max;
+}
+
+/*
+ Returns the maximum value stored in the matrix. If no values stored, will return -1.
+ 
+ Returns the maximum value.
+ */
+double KMatrix::min(){
+    double min = -1;
+    
+    for (int r = 0 ; r < rows() ; r++){
+        for (int c = 0; c < cols() ; c++){
+            if ( operator()(r, c) < min){
+                min = operator()(r, c);
+            }
+        }
+    }
+    
+    return min;
+}
+
+/*-----------------------------------------------------*\
 |---------------- ARITHMETIC FUNCTIONS -----------------|
 \*-----------------------------------------------------*/
 

@@ -63,6 +63,10 @@ public:
     void power_double(double d);
 	Eigen::MatrixXd to_Eigen();
 	std::string get_string();
+    
+    //Statistical functions
+    double max();
+    double min();
 
 	//Arithmetic Functions
 	KMatrix crossprd(KMatrix& rv);
