@@ -29,44 +29,44 @@ using namespace std;
 string this_filename_0 = "interpret_keywords.cpp";
 
 void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings, string& in_header, string& out_header){
-    
+
     record_entry temp_rcd;
-    
+
     //Skip blank lines (KInterp will not break, just return error stating no content. Unneccesary though).
     if (input.length() == 0){
         return;
     }
-        
+
     //Parse words - not evaluation quality parse, just to determine if keyword active or if interpretation is required
     vector<string> words_complete = space_and_parse_protected(input);
     vector<string> words;
     vector<vector<string> > sentences = form_sentences(words_complete);
     vector<string> words_uc;
-    
+
 //    for (int s = 0 ; s < sentences.size() ; s++){
 //        cout << "Sentence[" << s << "]: " << endl;
 //        for (int w = 0 ; w < sentences[s].size() ; w++){
 //            cout << "\t" << sentences[s][w] << endl;
 //        }
 //    }
-    
+
     for (int j = 0 ; j < sentences.size() ; j++){
-    
+
         words = sentences[j];
         if (words.size() < 1){
             continue;
         }
-        
+
         words_uc.clear();
         for (int wuc = 0; wuc < words.size() ; wuc++){
             words_uc.push_back(to_uppercase(words[wuc]));
         }
-        
+
         //Scan for keywords - if non found, interpret as expression
         if (words_uc[0] == "EXIT"){ //Exit
             running = false;
         }else if(words_uc[0] == "HELP"){
-            
+
             //Read command line arguments
             vector<string> pages;
             unsigned char help_flags = 0;
@@ -92,7 +92,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             if (help_flags == 0 && pages.size() == 0){
                 help_flags = INTRO_FLAG;
             }
-            
+
             //Service request
             if (help_flags & INTRO_FLAG){
                 if (!print_file(string(RESOURCE_DIR) + "Resources/clc_intro_help.txt", 1)){
@@ -144,8 +144,8 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }
                 }
             }
-            
-            
+
+
             //Origional help interface
             /*for (int i = 1 ; i < words.size() ; i++){
                 if (!print_file(string(RESOURCE_DIR) + "Resources/clc_" + to_lowercase(words[i]) + "_help.txt", 1)){
@@ -158,11 +158,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     cout << string(RESOURCE_DIR) + "Resources/clc_help.txt" << endl;
                 }
             }*/
-            
+
         }else if(words_uc[0] == "LOGO"){
             print_file(string(RESOURCE_DIR) + "Resources/CLC_logo.txt", 1);
         }else if(words_uc[0] == "LSVAR"){
-            
+
             bool print_comments = true;
             for (int i = 1 ; i < words.size() ; i++ ){
                 if (words_uc[i] == "-C"){
@@ -173,13 +173,13 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
             }
-            
+
             if (print_comments){
                 kv.set(KV_PRINT_COMMENT, true);
             }else{
                 kv.set(KV_PRINT_COMMENT, false);
             }
-            
+
             kv.print(1);
         }else if(words_uc[0] == "CLVAR"){
             kv.clear();
@@ -197,13 +197,13 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(words_uc[0] == "PWD"){
             system("pwd");
         }else if(words_uc[0] == "SETCOM"){
-            
+
             if (words.size() > 1){
-                
+
                 string cmt;
                 IFPRINT << indent_line(1) << "NEW COMMENT: ";
                 getline(cin, cmt);
-                
+
                 for (int i = 1 ; i < words.size() ; i++){
                     if (!kv.set_comment(words[i], cmt)){
                         IFPRINT << indent_line(1) << "ERROR: Failed to set comment of variable '" + words[i] + "'" << endl;
@@ -223,7 +223,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }
                 }
             }
-            
+
         }else if(words_uc[0] == "ABE"){
             print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
         }else if(words_uc[0] == "VIEW"){
@@ -231,7 +231,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             viewer.set(KV_OVERWRITE_ON_LOAD, true);
             viewer.set(KV_PRINT_THRESHOLD, settings.threshold);
             viewer.set(KV_PRINT_PRECISION, (double)settings.precision);
-            
+
             string fn = "";
             bool read_comment = true;
             bool verbatim = false;
@@ -268,18 +268,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
             }
-            
+
             for (int i = 0 ; i < fn.length() ; i++){
                 if (fn[i] == ' ' || fn[i] == '\t'){
                     fn = fn.substr(0, i) + fn.substr(i+1);
                 }
             }
-            
+
             if (fn.length() == 0){
                 IFPRINT << indent_line(1) << "FILE: ";
                 getline(cin, fn);
             }
-            
+
             //Append directory if requested
             if (append_dir != 'n'){
                 switch(append_dir){
@@ -299,13 +299,13 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                         break;
                 }
             }
-            
+
             if (read_comment){
                 viewer.set(KV_READ_COMMENTS, true);
             }else{
                 viewer.set(KV_READ_COMMENTS, false);
             }
-            
+
             //Add KV1, 2, or 3 extension if !verbatim and no extension
             string extension = "";
             if (!verbatim && fn.find('.') == string::npos){
@@ -321,7 +321,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     fn = fn + extension;
                 }
             }
-            
+
             long fail_line = 0;
             switch (file_type) {
                 case 1:
@@ -364,11 +364,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             string header = viewer.get_header();
             if (header.length() > 0) IFPRINT << indent_line(1) << "HEADER: \n" << indent_in_string(header, 2) << endl;
             viewer.print(1);
-            
+
         }else if(words_uc[0] == "LOAD"){
-            
+
             kv.set(KV_OVERWRITE_ON_LOAD, settings.overwrite_on_load);
-            
+
             string fn = "";
             bool load_comments = true;
             bool verbatim = false;
@@ -407,18 +407,18 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
             }
-            
+
             for (int i = 0 ; i < fn.length() ; i++){
                 if (fn[i] == ' ' || fn[i] == '\t'){
                     fn = fn.substr(0, i) + fn.substr(i+1);
                 }
             }
-            
+
             if (fn.length() == 0){
                 IFPRINT << indent_line(1) << "FILE: ";
                 getline(cin, fn);
             }
-            
+
             //Append directory if requested
             if (append_dir != 'n'){
                 switch(append_dir){
@@ -438,13 +438,13 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                         break;
                 }
             }
-            
+
             if (load_comments){
                 kv.set(KV_READ_COMMENTS, true);
             }else{
                 kv.set(KV_READ_COMMENTS, false);
             }
-            
+
             //Add KV1, 2, or 3 extension if !verbatim and no extension
             string extension = "";
             if (!verbatim && fn.find('.') == string::npos){
@@ -460,7 +460,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     fn = fn + extension;
                 }
             }
-            
+
             long fail_line;
             switch (file_type) {
                 case 1:
@@ -509,9 +509,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "SOFTWARE ERROR: Unrecognized filetype detected." << endl;
                     break;
             }
-            
+
         }else if(words_uc[0] == "SAVE"){
-            
+
             string fn = "";
             bool save_comments = true;
             bool append_save_dir = false;
@@ -541,30 +541,30 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
             }
-            
+
             for (int i = 0 ; i < fn.length() ; i++){
                 if (fn[i] == ' ' || fn[i] == '\t'){
                     fn = fn.substr(0, i) + fn.substr(i+1);
                 }
             }
-            
+
             if (fn.length() == 0){
                 IFPRINT << indent_line(1) << "FILE: ";
                 getline(cin, fn);
             }
-            
+
             if (append_save_dir){
                 fn = settings.save_dir + fn;
             }else if(append_home_dir){
                 fn = settings.home_dir + fn;
             }
-            
+
             if (save_comments){
                 kv.set(KV_SAVE_COMMENTS, true);
             }else{
                 kv.set(KV_SAVE_COMMENTS, false);
             }
-            
+
             switch(file_type){
                 case 1:
                     if (kv.write_KV1(fn)){
@@ -601,7 +601,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 IFPRINT << indent_in_string(out_header, 2) << endl;
             }
         }else if(words_uc[0] == "SHDR"){
-            
+
             string hdr = "";
             bool copy_in_header = false;
             for (int i = 1 ; i < words.size() ; i++ ){
@@ -613,22 +613,22 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
             }
-            
+
             if (copy_in_header){
                 out_header = in_header;
             }
-            
+
             if (hdr.length() == 0){
                 IFPRINT << indent_line(1) << "HEADER: ";
                 getline(cin, hdr);
             }
-            
+
             out_header = hdr;
         }else if(words_uc[0] == "RUN"){
             bool silence = true;
             string fn = "";
             bool persist = false;
-            
+
             for (int i = 1 ; i < words.size() ; i++){
                 if (words_uc[i] == "-S"){
                     silence = true;
@@ -644,21 +644,44 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     IFPRINT << "ERROR: Unrecognized flag '" + words[i] + "'";
                 }
             }
-            
+
             for (int i = 0 ; i < fn.length() ; i++){
                 if (fn[i] == ' ' || fn[i] == '\t'){
                     fn = fn.substr(0, i) + fn.substr(i+1);
                 }
             }
-            
+
             if (fn == ""){
                 IFPRINT << indent_line(1) << "FILE: ";
                 getline(cin, fn);
             }
-            
-            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings, in_header, out_header)){
+
+			vector<int> fail_lines;
+			vector<string> fail_messages;
+            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings, in_header, out_header, fail_lines, fail_messages)){
                 if (result.type == 'e'){
-                    IFPRINT << indent_line(1) << result.s << endl;
+                    if (persist){
+                    		cout << indent_line(1) << "FAILED TO RUN FILE: '" << fn << "'. Failed " << fail_lines.size() << " times on lines ";
+							for (int l = 0 ; l < fail_lines.size() ; l++){
+								cout << fail_lines[l];
+								if (l+1 < fail_lines.size()) cout << ", ";
+							}
+							cout << "." << endl;
+							if (fail_messages.size() != fail_lines.size()){
+								cout << "SOFTWARE ERROR: Mismatched number of fail lines and fail messages!" << endl;
+							}
+							for (int l = 0 ; l < fail_messages.size() ; l++){
+								cout << indent_line(2) << "Line " << fail_lines[l] << ": " << fail_messages[l] << endl;
+							}
+                    }else{
+						if (fail_lines.size() > 0){
+							cout << indent_line(1) << "FAILED TO RUN FILE: '" << fn << "'. Failed on line " << fail_lines[0] << " and aborted." << endl;
+							cout << indent_line(2) << result.s << endl;
+						}else{
+							cout << "SOFTWARE ERROR: run_interpret() RETURNED INVALID PARAMETERS." << endl;
+						}
+
+                    }
                 }else{
                     IFPRINT << indent_line(1) << "SOFTWARE ERROR: Undefined type returned by interpret(). Problem detected in interpret() function. Check file 'KInterp.cpp'" << endl;
                     IFPRINT << indent_line(1) << "\t";
@@ -691,7 +714,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
         }else if(words_uc[0] == "SVPRG"){
-            
+
             string filename = "";
             char append_dir = 'n'; //n = none, h = home, s = save_dir
             for (int i = 1 ; i < words.size() ; i++){
@@ -704,7 +727,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
             if (filename == "" || filename == settings.home_dir || filename == settings.save_dir || filename == settings.home_dir+"/" || filename == settings.save_dir+"/") filename = "record.rcd";
-            
+
             //Append directory if requested
             if (append_dir != 'n'){
                 switch(append_dir){
@@ -724,17 +747,17 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                         break;
                 }
             }
-            
+
             fstream file;
             file.open(filename, std::ofstream::out | std::ofstream::trunc);
             if (!file.is_open()){
                 IFPRINT << indent_line(1) << "ERROR: Failed to create file " << filename << endl;
             }
-            
+
             for (int i = 0 ; i < record.size() ; i++){
                 file << record[i].command << endl;
             }
-            
+
             file.close();
         }else if(words_uc[0] == "DELETE"){
             if (words.size() > 1){
@@ -755,7 +778,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
         }else if(words_uc[0] == "PRCD"){
-            
+
             bool count_start_beginning = false;
             double count = -1;
             bool print_errors = false;
@@ -775,10 +798,10 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }
                     count = (int)count;
                 }else{
-                    
+
                 }
             }
-            
+
 //            unsigned long start = 0;
 //            unsigned long end = record.size();
 //            if (count != -1){
@@ -793,7 +816,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
 //                    end = record.size();
 //                }
 //            }
-            
+
             int start = 0;
             int end = (int)record.size()-1;
             int ticker = 0;
@@ -836,7 +859,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     }
                 }
             }
-            
+
             int num_printed = 0;
             for (int i = start ; i <= end ; i++){
 //                if (count != -1 && num_printed >= count){
@@ -867,7 +890,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     num_printed++;
                 }
             }
-        
+
         }else if(words_uc[0] == "SET"){
             run_settings_menu(settings);
             kv.set(KV_PRINT_THRESHOLD, settings.threshold);
@@ -908,7 +931,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }
             }
             if (filename == "" || filename == settings.home_dir || filename == settings.save_dir || filename == settings.home_dir+"/" || filename == settings.save_dir+"/") filename = "record.rcd";
-        
+
             //Append directory if requested
             if (append_dir != 'n'){
                 switch(append_dir){
@@ -928,7 +951,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                         break;
                 }
             }
-        
+
             save_record(filename, record, settings);
         }else{  //If not keyword, evaluate expression
             //Evaluate expression
@@ -988,13 +1011,13 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
 }
 
 bool save_record(std::string filename, std::vector<record_entry> record, program_settings settings){
-    
+
     fstream file;
     file.open(filename, std::ofstream::out | std::ofstream::trunc);
     if (!file.is_open()){
         return false;
     }
-    
+
     //Save date and time if asked
     if (settings.svrcd_lcltm){
         time_t now = time(0);
@@ -1010,35 +1033,24 @@ bool save_record(std::string filename, std::vector<record_entry> record, program
     if (settings.svrcd_utctm || settings.svrcd_lcltm){
         file << endl;
     }
-    
+
     for (int i = 0 ; i < record.size() ; i++){
         file << record[i].command << endl;
         file << "\t" << akt_tostring(record[i].output, settings.precision, settings.threshold) << endl;
     }
-    
+
     file.close();
-    
+
     return true;
 }
 
 bool save_program(std::string filename, std::vector<record_entry> record, program_settings settings){
-    
+
     fstream file;
     file.open(filename, std::ofstream::out | std::ofstream::trunc);
     if (!file.is_open()){
         return false;
     }
-    
+
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-

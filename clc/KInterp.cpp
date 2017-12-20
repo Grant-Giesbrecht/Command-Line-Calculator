@@ -25,7 +25,7 @@ out - Result of evaluation
 Returns true if evaluation completed successfully and without error. Else returns false and reports the error code in 'out'.
 */
 bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> interp_functions, bool allow_print){
-    
+
 	//Process input string (Ensure whitespace and parse)
 	vector<string> words = space_and_parse_negatives(input);
 
@@ -34,7 +34,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
             words.erase(words.begin()+i);
         }
     }
-    
+
 //	Test Point 1
 //	 for (int i = 0 ; i < words.size() ; i++){
 //	 	std::cout << ">" << words[i] << "<" << endl;
@@ -108,27 +108,27 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 //            }else{
 //                return false;
 //            }
-            
+
 		}
 	}
-    
+
 //     for (int i = 0 ; i < words.size() ; i++){
 //     	std::cout << ">" << words[i] << "<" << endl;
 //     }
-    
+
     //Check for update-assignment operators
     for (int i = 0 ; i < words.size() ; i++){
         if (words[i].length() == 2 && words[i][1] == '='){ //Variable assignment detected, evaluate expression and assign to left side
-            
+
 //            cout << "Update assign!" << endl;
-            
+
             if (words[i][0] == '=' || words[i][0] == '<' || words[i][0] == '>' || words[i][0] == '!') continue;
-            
+
             //Evaluate expression
             if (!interpret(cat_tokens(words, i+1, " "), vars, out, interp_functions)){
                 return false;
             }
-            
+
             //Detect the variable and it's type
             string varname;
             string error;
@@ -138,33 +138,33 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 out.s = error;
                 return false;
             }
-            
+
 //            //Assign value to new variable
 //            if (type != out.type){
 //                out.s = "ERROR: Can not assign " + char_to_typestr(out.type) + " value to " + char_to_typestr(type) + " variable.";
 //                out.type = 'e';
 //                return false;
 //            }
-            
+
             //Verify that variable exists
             if (!is_varname(words[i-1], vars, &error)){
                 out.s = "ERROR: Variable '" + words[i-1] + "' has not been declared and can not been used with an update-assign operator";
                 out.type = 'e';
                 return false;
             }
-            
+
             //Interpret expression
             switch (type) {
                 case 'd':{
                         double orig;
                         vars.get_variable(words[i-1], orig);
-                        
+
                         if (out.type != 'd'){
                             out.s = "ERROR: Must update-assign a double to a double";
                             out.type = 'e';
                             return false;
                         }
-                    
+
                         switch(words[i][0]){
                             case('+'):
                                 orig = orig + out.d;
@@ -182,21 +182,21 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                                 orig = pow(orig, out.d);
                                 break;
                         }
-                    
+
                         vars.set_variable(words[i-1], orig);
-                    
+
                         //Set output akt to be equal to the variable's new value
                         out.type = 'd';
                         out.d = orig;
-                    
+
                     }
                     break;
                 case 'm':{
                         KMatrix orig;
                         vars.get_variable(words[i-1], orig);
-                        
+
                         if (out.type == 'd'){
-                            
+
                             switch(words[i][0]){
                                 case('+'):
                                     orig.add_double(out.d);
@@ -219,7 +219,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                                     return false;
                                     break;
                             }
-                            
+
                             vars.set_variable(words[i-1], orig);
                         }else if(out.type == 'm'){
                             switch(words[i][0]){
@@ -238,24 +238,24 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                                     return false;
                                     break;
                             }
-                            
+
                             vars.set_variable(words[i-1], orig);
                         }else{
                             out.s = "ERROR: Must update-assign a double or matrix to a matrix";
                             out.type = 'e';
                             return false;
                         }
-                    
+
                         //Set output akt to be equal to the variable's new value
                         out.type = 'm';
                         out.km = orig;
-                    
+
                     }
                     break;
                 case 'b'://{
 //                        bool orig;
 //                        vars.get_variable(words[i-1], orig);
-//                        
+//
 //                        if (out.type == 'd'){
 //                            orig.add_double(out.d);
 //                            vars.set_variable(words[i-1], orig);
@@ -271,13 +271,13 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                 case 's':{
                         string orig;
                         vars.get_variable(words[i-1], orig);
-                    
+
                         if (words[i][0] != '+'){
                             out.s = "ERROR: Can only apply add operator to strings.";
                             out.type = 'e';
                             return false;
                         }
-                    
+
                         if (out.type == 's'){
                             vars.set_variable(words[i-1], orig + out.s);
                         }else{
@@ -285,20 +285,20 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                             out.type = 'e';
                             return false;
                         }
-                    
+
                     //Set output akt to be equal to the variable's new value
                     out.type = 's';
                     out.s = orig + out.s;
-                    
+
                     }
                     break;
                 default:
                     break;
             }
-            
-            
-            
-            return true;            
+
+
+
+            return true;
         }
     }
 
@@ -306,7 +306,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 //     for (int i = 0 ; i < words.size() ; i++){
 //         std::cout << ">" << words[i] << "<" << endl;
 //     }
-    
+
     //Check for implied 'ans'
     if (words.size() > 0 && words[0].size() > 0 && str_to_op(words[0]) && words[0] != "!"){
         if (words[0] == "-"){
@@ -328,15 +328,15 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 					out.s = "ERROR: Failed to locate double variable '" + words[i] + "'";
 					return false;
 				}
-                
+
                 int replace_start_idx = idx_from_word_idx(input, words, i, POSITION_WORD_START, 0);
                 int replace_end_idx = idx_from_word_idx(input, words, i, POSITION_WORD_END, 0);
-                
+
 				words[i] = hp_string(double_out, OPERATE_PRECISION);
                 //modify 'input' (origional string), so variable name is replaced by hp_string's output
-                
+
                 input = input.substr(0, replace_start_idx) + words[i] + input.substr(replace_end_idx+1);
-                
+
 			}else if(type == 'b'){
 				bool bool_out;
 				if (!vars.get_bool(words[i], bool_out)){
@@ -450,7 +450,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Function parenthesis were not closed.";
                     return false;
                 }
-                
+
 				//Evaluate Function and replace function with literal
 				all_ktype result = (interp_functions[j].function)(arguments);
 				if (result.type == 'e'){
@@ -610,11 +610,11 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 //    }
 
     //Evaluate implied 'ans'
-    
+
     /*====================================================================*\
     |================== EVALUATE SIMPLIFIED EXPRESSION ====================|
     \*====================================================================*/
-    
+
     //Evaluate exponents
 	all_ktype a, b;
     int start_idx = 0;
@@ -622,7 +622,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 	for (int i = 0 ; i < tokens.size() ; i++){
 		if (tokens[i].type == 'o'){
 			if(tokens[i].s == "^"){
-                
+
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -632,7 +632,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -642,7 +642,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double ^ double
                     a.d = pow(a.d, b.d);
@@ -667,13 +667,13 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Exponent operator (^) can only operate on doubles and matricies.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
 			}
         }
 	}
-    
+
     //Evaluate Multiplication, division, modulus
     for (int i = 0 ; i < tokens.size() ; i++){
         if (tokens[i].type == 'o'){
@@ -687,7 +687,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -697,7 +697,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double * double
                     a.d = a.d * b.d;
@@ -730,10 +730,10 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Multiplication operator (*) can only operate on doubles and matricies.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-                
+
             }else if(tokens[i].s == "/"){
                 //Determine 'a'
                 if (i == 0){
@@ -744,7 +744,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -754,7 +754,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double / double
                     a.d = a.d / b.d;
@@ -779,11 +779,11 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Division operator (/) can only operate on doubles and matricies.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "%"){
-                
+
                 //Determine 'a'
                 if (i == 0){
                     out.type = 'e';
@@ -793,7 +793,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -803,7 +803,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double % double
                     a.d = (int)a.d % (int)b.d;
@@ -828,14 +828,14 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Modulus operator (%) can only operate on doubles and matricies.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-                
+
             }
         }
     }
-    
+
     //Evaluate addition & subtration
     for (int i = 0 ; i < tokens.size() ; i++){
         if (tokens[i].type == 'o'){
@@ -849,7 +849,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -859,7 +859,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double + double
                     a.d = a.d + b.d;
@@ -889,10 +889,10 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Addition operator (+) can only operate on doubles, matricies, and strings.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-                
+
             }else if(tokens[i].s == "-"){
                 //Determine 'a'
                 if (i == 0){
@@ -903,7 +903,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -913,7 +913,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'd' && b.type =='d'){ //Double - double
                     a.d = a.d - b.d;
@@ -950,14 +950,14 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Subtraction operator (-) can only operate on doubles and matricies.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
-                
+
             }
         }
     }
-    
+
     //Evaluate &&, ||, !
     for (int i = 0 ; i < tokens.size() ; i++){
         if (tokens[i].type == 'o'){
@@ -971,7 +971,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -981,7 +981,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b && b.b;
@@ -990,7 +990,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: And operator (&&) can only operate on bools.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "||"){
@@ -1003,7 +1003,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1013,7 +1013,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b || b.b;
@@ -1022,7 +1022,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: Or operator (||) can only operate on bools.";
                     return false;
                 }
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "!" && tokens.size() > (i+1) && tokens[i+1].type == 'b' ){
@@ -1032,7 +1032,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
             }
         }
     }
-    
+
     //Evaluate ==, !=, >=, <=, >, <
     for (int i = 0 ; i < tokens.size() ; i++){
         if (tokens[i].type == 'o'){
@@ -1046,7 +1046,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1056,7 +1056,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b == b.b;
@@ -1082,7 +1082,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     return false;
                 }
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "!="){
@@ -1095,7 +1095,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1105,7 +1105,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b != b.b;
@@ -1131,7 +1131,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     return false;
                 }
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "<="){
@@ -1144,7 +1144,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1154,7 +1154,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b <= b.b;
@@ -1180,7 +1180,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     return false;
                 }
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == ">="){
@@ -1193,7 +1193,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1203,7 +1203,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b >= b.b;
@@ -1228,9 +1228,9 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: equals operator (==) can only operate on variables of the same type.";
                     return false;
                 }
-                
+
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == ">"){
@@ -1243,7 +1243,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1253,7 +1253,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b > b.b;
@@ -1278,9 +1278,9 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     out.s = "ERROR: equals operator (==) can only operate on variables of the same type.";
                     return false;
                 }
-                
+
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }else if(tokens[i].s == "<"){
@@ -1293,7 +1293,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     a = tokens[i-1];
                     start_idx = i-1;
                 }
-                
+
                 //Determine 'b'
                 if (i+1 >= tokens.size()){
                     out.type = 'e';
@@ -1303,7 +1303,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     b = tokens[i+1];
                     end_idx = i+1;
                 }
-                
+
                 //Perform operation
                 if (a.type == 'b' && b.type =='b'){ //bool & bool
                     a.b = a.b < b.b;
@@ -1329,13 +1329,13 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
                     return false;
                 }
                 a.type = 'b';
-                
+
                 inject_akt_into_aktvec(tokens, a, start_idx, end_idx);
                 i = start_idx;
             }
         }
     }
-    
+
     if (tokens.size() == 1){
         out.type = tokens[0].type;
         out.s = tokens[0].s;
@@ -1368,7 +1368,7 @@ vector<std::string> space_and_parse(std::string input){
 	ensure_whitespace_full(input, "//");
 	ensure_whitespace_full(input, "||");
 	ensure_whitespace_full(input, "&&");
-    
+
 	vector<string> words = parse(input, " ");
 	return words;
 
@@ -1376,13 +1376,13 @@ vector<std::string> space_and_parse(std::string input){
 
 /*
  Ensures appropriate whitespace and parsing for the KInterp function 'interpret()'.
- 
+
  input - string to space and parse
- 
+
  returns the parsed vector of words
  */
 vector<std::string> space_and_parse_protected(std::string input){
-    
+
     //Process input string (Ensure whitespace and parse)
     vector<string> protected_items;
     protected_items.push_back("+=");
@@ -1406,21 +1406,21 @@ vector<std::string> space_and_parse_protected(std::string input){
     ensure_whitespace_full(input, "==");
     ensure_whitespace_full(input, ">=");
     ensure_whitespace_full(input, "<=");
-    
+
     vector<string> words = parse(input, " ");
     return words;
-    
+
 }
 
 /*
  Ensures appropriate whitespace and parsing for the KInterp function 'interpret()' and handles negatives specially.
- 
+
  input - string to space and parse
- 
+
  returns the parsed vector of words
  */
 vector<std::string> space_and_parse_negatives(std::string input){
-    
+
     //Process input string (Ensure whitespace and parse)
     vector<string> protected_items;
     protected_items.push_back("+=");
@@ -1436,7 +1436,7 @@ vector<std::string> space_and_parse_negatives(std::string input){
     ensure_whitespace_full(input, "//");
     ensure_whitespace_full(input, "||");
     ensure_whitespace_full(input, "&&");
-    
+
     	//Whitespace for minus sign
         for (int i = 0 ; i < input.length() ; i++){
             if (input[i] == '-'){ //Add whitespace if character is '-' & next condition is met...
@@ -1448,22 +1448,22 @@ vector<std::string> space_and_parse_negatives(std::string input){
                 if ((i > 0 && is_negative_restricted_character(last_character)) || (i+1 < input.length() && input[i+1] == '=') ){ //Don't add whitespace if previous character exists and is a restricted character
                     continue;
                 }else if(i == 0) continue;
-        
+
                 input = input.substr(0, i) + ' ' + input[i] + ' ' + input.substr(i+1);
                 i++;
             }
         }
-    
+
         //Ensure whitespace duplicates are removed
         for (int i = 0 ; i < input.length() ; i++){
             if (input[i] == ' ' && i > 0 && input[i-1] == ' '){
                 input = input.substr(0, i) + input.substr(i+1);
             }
         }
-    
+
     vector<string> words = parse(input, " ");
     return words;
-    
+
 }
 
 bool is_negative_restricted_character(char c){
@@ -1494,7 +1494,7 @@ void inject_words_into_strvec(std::vector<std::string>& words, std::string injec
 
 /*
 Deletes the 'all_ktypes' in 'words' between 'begin' and 'end'. Inserts 'inject' where the values were removed.
- 
+
 words - vector to modify
 inject - all_ktype to insert into 'words'
 begin - index to begin removing items from 'words' and at which to locate 'inject'
@@ -1503,17 +1503,17 @@ end - index at which to stop eliminating items from 'words'
 Void return
 */
 void inject_akt_into_aktvec(std::vector<all_ktype>& words, all_ktype inject, int begin, int end){
-    
+
     //Clear items in 'words' that are to be erased
     for (int i = begin ; i <= end ; i++){
         words.erase(words.begin() + begin);
     }
-    
+
     words.insert(words.begin() + begin, inject);
 }
 
 string akt_tostring(all_ktype akt, int precision, int threshold){
-    
+
     if (akt.type == 'd'){
         char notation = select_notation(akt.d, threshold);
         return hp_string(akt.d, precision, (notation == 's'));
@@ -1539,7 +1539,7 @@ notation_type - if:
     'x' - select notation based on threshold
 */
 string akt_tostring(all_ktype akt, int precision, int threshold, char notation_type){
-    
+
     if (akt.type == 'd'){
         char notation;
         switch(notation_type){ //Select notation
@@ -1571,10 +1571,10 @@ string akt_tostring(all_ktype akt, int precision, int threshold, char notation_t
 
 /*
  Converts an 'all_ktype' to a string for printing. The 'formal' setting removes type identifiers for a final product, whereas normal operation is better for debugging.
- 
+
  akt - all_ktype to convert to string
  formal - activate 'formal' setting. Removes all but the value contained by the all_ktype (Otherwise specifies type).
- 
+
  Returns a string representing the all_ktype.
 */
 string akt_tostring(all_ktype akt, bool formal){
@@ -1615,8 +1615,8 @@ string akt_tostring(all_ktype akt, bool formal){
 }
 
 //Delete 'print_error
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header){
-    
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header, vector<int>& fail_lines, std::vector<std::string>& fail_messages){
+
     //Open file
     ifstream file(filename);
     if (!file.is_open()){
@@ -1624,45 +1624,56 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
         out.s = "ERROR: Failed to open file '" + filename + "'";
         return false;
     }
-    
+
     bool running = true;
     string s;
     all_ktype last;
     last.type = 's';
     last.s = "No commands successfully evaluated in file '" + filename + "'";
+    int line = 0;
+    int num_failures = 0;
+	bool retval = true;
     while(file.good()){
         getline(file, s);
-        
+        line++;
+
         if (delete_comments){
             remove_comments(s, "//");
         }
-    
+
         interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, settings, in_header, out_header);
-        
+
         if (out.type == 'e'){
+			fail_lines.push_back(line);
             if (!persist){
-                out.s = "ERROR: Failed to execute script '" + filename + "' correctly";
                 return false;
             }else{
-                out = last;
+				fail_messages.push_back(out.s);
+                // out = last; //This way a valid aktype is returned no matter what
+				retval = false;
             }
         }else{
             last = out;
         }
-        
+
     }
-    
-    return true;
+
+    return retval;
 }
 
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header){
+	vector<int> dummy;
+	vector<string> fm;
+	return run_interpret(filename, vars, out, interp_functions, persist, print_results, indentation, record, delete_comments, settings, in_header, out_header, dummy, fm);
+}
 std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> input){
-    
+
 //    for (int i = 0 ; i < input.size() ; i++){
 //        cout << '\'' << input[i] << '\'' << endl;
 //    }
-    
+
     vector<vector<string> > sentences;
-    
+
     int bracket_level = 0;
     int last_word_dump = 0;
     for (int i = 0 ; i < input.size() ; i++){
@@ -1687,14 +1698,6 @@ std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> i
         }
         sentences.push_back(temp_vector);
     }
-    
+
     return sentences;
 }
-
-
-
-
-
-
-
-

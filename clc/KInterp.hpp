@@ -30,6 +30,8 @@ std::string akt_tostring(all_ktype akt, bool formal=false);
 
 //bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments=false, int print_precision=15, bool scientific_notation=false);
 
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header, std::vector<int>& fail_lines, std::vector<std::string>& fail_messages);
+
 bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header);
 
 std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> input);
