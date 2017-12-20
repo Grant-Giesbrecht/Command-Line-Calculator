@@ -1,0 +1,112 @@
+problems with CLC as of 9.5.2017:
+
+	//Finish fixing strings
+
+Update KV1 to new specs
+
+PRCD does not print startup program commands.
+
+	//Make functions work
+
+	//(-) spacing incorrect #-# won’t work, problem when spacing variables too
+	//SVRCD saves to ‘record.rcd’ regardless of what user requests
+
+	//Header from load variable file transported to saved KV files
+
+	//Loads variables twice!
+
+	//1e400 thinks its a variable!
+
+	//Easter eggs can double load variables
+
+Precision = 5e5
+
+KMAtrix - ask for row oob and will cause error!
+
+KMatrix print() has endl;
+
+	// Can not use var names in matrix
+
+	// Matrix with string elements crashes
+
+	// Variables are all just 0
+
+To prevent variables from all being zero, changed internal precision to 400. Now all variables are 400 characters long. Make this more efficient.
+
+PRCD will not use scientific notation!
+
+Matrix out will not print in scientific notation
+
+Matrix will not accept small (plank's) numbers. //I think the Matrix is accepting it fine, the problem I believe is that when string-ifying the matrix, the precision is too small (needs to be ~400) and will therefore cut off those small digits even if you multiply the matrix). Need to modify KMatrix code.
+
+view (read too?) KV that doesn't exist gives "Failed on line 1402.....232"
+
+	//Svrcd -f ignores argument, uses default always.
+
+	//Svrcd '-f' syntax is inconsistent.
+
+	//Svrcd does not have filled help page
+
+	//sin(x_ explodes!
+
+	//sin(-.2) gives ERROR: Unidentified variable '-.2'
+
+	//Actually, -.2 in CLC prompt gives unidentified variable!
+
+SAVE_DIR command goes to root dir '/'
+
+When unrecongnized help topic given, says 'ERROR' and doesn't say how to get help topics.
+
+Have not finished updating help system. The pages desperately need to be updated and the topic, function, command list functions need to be implemented.
+
+e^MATRIX gives bad answer
+
+=#### breaks
+
+Matrix size() function
+
+——————— IMPLEMENT ———————
+
+	//- Header manipulation
+- Plotting! (In CLC 4.0 or CLC 3.0P)
+- Add to help files how to load default variables and what options are
+- Matrix element access!
+- Factorials!
+- scrolling back and up (see: http://www.cplusplus.com/forum/beginner/132595/)
+- Imaginary numbers?
+- Update to long double for higher precision
+- View without read rcd files?
+- 'state' files? Allow to pick up where left off? Autosave state?
+- 'tab' to complete file names and directories & variable names?
+- let file names contain spaces if surrounded by quotes. Quotes not required for names w/o spaces
+- help option
+	-v (VERBOSE) verbose (current) output
+	-I (INTRO) brief (1 P intro)
+	-T (TOPICS) list all topics
+	-C (COMMANDS) list all commands
+	Allow multiple flags
+	-f [fn name(s)] print function help files, if no fn names given will list available function
+	[NOFLAG] Command or topic for help
+
+Quick long precision command or runtime long precision change
+
+Save state as you go functionality
+
+Results are printing unacceptable for #####e+### not #####e### || ####e-##
+
+------- ADD VARIABLES ---------
+
+	//Permitivity of free space: 8.85418782 × 10-12 m-3 kg-1 s4 A2
+K (e&m) : 8.98755e+09
+Conversion vars 
+	Angstrom
+	eV
+	amu
+Chem values?
+
+------- ADD FUNCTIONS ----------
+
+Log base
+Log
+Ln
+
