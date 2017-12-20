@@ -1,0 +1,39 @@
+Tutorial Topics:
+
+-------------CLC
+
+0. Intro - purpose of CLC and who should use it
+1. Installing
+2. Basics
+	variable types
+	operations
+	functions
+	Listing variables
+	Read/write functions 
+3. Understanding help pages
+4. Customizing!
+	Changing startup.clc
+	Changing default variable files
+	Settings
+	Custom functions
+5. Modifying KV files
+
+----------CX
+
+0. Intro purpose and who should use it
+1. Basics
+2. 
+
+-------- IEGA C++ Tutorial
+
+0. Intro - why and who
+1. How multi file programs work
+2. How to install
+3. KMatrix
+4. KPlot
+
+
+
+
+
+

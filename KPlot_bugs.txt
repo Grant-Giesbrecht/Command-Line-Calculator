@@ -1,0 +1,27 @@
+-------------- WORKS IN PROGRESS -----------
+
+Fixing kp2 running in main : Color wasn't changing (other settings weren't working either). I found the issue - the addTrace method being used is old and doesn't work correctly - you need to update it (it adds a trace to an object that isn't in the mainWindow).
+
+----------- BUGS --------------
+
+Numeric Labels can appear outside the graph
+
+If plot exceeds graph bounds, its exiting the graph!
+
+Font is fuzzy
+
+--------- IMPLEMENT -----------
+
+
+
+---------- LONG TERM IMPLEMENT -----------
+
+Save as file
+
+Implement toolbar / buttons
+
+Dual axes (L & R)
+
+Mobile legend
+
+Show label at end or grid line if no numeric ticks

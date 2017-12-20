@@ -1,0 +1,17 @@
+problems with KMatrix as of 11.10.2017:
+
+?still? KMAtrix - ask for row oob and will cause error!
+
+Does not load matricies!
+
+//KMatrix print() has endl;
+
+——————— IMPLEMENT ———————
+
+- array to KMatrix
+
+- unify print & to_string so both return same format
+
+- operator+=(double) possible?
+
+- imaginary numbers?
