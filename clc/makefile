@@ -2,9 +2,10 @@
 
 CC = g++ -std=c++11
 OBJS = kc_aux.o KMatrix.o stdutil.o string_manip.o CLIK.o KVar.o KInterp.o KIFunctions.o KInterpAux.o interpret_keywords.o settings_menu.o
+LIBS = -lreadline
 
 all: main.cpp $(OBJS)
-	$(CC) -o clc main.cpp $(OBJS)
+	$(CC) -o clc main.cpp $(OBJS) $(LIBS)
 
 kc_aux.o: kc_aux.cpp kc_aux.hpp
 	$(CC) -c kc_aux.cpp

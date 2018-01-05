@@ -20,6 +20,9 @@
 #include "interpret_keywords.hpp"
 #include "settings_menu.hpp"
 
+#include <readline/readline.h> //rl
+#include <readline/history.h> //rl
+
 using namespace std;
 
 string this_filename_1 = "main.cpp";
@@ -80,17 +83,31 @@ int main(int argc, const char * argv[]){
     
     bool running = true;
     string input;
+    string last_input;
     record_entry temp_rcd;
     all_ktype temp_akt;
+    char* in_buf;
     while (running){
         
+        in_buf = readline(settings.command_sequence.c_str()); //rl
+        input = string(in_buf); //rl
         //Get input
-        cout << settings.command_sequence << flush;
-        getline(cin, input);
+//        cout << settings.command_sequence << flush; //!rl
+//        getline(cin, input); //!rl
+        for (int i = 0 ; i < input.length() ; i++){
+            if (input[i] != ' ' && input[i] != '\t'){
+                if (last_input != input){
+                    add_history(in_buf); //Add to history if not repeat
+                }
+                break;
+            }
+        }
         
         interpret_with_keywords(input, kv, result, functions, running, record, false, settings, in_header, out_header);
 
     }
+    
+    free(in_buf);
     
     save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
     

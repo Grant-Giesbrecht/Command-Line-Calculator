@@ -308,6 +308,7 @@
 		0D72294E1E6E6D6F004A9E09 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"OTHER_LDFLAGS[arch=*]" = "-lreadline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -315,6 +316,7 @@
 		0D72294F1E6E6D6F004A9E09 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"OTHER_LDFLAGS[arch=*]" = "-lreadline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

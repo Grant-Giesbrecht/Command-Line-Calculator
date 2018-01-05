@@ -1,4 +1,10 @@
-problems with CLC as of 9.5.2017:
+===================================================================
+================= problems with CLC as of 9.5.2017: ===============
+===================================================================
+
+===================================================================
+=============== ------------ BUGS --------------- =================
+===================================================================
 
 	//Finish fixing strings
 
@@ -63,13 +69,17 @@ e^MATRIX gives bad answer
 
 =#### breaks
 
-Matrix size() function
+Matrix size() functio\n
 
 RUN error messages are broken!
 
 Change to accept twice declared variables. This facilitates CLC scripts better.
 
-——————— IMPLEMENT ———————
+Fix platform specificity with Macros (and makefile flags?)
+
+===================================================================
+===================== ——————— IMPLEMENT ——————— ===================
+===================================================================
 
 	//- Header manipulation
 - Plotting! (In CLC 4.0 or CLC 3.0P)
@@ -83,13 +93,17 @@ Change to accept twice declared variables. This facilitates CLC scripts better.
 - 'state' files? Allow to pick up where left off? Autosave state?
 - 'tab' to complete file names and directories & variable names?
 - let file names contain spaces if surrounded by quotes. Quotes not required for names w/o spaces
-- help option
-	-v (VERBOSE) verbose (current) output
-	-I (INTRO) brief (1 P intro)
-	-T (TOPICS) list all topics
-	-C (COMMANDS) list all commands
-	Allow multiple flags
-	-f [fn name(s)] print function help files, if no fn names given will list available function
+- loadable functions (lock some out, enable with this 'load' function). This way a huge library of functions can be without making the command line treacherous.
+	//- help option
+	//	-v (VERBOSE) verbose (current) output
+	//	-I (INTRO) brief (1 P intro)
+	//	-T (TOPICS) list all topics
+	//	-C (COMMANDS) list all commands
+	xx	Allow multiple flags
+	xx	-f [fn name(s)] print function help files, if no fn names given will list 
+	- add help topic that directs user to wiki &&/|| youtube tutorials
+
+available function
 	[NOFLAG] Command or topic for help
 
 Quick long precision command or runtime long precision change
@@ -100,7 +114,9 @@ Results are printing unacceptable for #####e+### not #####e### || ####e-##
 
 Easter egg which prints holiday things based on clock (maybe)
 
-------- ADD VARIABLES ---------
+===================================================================
+================== ------- ADD VARIABLES --------- ================
+===================================================================
 
 	//Permitivity of free space: 8.85418782 × 10-12 m-3 kg-1 s4 A2
 K (e&m) : 8.98755e+09
@@ -108,11 +124,22 @@ Conversion vars
 	Angstrom
 	eV
 	amu
-Chem values?
+	everything else to SI Units
+Chem values
 
-------- ADD FUNCTIONS ----------
+===================================================================
+================== ------- ADD FUNCTIONS ---------- ===============
+===================================================================
 
-Log base
-Log
-Ln
+matrix(2d) command_iterator(String cmd, double start, double end, double(int) 
+	iterations) //For use with rapid plotting, make accessible from C++ programs too
+void command_iterator(String cmd, double start, double end, double(int) iterations, 
+	matrix& x, matrix& y) //For use with rapid plotting, make accessible from C++ 
+	programs too
+void plot(matrix x, matrix y);
+void plot(matrix xy);
+
+	//Log base
+	//Log
+	//Ln
 

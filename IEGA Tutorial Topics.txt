@@ -9,7 +9,7 @@ Tutorial Topics:
 	operations
 	functions
 	Listing variables
-	Read/write functions 
+	Read/write functions
 3. Understanding help pages
 4. Customizing!
 	Changing startup.clc
