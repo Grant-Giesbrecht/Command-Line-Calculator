@@ -53,8 +53,9 @@ void run_settings_menu(program_settings& settings){
                 double nv = stod(input);
                 if (nv <= 0 || (int)nv != nv ){
                     cout << indent_line(2) << "ERROR: New value must be an integer greater than zero" << endl;
+                }else{
+                    settings.precision = nv;
                 }
-                settings.precision = nv;
             }catch(...){
                 cout << indent_line(2) << "ERROR: New value must be an integer greater than zero" << endl;
             }
@@ -74,8 +75,9 @@ void run_settings_menu(program_settings& settings){
                 double nv = stod(input);
                 if (nv < 0){
                     cout << indent_line(2) << "ERROR: New value must be a positive number" << endl;
+                }else{
+                    settings.threshold = nv;
                 }
-                settings.threshold = nv;
             }catch(...){
                 cout << indent_line(2) << "ERROR: New value must be a positive number" << endl;
             }
@@ -228,6 +230,36 @@ void run_settings_menu(program_settings& settings){
                 str_to_bool(input, out);
             }
             settings.overwrite_on_load = out;
+        }else if(upin == "13" || upin == "SAVE_INPUT_HISTORY"){
+            bool out;
+            if (words.size() > 1){
+                str_to_bool(words[1], out);
+            }else{
+                cout << indent_line(2) << "New value (bool): " << flush;
+                getline(cin, input);
+                str_to_bool(input, out);
+            }
+            settings.save_input_history = out;
+        }else if(upin == "14" || upin == "INPUT_HISTORY_LENGTH"){
+            
+            //Get new value
+            if (words.size() > 1){
+                input = words[1];
+            }else{
+                cout << indent_line(2) << "New value (double): " << flush;
+                getline(cin, input);
+            }
+            
+            //Interpret, check, and apply new value
+            try{
+                double nv = stod(input);
+                if (nv < 0){
+                    settings.input_history_length = -1;
+                }
+                settings.input_history_length = (int)nv;
+            }catch(...){
+                cout << indent_line(2) << "ERROR: New value must be a number" << endl;
+            }
         }else if(upin == "PRINT_CODES"){
             cout << indent_line(2) << "1: PRECISION" << endl;
             cout << indent_line(2) << "2: THRESHOLD" << endl;
@@ -241,6 +273,8 @@ void run_settings_menu(program_settings& settings){
             cout << indent_line(2) << "10: HIDE_STARTUP" << endl;
             cout << indent_line(2) << "11: PRINT_DIR_CD" << endl;
             cout << indent_line(2) << "12: OVERWRITE_ON_LOAD" << endl;
+            cout << indent_line(2) << "13: SAVE_INPUT_HISTORY" << endl;
+            cout << indent_line(2) << "14: INPUT_HISTORY_LENGTH" << endl;
         }else if(upin == "SAVE"){
             save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
         }else{
@@ -269,6 +303,8 @@ void show_settings(program_settings settings){
     cout << indent_line(2) << "10. Hide Startup Sequence: \t" << bool_to_str(settings.hide_startup_sequence) << endl;
     cout << indent_line(2) << "11. Print directory after cd: \t" << bool_to_str(settings.print_dir_cd) << endl;
     cout << indent_line(2) << "12. Overwrite variables on conflict load: \t" << bool_to_str(settings.overwrite_on_load) << endl;
+    cout << indent_line(2) << "13. Save keyboard input history upon exit: \t" << bool_to_str(settings.save_input_history) << endl;
+    cout << indent_line(2) << "14. Number of CLI entries to save in input history: \t" << settings.input_history_length << endl;
 }
 
 bool load_settings(std::string filename, program_settings& settings){
@@ -357,6 +393,18 @@ bool load_settings(std::string filename, program_settings& settings){
                 IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
             }
             settings.overwrite_on_load = out;
+        }else if(words[0] == "SAVE_INPUT_HISTORY"){
+            bool out;
+            if (!str_to_bool(words[1], out)){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
+            settings.save_input_history = out;
+        }else if(words[0] == "INPUT_HISTORY_LENGTH"){
+            try{
+                settings.input_history_length = stod(words[1]);
+            }catch(...){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
         }else{
             /*IFPRINTERR*/ cout << "SOFTWARE ERROR: Failed to recognize setting '" << words[0] << "'" << endl;
         }
@@ -388,6 +436,8 @@ bool save_settings(std::string filename, program_settings& settings){
     file << "HIDE_STARTUP " << bool_to_str(settings.hide_startup_sequence) << endl;
     file << "PRINT_DIR_CD " << bool_to_str(settings.print_dir_cd) << endl;
     file << "OVERWRITE_ON_LOAD " << bool_to_str(settings.overwrite_on_load) << endl;
+    file << "SAVE_INPUT_HISTORY " << bool_to_str(settings.save_input_history) << endl;
+    file << "INPUT_HISTORY_LENGTH " << hp_string(settings.input_history_length, 15, true) << endl;
     
     file.close();
     

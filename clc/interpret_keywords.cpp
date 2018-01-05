@@ -14,6 +14,7 @@
 #include "string_manip.hpp"
 #include "settings_menu.hpp"
 #include <unistd.h>
+#include <readline/history.h>
 
 #define IFPRINT if (!silence_output) cout
 
@@ -936,6 +937,41 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
         }else if(words_uc[0] == "MATLAB"){
             if (!kv.contains("MATLAB")) kv.add_string("MATLAB", "Worst 'programming language' in the history of the universe.");
             IFPRINT << indent_line(1) << "Spawn of satan" << endl;
+        }else if(words_uc[0] == "CLHIST"){
+            clear_history();
+            IFPRINT << indent_line(1) << "Input history cleared" << endl;
+        }else if(words_uc[0] == "SVSTATE"){
+            
+            //Process flags
+            
+            //Create directory
+            
+            //Save RCD file
+            
+            //Save KV1 file
+            
+            //Save Input History file
+            
+            //Save settings file
+            
+            //Zip directory
+            
+        }else if(words_uc[0] == "LDSTATE"){
+            
+            //Process flags
+            
+            //Unzip directory (but keep origional zip file, copy if neccesary)
+            
+            //read RCD file
+            
+            //read KV1 file
+            
+            //read Input History file
+            
+            //read settings file
+            
+            //delete unzipped file
+            
         }else if(words_uc[0] == "CLRCD"){
             record.clear();
             IFPRINT << indent_line(1) << "Record cleared." << endl;

@@ -60,6 +60,7 @@ int main(int argc, const char * argv[]){
     string in_header = "";
     string out_header = "";
     
+    //Load program setting from settings file
     program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR, true, false, true};
     if (!load_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings)){
         cout << "INSTALL ERROR: Failed to locate settings file." << endl;
@@ -67,13 +68,20 @@ int main(int argc, const char * argv[]){
     kv.set(KV_PRINT_THRESHOLD, settings.threshold);
     kv.set(KV_PRINT_PRECISION, (double)settings.precision);
     
+    //Change directory to home directory
     chdir(settings.home_dir.c_str());
     
+    //Load functions
     vector<func_id> functions;
     define_functions(&functions);
     
+    //Initialize the record
     vector<record_entry> record;
     
+    //Load keyboard history if specified to do so
+    if (settings.save_input_history) read_history(string(string(RESOURCE_DIR) + "Resources/keyboard_input_history.txt").c_str()); //Read history (returns 0 on success)
+    
+    //Run the startup script to load any user preferences
     run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings, in_header, out_header);
     if (settings.hide_startup_sequence){
         record.clear();
@@ -81,12 +89,13 @@ int main(int argc, const char * argv[]){
         out_header = "";
     }
     
+    //Begin the main loop
     bool running = true;
     string input;
     string last_input;
     record_entry temp_rcd;
     all_ktype temp_akt;
-    char* in_buf;
+    char* in_buf = nullptr;
     while (running){
         
         in_buf = readline(settings.command_sequence.c_str()); //rl
@@ -96,7 +105,7 @@ int main(int argc, const char * argv[]){
 //        getline(cin, input); //!rl
         for (int i = 0 ; i < input.length() ; i++){
             if (input[i] != ' ' && input[i] != '\t'){
-                if (last_input != input){
+                if (last_input != input && to_uppercase(input) != "EXIT"){
                     add_history(in_buf); //Add to history if not repeat
                 }
                 break;
@@ -105,10 +114,16 @@ int main(int argc, const char * argv[]){
         
         interpret_with_keywords(input, kv, result, functions, running, record, false, settings, in_header, out_header);
 
+        last_input = input;
     }
     
+    //Deallocate 'in_buf'
     free(in_buf);
     
+    //Save keyboard history if requested
+    if (settings.save_input_history) write_history(string(string(RESOURCE_DIR) + "Resources/keyboard_input_history.txt").c_str());
+    
+    //Save settings to file
     save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
     
     return 0;
