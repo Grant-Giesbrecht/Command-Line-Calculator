@@ -44,6 +44,10 @@ std::string add_space_indicators(std::string);
 
 std::string add_space_indicators(std::string, std::string indentation);
 
+std::string tabulate_newline(std::string input, int num_tabs, bool use_spaces=false);
+
+std::string tabulate_newline(std::string input, int num_tabs, int num_space);
+
 //From KInterpAux
 
 bool str_to_string(std::string input, std::string& output);

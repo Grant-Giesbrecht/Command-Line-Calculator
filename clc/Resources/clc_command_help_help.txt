@@ -1,0 +1,18 @@
+---------------------------------------------------------
+--------------------- CLC HELP HELP ---------------------
+
+Description:
+    Accesses the CLC integrated help system (IHS). IHS can give
+    general information about CLC and the current version or it can
+    display help pages over specific subjects. The subjects are split
+    into three categories: commands (CLC commands like LSVAR), functions
+    (CLC functions like 'sin()'), and topics (everything else).
+
+Flags:
+    -I || -INTRO: Display intro help page. A short but minimal help page.
+    -C || -COMMAND: Specify help page category as only commands
+    -F || -FUNCTION: Specify help page category as only functions
+    -T || -TOPIC: Specify help page category as only topics
+    -V || -VERBOSE: Display verbose help page
+    [page_name] page_name - name of the help page to display. Multiple pages can
+    be listed, the page names must just be separated by spaces.

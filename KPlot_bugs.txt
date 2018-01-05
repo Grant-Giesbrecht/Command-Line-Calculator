@@ -1,18 +1,41 @@
 -------------- WORKS IN PROGRESS -----------
 
+as of 24.12.2017: Working in kgraphics - the problem is eliminating traces extending outside the graph area. The origional idea was to geometricly trim the chunks of trace exiting the area, which I am currently working on. I am writing a new function 'trim_ktrace' which trims a ktrace to exist only within a region. That is still a fine idea, but the question is if you want to graph one data set with lines but you want a gap to exist also, you would need two traces. I think thats fine, I think its uncommon to need and I think that it would be easy enough to just use two traces or points.
+
 Fixing kp2 running in main : Color wasn't changing (other settings weren't working either). I found the issue - the addTrace method being used is old and doesn't work correctly - you need to update it (it adds a trace to an object that isn't in the mainWindow).
 
 ----------- BUGS --------------
 
-Numeric Labels can appear outside the graph
+//Numeric Labels can appear outside the graph
 
 If plot exceeds graph bounds, its exiting the graph!
 
 Font is fuzzy
 
+Draw a box outside the graph area so that thick lines don't poke out.
+
+label and numeral locations
+
+Tesselation is wrong!{
+	KMatrix kmX("0, 2, 6, 2, 0, -2, -6, -2, 0");
+    KMatrix kmY("6, 2, 0, -2, -6, -2, 0, 2, 6");
+    KPlot kp2("Trace1", kmX, kmY);
+//    kp.setBounds(-5, 5, -5, 5);
+    kp2.setBounds(-10, 10, -10, 10);
+    if (!kp2.setTraceColor("Trace1", sf::Color::Red));
+}
+
 --------- IMPLEMENT -----------
 
+Add thick border to edge of graph
 
+Add nub/tick marks to axes or edge of graph if origin out of frame
+
+Dual axes, maybe quadruple
+
+Log axes
+
+Automatic axes and ticks
 
 ---------- LONG TERM IMPLEMENT -----------
 

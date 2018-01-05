@@ -65,6 +65,10 @@ e^MATRIX gives bad answer
 
 Matrix size() function
 
+RUN error messages are broken!
+
+Change to accept twice declared variables. This facilitates CLC scripts better.
+
 ——————— IMPLEMENT ———————
 
 	//- Header manipulation
@@ -93,6 +97,8 @@ Quick long precision command or runtime long precision change
 Save state as you go functionality
 
 Results are printing unacceptable for #####e+### not #####e### || ####e-##
+
+Easter egg which prints holiday things based on clock (maybe)
 
 ------- ADD VARIABLES ---------
 

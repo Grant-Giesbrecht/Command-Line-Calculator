@@ -23,6 +23,9 @@
 #define COMMAND_FLAG 4
 #define FUNCTION_FLAG 8
 #define TOPIC_FLAG 16
+#define LCOMMANDS_FLAG 32
+#define LFUNCTIONS_FLAG 64
+#define LTOPICS_FLAG 128
 
 using namespace std;
 
@@ -70,9 +73,9 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             //Read command line arguments
             vector<string> pages;
             unsigned char help_flags = 0;
-            unsigned char page_handler = COMMAND_FLAG;
+            unsigned char page_handler = COMMAND_FLAG | FUNCTION_FLAG | TOPIC_FLAG;
             for (int i = 1 ; i < words.size() ; i++){
-                if (words_uc[i] == "-V"){
+                if (words_uc[i] == "-V" || words_uc[i] == "-VERBOSE"){
                     help_flags |= VERBOSE_FLAG;
                 }else if(words_uc[i] == "-I" || words_uc[i] == "-INTRO"){
                     help_flags |= INTRO_FLAG;
@@ -85,6 +88,12 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }else if(words_uc[i] == "-F" || words_uc[i] == "-FUNCTION"){
                     page_handler = FUNCTION_FLAG;
                     help_flags |= FUNCTION_FLAG;
+                }else if(words_uc[i] == "-LC" || words_uc[i] == "-LISTCOMMANDS"){
+                    help_flags |= LCOMMANDS_FLAG;
+                }else if(words_uc[i] == "-LF" || words_uc[i] == "-LISTFUNCTIONS"){
+                    help_flags |= LFUNCTIONS_FLAG;
+                }else if(words_uc[i] == "-LT" || words_uc[i] == "-LISTTOPICS"){
+                    help_flags |= LTOPICS_FLAG;
                 }else{
                     pages.push_back(words[i]);
                 }
@@ -94,54 +103,80 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             }
 
             //Service request
-            if (help_flags & INTRO_FLAG){
+            if (help_flags & INTRO_FLAG){ //Intro page
                 if (!print_file(string(RESOURCE_DIR) + "Resources/clc_intro_help.txt", 1)){
                     IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_intro_help.txt'" << endl;
                 }
             }
-            if (help_flags & VERBOSE_FLAG){
+            if (help_flags & VERBOSE_FLAG){ //Verbose page
                 if (!print_file(string(RESOURCE_DIR) + "Resources/clc_verbose_help.txt", 1)){
-                    IFPRINT << indent_line(1) << "SOFTWARE ERROR: Failed to locate file: 'clc_verbose_help.txt'" << endl;
+                    IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_verbose_help.txt'" << endl;
                 }
             }
-            if (help_flags & COMMAND_FLAG || page_handler == COMMAND_FLAG){
-                if (page_handler == COMMAND_FLAG){ //Service help page requests
-                    for (int k = 0 ; k < pages.size() ; k++){
-                        if (!print_file(string(RESOURCE_DIR) + "Resources/clc_command_" + to_lowercase(pages[k]) + "_help.txt", 1)){
-                            IFPRINT << indent_line(1) << "ERROR: Failed to recognize help command subtopic '" + pages[k] + "'" << endl;
-                        }
-                    }
-                }else{ //List all available commands
-//                    std::filesystem::directory_iterator
-                    if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_commands_help.txt", 1)){
-                        IFPRINT << indent_line(1) << "SOFTWARE ERROR: Failed to locate file: 'clc_list_commands_help.txt'" << endl;
+            if (help_flags & LCOMMANDS_FLAG){ //Verbose page
+                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_commands_help.txt", 1)){
+                    IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_list_commands_help.txt'" << endl;
+                }
+            }
+            if (help_flags & LTOPICS_FLAG){ //Verbose page
+                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_topics_help.txt", 1)){
+                    IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_list_topics_help.txt'" << endl;
+                }
+            }
+            if (help_flags & LFUNCTIONS_FLAG){ //Verbose page
+                cout << indent_line(1) << "---------------------------------------------------------" << endl;
+                cout << indent_line(1) << "--------------------- CLC FUNCTIONS ---------------------" << endl;
+                for (int f = 0 ; f < functions.size() ; f++){
+                    cout << indent_line(1, 4) << functions[f].identifier << endl;
+                }
+            }
+            if (page_handler & COMMAND_FLAG){ //Service help page requests
+                for (int k = 0 ; k < pages.size() ; k++){
+                    if (print_file(string(RESOURCE_DIR) + "Resources/clc_command_" + to_lowercase(pages[k]) + "_help.txt", 1)){
+                        pages.erase(pages.begin() + k); //If successful, delete page from requests
+                        k--;
                     }
                 }
             }
-            if (help_flags & TOPIC_FLAG || page_handler == TOPIC_FLAG){
-                if (page_handler == TOPIC_FLAG){ //Service help page requests
-                    for (int k = 0 ; k < pages.size() ; k++){
-                        if (!print_file(string(RESOURCE_DIR) + "Resources/clc_topic_" + to_lowercase(pages[k]) + "_help.txt", 1)){
-                            IFPRINT << indent_line(1) << "ERROR: Failed to recognize help topic subtopic '" + pages[k] + "'" << endl;
-                        }
-                    }
-                }else{ //List all available topics
-                    if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_topics_help.txt", 1)){
-                        IFPRINT << indent_line(1) << "SOFTWARE ERROR: Failed to locate file: 'clc_list_topics_help.txt'" << endl;
+            if (page_handler & TOPIC_FLAG){ //Service help page requests
+                for (int k = 0 ; k < pages.size() ; k++){
+                    if (print_file(string(RESOURCE_DIR) + "Resources/clc_topic_" + to_lowercase(pages[k]) + "_help.txt", 1)){
+                        pages.erase(pages.begin() + k); //If successful, delete page from requests
+                        k--;
                     }
                 }
             }
-            if (help_flags & FUNCTION_FLAG || page_handler == FUNCTION_FLAG){
-                if (page_handler == FUNCTION_FLAG){ //Service help page requests
-                    for (int k = 0 ; k < pages.size() ; k++){
-                        if (!print_file(string(RESOURCE_DIR) + "Resources/clc_function_" + to_lowercase(pages[k]) + "_help.txt", 1)){
-                            IFPRINT << indent_line(1) << "ERROR: Failed to recognize help function subtopic '" + pages[k] + "'" << endl;
+            if (page_handler & FUNCTION_FLAG){ //Search functions
+//                cout << functions.size() << endl;
+                string identifier_uc = "";
+                for (int k = 0 ; k < pages.size() ; k++){
+                    for (int f = 0 ; f < functions.size() ; f++){
+                        identifier_uc = to_uppercase(functions[f].identifier);
+                        if (identifier_uc == to_uppercase(pages[k])){
+                            cout << indent_line(1) << "---------------------------------------------------------" << endl << indent_line(1);
+                            for (int l = 0 ; l < floor((44-functions[f].identifier.length())/2.0) ; l++){
+                                cout << "-";
+                            }
+                            cout << " CLC " << identifier_uc << "() HELP ";
+                            for (int l = 0 ; l < ceil((44-functions[f].identifier.length())/2.0) ; l++){
+                                cout << "-";
+                            }
+                            cout << "\n\n" << indent_line(1) << "Description:\n" << indent_line(2) << tabulate_newline(functions[f].description, 1, 4) << endl;
+                            cout << "\n" << indent_line(1) << "Arguments: " << tabulate_newline(functions[f].argdesc, 1, 4) << endl;
+                            cout << "\n" << indent_line(1) << "Return Value:\n" << indent_line(2) << tabulate_newline(functions[f].retdesc, 1, 4) << endl;
+                            pages.erase(pages.begin() + k); //If successful, delete page from requests
+                            k--;
+                            break;
                         }
                     }
-                }else{ //List all available functions
-                    if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_functions_help.txt", 1)){
-                        IFPRINT << indent_line(1) << "SOFTWARE ERROR: Failed to locate file: 'clc_list_functions_help.txt'" << endl;
-                    }
+                }
+            }
+            if (pages.size() > 0){
+                cout << "\tIHS ERROR: Failed to locate help pages for " << pages.size() << " request";
+                if (pages.size() > 1) cout << 's';
+                cout << ":\n";
+                for (int k = 0 ; k < pages.size() ; k++){
+                    cout << "\t\t" << pages[k] << endl;
                 }
             }
 

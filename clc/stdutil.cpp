@@ -73,6 +73,18 @@ string indent_line(int indentation, bool use_spaces, bool indent_in_function){
 	return out;
 }
 
+std::string indent_line(int num_tabs, int num_spaces){
+    
+    string spacer = "";
+    for (int j = 0 ; j < num_tabs ; j++){
+        spacer = spacer + '\t';
+    }
+    for (int j = 0 ; j < num_spaces ; j++){
+        spacer = spacer + ' ';
+    }
+    
+    return spacer;
+}
 
 /*
 Reports if a vector of strings contains a specific string. Reports the 1st index at which the target string is found.

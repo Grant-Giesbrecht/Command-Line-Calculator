@@ -555,6 +555,69 @@ std::string add_space_indicators(std::string input, std::string indentation){
 }
 
 /*
+ Replaces newline characters ('\n') with newlines with tabs added after.
+ 
+ input - input string
+ num_tabs - number of tabs to add per newline char (or num spaces if 'use_spaces' is true)
+ use_spaces - replace tabs with spaces
+ 
+ Returns the modified string
+ */
+std::string tabulate_newline(std::string input, int num_tabs, bool use_spaces){
+    
+    string back;
+    string spacer = "";
+    if (use_spaces){
+        for (int j = 0 ; j < num_tabs ; j++){
+            spacer = spacer + ' ';
+        }
+    }else{
+        for (int j = 0 ; j < num_tabs ; j++){
+            spacer = spacer + '\t';
+        }
+    }
+    
+    for (int i = 0 ; i < input.length() ; i++){
+        if (input[i] == '\n'){
+            input = input.substr(0, i+1) + spacer + input.substr(i+1);
+        }
+    }
+    
+    return input;
+    
+}
+
+/*
+ Replaces newline characters ('\n') with newlines with tabs added after.
+ 
+ input - input string
+ num_tabs - number of tabs to add per newline char
+ num_spaces - number of spaces to add per newline char
+ 
+ Returns the modified string
+ */
+std::string tabulate_newline(std::string input, int num_tabs, int num_spaces){
+    
+    string back;
+    string spacer = "";
+    for (int j = 0 ; j < num_tabs ; j++){
+        spacer = spacer + '\t';
+    }
+    for (int j = 0 ; j < num_spaces ; j++){
+        spacer = spacer + ' ';
+    }
+    
+    for (int i = 0 ; i < input.length() ; i++){
+        if (input[i] == '\n'){
+            input = input.substr(0, i+1) + spacer + input.substr(i+1);
+        }
+    }
+    
+    return input;
+    
+}
+
+/*
  Determines if a string represents a string literal. If so, it determines its value.
  
  input - string in which to search for string

@@ -30,6 +30,8 @@ typedef struct{
     all_ktype (*function)(std::vector<all_ktype>);
     std::string identifier;
     std::string description;
+    std::string argdesc;
+    std::string retdesc;
 }func_id;
 
 typedef struct{

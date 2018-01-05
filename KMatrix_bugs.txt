@@ -15,3 +15,7 @@ Does not load matricies!
 - operator+=(double) possible?
 
 - imaginary numbers?
+
+- element-wise multiplication, division, mult, ...
+
+- add max(), min(), range(), avg(), stdev(), function

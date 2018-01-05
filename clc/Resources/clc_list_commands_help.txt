@@ -1,0 +1,31 @@
+---------------------------------------------------------
+---------------------- CLC COMMANDS ---------------------
+    EXIT
+    HELP
+    LOGO
+    LSVAR
+    CLVAR
+    CLEAR || CLS
+    LS || DIR
+    CD
+    HOME
+    SAVE_DIR
+    PWD
+    SETCOM
+    ABE
+    VIEW
+    LOAD
+    SAVE
+    VHDR
+    SHDR
+    RUN
+    SVPRG
+    DELETE
+    PRCD
+    SET
+    RELIGION
+    MATLAB
+    CLRCD
+    CLRCD
+    SVRCD
+    [EVAL EXPRESSION]

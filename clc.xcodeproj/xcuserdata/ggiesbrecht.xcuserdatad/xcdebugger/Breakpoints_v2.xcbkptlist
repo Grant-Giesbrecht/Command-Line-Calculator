@@ -90,7 +90,7 @@
                   moduleName = "clc"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/ggiesbrecht/Documents/GitHub/Command-Line-Calculator/clc/KInterp.cpp"
-                  timestampString = "534144097.675938"
+                  timestampString = "536809307.079595"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "573"
@@ -105,7 +105,7 @@
                   moduleName = "clc"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/ggiesbrecht/Documents/GitHub/Command-Line-Calculator/clc/KInterp.cpp"
-                  timestampString = "534144097.678947"
+                  timestampString = "536809307.082633"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "573"
@@ -113,6 +113,22 @@
                   offsetFromSymbolStart = "86006">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "clc/string_manip.hpp"
+            timestampString = "536810040.668928"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

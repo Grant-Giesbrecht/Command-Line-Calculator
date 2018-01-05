@@ -30,109 +30,159 @@ void define_functions(vector<func_id>* functions){
 	//Add function double abs(double x) to list
 	temp.function = abs;
 	temp.identifier = "abs";
-    temp.description = "";
+    temp.description = "Calculates the absolute value of the input.";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose absolute value to calculate.";
+    temp.retdesc = "Double - Returns the absolute value of 'input'.";
 	functions->push_back(temp);
     temp.function = nostd_sqrt; //Note: nostd_ prepends because sqrt exists in standard namespace
     temp.identifier = "sqrt";
-    temp.description = "";
+    temp.description = "Calcaultes the square root of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose square root to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
     functions->push_back(temp);
     temp.function = ln;
     temp.identifier = "ln";
-    temp.description = "";
+    temp.description = "Calculates the natural log of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose natural log to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
     functions->push_back(temp);
     temp.function = nostd_log; //Note: nostd_ prepends because log exists in standard namespace
     temp.identifier = "log";
-    temp.description = "";
+    temp.description = "Calculates the log (base 10) of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose log to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
     functions->push_back(temp);
     temp.function = logBase;
     temp.identifier = "logBase";
-    temp.description = "";
+    temp.description = "Calculates the log of the input given a specified base";
+    temp.argdesc = "Accepts 2 double arguments (double input, double base)\ninput - Value whose log to calculate\nbase - base of log to take";
+    temp.retdesc = "Double - Returns the calculated result";
     functions->push_back(temp);
     
     //Add trig functions to list
     temp.function = sin;
 	temp.identifier = "sin";
-    temp.description = "";
+    temp.description = "Calculates the sine of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose sine to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = cos;
 	temp.identifier = "cos";
-    temp.description = "";
+    temp.description = "Calculates the cosine of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose cosine to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = tan;
 	temp.identifier = "tan";
-    temp.description = "";
+    temp.description = "Calculates the tangent of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose tangent to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = csc;
 	temp.identifier = "csc";
-    temp.description = "";
+    temp.description = "Calculates the cosecant of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose cosecant to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = sec;
 	temp.identifier = "sec";
-    temp.description = "";
+    temp.description = "Calculates the secant of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose secant to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = cot;
 	temp.identifier = "cot";
-    temp.description = "";
+    temp.description = "Calculates the cotangent of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose cotangent to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
 
     //Add inverse trig functions to list
     temp.function = asin;
 	temp.identifier = "asin";
-    temp.description = "";
+    temp.description = "Calculates the arcsine of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arcsine to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = acos;
 	temp.identifier = "acos";
-    temp.description = "";
+    temp.description = "Calculates the arccosine of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arccosine to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = atan;
 	temp.identifier = "atan";
-    temp.description = "";
+    temp.description = "Calculates the arctangent of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arctangent to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = acsc;
 	temp.identifier = "acsc";
-    temp.description = "";
+    temp.description = "Calculates the arccosecant of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arccosecant to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = asec;
 	temp.identifier = "asec";
-    temp.description = "";
+    temp.description = "Calculates the arcsecant of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arcsecant to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
     temp.function = acot;
 	temp.identifier = "acot";
-    temp.description = "";
+    temp.description = "Calculates the arccotangent of the input";
+    temp.argdesc = "Accepts 1 double argument (double input)\ninput - Value whose arccotangent to calculate";
+    temp.retdesc = "Double - Returns the calculated result";
 	functions->push_back(temp);
 
     //Add matrix functions to list
     temp.function = transpose;
     temp.identifier = "transpose";
-    temp.description = "";
+    temp.description = "Calculates the transpose of the input";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix whose transpose to calculate";
+    temp.retdesc = " Matrix - Returns the calculated result";
     functions->push_back(temp);
     temp.function = inverse;
     temp.identifier = "inverse";
-    temp.description = "";
+    temp.description = "Calculates the inverse of the input";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix whose inverse to calculate";
+    temp.retdesc = "Matrix - Returns the calculated result";
     functions->push_back(temp);
     temp.function = crossprd;
     temp.identifier = "crossprd";
-    temp.description = "";
+    temp.description = "Calculates the crossproduct of a and b. ";
+    temp.argdesc = "Accepts 2 matrix arguments (matrix a, matrix b)\na - First matrix\nb - Second matrix";
+    temp.retdesc = "Matrix - Returns the calculated result";
     functions->push_back(temp);
     temp.function = dotprd;
     temp.identifier = "dotprd";
-    temp.description = "";
+    temp.description = "Calculates the dot product of a and b";
+    temp.argdesc = "Accepts 2 matrix arguments (matrix a, matrix b)\na - First matrix\nb - Second matrix";
+    temp.retdesc = "Double - Returns the calculated result";
     functions->push_back(temp);
     temp.function = conjugate;
     temp.identifier = "conjugate";
-    temp.description = "";
+    temp.description = "Calculates the conjugate of the input";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix whose conjugate to calculate";
+    temp.retdesc = "Matrix - Returns the calculated result";
     functions->push_back(temp);
     temp.function = adjoint;
     temp.identifier = "adjoint";
-    temp.description = "";
+    temp.description = "Calculates the adjoint of the input";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix whose adjoint to calculate";
+    temp.retdesc = "Matrix - Returns the calculated result";
     functions->push_back(temp);
     temp.function = is_invertable;
     temp.identifier = "is_invertable";
-    temp.description = "";
+    temp.description = "Determines if the input is invertible";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix to check to be able to invert";
+    temp.retdesc = "Bool - Returns if the matrix can be inverted";
     functions->push_back(temp);
     temp.function = determinant;
     temp.identifier = "determinant";
-    temp.description = "";
+    temp.description = "Calculates the determinant of the input";
+    temp.argdesc = "Accepts 1 matrix argument (matrix input)\ninput - Matrix whose determinant to calculate";
+    temp.retdesc = "Double - Returns the calculated determinant";
     functions->push_back(temp);
 
 }
@@ -573,7 +623,7 @@ all_ktype acot(vector<all_ktype> args){
 ************************* MATRIX FUNCTIONS ******************************
 \***********************************************************************/
 
-all_ktype transpose(std::vector<all_ktype> args){ //matrix abs(matrix x)
+all_ktype transpose(std::vector<all_ktype> args){ //matrix transpose(matrix x)
     
     all_ktype ret;
     

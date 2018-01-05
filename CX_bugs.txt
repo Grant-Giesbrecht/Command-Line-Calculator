@@ -1,0 +1,7 @@
+-------- IMPLEMENT -------------
+
+---------- TEMPLATES -----------
+
+- rapid plotting template with KPlot
+
+- CLI template
