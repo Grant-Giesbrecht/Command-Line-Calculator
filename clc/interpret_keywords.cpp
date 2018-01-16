@@ -762,7 +762,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     filename = filename + words[i];
                 }
             }
-            if (filename == "" || filename == settings.home_dir || filename == settings.save_dir || filename == settings.home_dir+"/" || filename == settings.save_dir+"/") filename = "record.rcd";
+            if (filename == "" || filename == settings.home_dir || filename == settings.save_dir || filename == settings.home_dir+"/" || filename == settings.save_dir+"/") filename = "program.clc";
 
             //Append directory if requested
             if (append_dir != 'n'){
@@ -829,7 +829,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                     print_errors = false;
                 }else if(words[i][0] != '-'){
                     if (!str_to_double(words[i], count)){
-                        IFPRINT << indent_line(1) << "ERROR: Failed to interpret '" + words[i] + "' as number";
+                        IFPRINT << indent_line(1) << "ERROR: Failed to interpret '" + words[i] + "' as number" << endl;
                         return;
                     }
                     count = (int)count;

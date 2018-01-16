@@ -25,7 +25,11 @@ Tesselation is wrong!{
     if (!kp2.setTraceColor("Trace1", sf::Color::Red));
 }
 
+Allow grid & axis color to be changed. Make default much lighter. Allow small && || large grid to be turned on and off.
+
 --------- IMPLEMENT -----------
+
+Needs to accept arrays as input!
 
 Add thick border to edge of graph
 
@@ -35,7 +39,17 @@ Dual axes, maybe quadruple
 
 Log axes
 
+Allow lines(traces) thinner than '1'.
+
+Allow drawing lines, circles, text, etc on graph
+
 Automatic axes and ticks
+
+Add a wait/timer command to stdutil (for, among other things, timing KPlot animations).
+
+Add plenty of KPlot default colors
+
+save as KV1P file
 
 ---------- LONG TERM IMPLEMENT -----------
 
@@ -48,3 +62,38 @@ Dual axes (L & R)
 Mobile legend
 
 Show label at end or grid line if no numeric ticks
+
+----------------- TO DEFEAT MATLAB ----------------
+
+Need to allow thinner lines (and more options - thick lines are a bane).
+
+Need better standardization - fully support vectors and arrays at every step of the way - need 1D KMatrix style object
+
+Need convenience functions:
+	- initialize vector, array, matrix to given size, spacing, etc.
+	- Evaluate CLC expression at given resolution through number of points
+	- Evaluate function (via fn pointer) over entire matrix, array, vector
+	- print vector, matrix, etc
+	- 
+
+Need brief and to the point summary of the best functions, etc.
+
+Need web resource for help with CLC, KPack, KPlot, etc.
+
+KMatrix needs to be better
+
+I need to avoid as much as possible forcing people to use KMatrix. Make it desirable
+
+speed of vector vs array vs matrix (access and allocation)
+
+easy imaginary numbers
+
+------------------ NAILS IN THE COFFIN OF MATLAB -----------
+
+Memory limitations in MATLAB (esp. 32bit) are extreme and LIMITING, especially given availability of memory nowadays. C++ can even access HDD. GTFO CLOWN
+ 
+
+
+
+
+

@@ -8,6 +8,8 @@ Does not load matricies!
 
 ——————— IMPLEMENT ———————
 
+- Needs to accept arrays as input (in constuctors and elsewhere)!
+
 - array to KMatrix
 
 - unify print & to_string so both return same format

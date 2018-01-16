@@ -6,6 +6,8 @@
 =============== ------------ BUGS --------------- =================
 ===================================================================
 
+	//functions not working any more (2018!) - atan(2), sqrt()
+
 	//Finish fixing strings
 
 Update KV1 to new specs
@@ -77,12 +79,18 @@ Change to accept twice declared variables. This facilitates CLC scripts better.
 
 Fix platform specificity with Macros (and makefile flags?)
 
+still cant do two matrix functions!
+
+lsvar help page does not list flags/options (-nc)
+
 Add descriptions of 'set' options.
 
 ===================================================================
 ===================== ——————— IMPLEMENT ——————— ===================
 ===================================================================
 
+-startup option to stay in directory
+-allow statements like 'matrix a' to declare variables (initialize to 0).
 	//- Header manipulation
 - Plotting! (In CLC 4.0 or CLC 3.0P)
 - Add to help files how to load default variables and what options are
@@ -141,6 +149,7 @@ void command_iterator(String cmd, double start, double end, double(int) iteratio
 void plot(matrix x, matrix y);
 void plot(matrix xy);
 
+sin, cos, etc in degrees
 	//Log base
 	//Log
 	//Ln

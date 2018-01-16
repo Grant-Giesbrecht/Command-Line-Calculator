@@ -1666,6 +1666,8 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
 	vector<string> fm;
 	return run_interpret(filename, vars, out, interp_functions, persist, print_results, indentation, record, delete_comments, settings, in_header, out_header, dummy, fm);
 }
+
+
 std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> input){
 
 //    for (int i = 0 ; i < input.size() ; i++){
