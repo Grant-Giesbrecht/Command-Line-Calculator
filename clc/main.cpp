@@ -60,10 +60,21 @@ int main(int argc, const char * argv[]){
     string in_header = "";
     string out_header = "";
     
+    std::string user_home_path = getenv("HOME"); //UNIX only
+    if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '=')){
+        user_home_path = user_home_path + "/";
+    }
+    
     //Load program setting from settings file
-    program_settings settings{5, 1e5, "> ", false, false, true, true, HOME_DIR, HOME_DIR, true, false, true};
-    if (!load_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings)){
-        cout << "INSTALL ERROR: Failed to locate settings file." << endl;
+    program_settings settings{5, 1e5, "> ", false, false, true, true, user_home_path, user_home_path, true, false, true, true, -1};
+    if (!load_settings(user_home_path + ".clc_settings.conf", settings)){
+        cout << "STARTUP ERROR: Failed to locate settings file.";
+        if (save_settings(user_home_path + ".clc_settings.conf", settings)){
+            cout << " New settings file created." << endl;
+        }else{
+            cout << " Failed to create new settings file." << endl;
+        }
+        
     }
     kv.set(KV_PRINT_THRESHOLD, settings.threshold);
     kv.set(KV_PRINT_PRECISION, (double)settings.precision);
@@ -79,7 +90,7 @@ int main(int argc, const char * argv[]){
     vector<record_entry> record;
     
     //Load keyboard history if specified to do so
-    if (settings.save_input_history) read_history(string(string(RESOURCE_DIR) + "Resources/keyboard_input_history.txt").c_str()); //Read history (returns 0 on success)
+    if (settings.save_input_history) read_history(string(user_home_path + ".clc_input_history.txt").c_str()); //Read history (returns 0 on success)
     
     //Run the startup script to load any user preferences
     run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings, in_header, out_header);
@@ -121,10 +132,10 @@ int main(int argc, const char * argv[]){
     free(in_buf);
     
     //Save keyboard history if requested
-    if (settings.save_input_history) write_history(string(string(RESOURCE_DIR) + "Resources/keyboard_input_history.txt").c_str());
+    if (settings.save_input_history) write_history(string(user_home_path + ".clc_input_history.txt").c_str());
     
     //Save settings to file
-    save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
+    save_settings(user_home_path + ".clc_settings.conf", settings);
     
     return 0;
 }

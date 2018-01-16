@@ -35,19 +35,19 @@ int uninstall(){
 	//----------------------------------------------------------------------------------
 	//------------------ Delete /usr/local/resources/CLC_3V0/Resources directory
 
-	system("sudo rm /usr/local/resources/CLC_3V0/Resources/* 1> out.out 2> error.outfile");
-	system("sudo rmdir /usr/local/resources/CLC_3V0/Resources/ 1> out.out 2> error.outfile");
-	system("sudo rmdir /usr/local/resources/CLC_3V0/ 1> out.out 2> error.outfile");
-	system("sudo rmdir /usr/local/resources/ 1> out.out 2> error.outfile");
+//    system("sudo rm /usr/local/resources/CLC_3V0/Resources/* 1> out.out 2> error.outfile");
+//    system("sudo rmdir /usr/local/resources/CLC_3V0/Resources/ 1> out.out 2> error.outfile");
+//    system("sudo rmdir /usr/local/resources/CLC_3V0/ 1> out.out 2> error.outfile");
+//    system("sudo rmdir /usr/local/resources/ 1> out.out 2> error.outfile");
 
 	//----------------------------------------------------------------------------------
 	//------------------ Delete executable
 
-	system("sudo rm /usr/bin/clc 1> out.out 2> error.outfile");
+//    system("sudo rm /usr/bin/clc 1> out.out 2> error.outfile");
 
-	system("rm *.outfile");
+//    system("rm *.outfile");
 
-	cout << "Uninstall of CLC complete" << endl;
+//    cout << "Uninstall of CLC complete" << endl;
 
 	return 0;
 }
@@ -55,28 +55,24 @@ int uninstall(){
 int install(){
 
 	//----------------------------------------------------------------------------------
-	//------------------ Create /usr/local/resources/CLC_3V0/Resources directory
+	//------------------ Create /usr/local/share/clc
 
 	cout << "Creating resource directory (Enter password if prompted, ^c to cancel)" << endl;
 
-	system(string( "sudo mkdir /usr/ 1> out.out 2> error.outfile" ).c_str()); //system(string(  ).c_str());
-	system(string( "sudo mkdir /usr/local/ 1> out.out 2> error.outfile" ).c_str());
-	system(string( "sudo mkdir /usr/local/resources/ 1> out.out 2> error.outfile" ).c_str());
-	system(string( "sudo mkdir /usr/local/resources/CLC_3V0/ 1> out.out 2> error.outfile" ).c_str());
-	system(string( "sudo mkdir /usr/local/resources/CLC_3V0/Resources/ 1> out.out 2> error.outfile" ).c_str());
-
-	//Verify success
-	if (opendir(string(string(RESOURCE_DIR) + "Resources/").c_str()) == NULL){
-		cout << "ERROR: Failed to create resource dir. May need to run as superuser (sudo)." << endl;
-		return -1;
-	}else{
-		cout << "Successfully created resource directory:\n\t" + string(RESOURCE_DIR) + "test/Resources/" << endl;
-	}
+	system(string( "mkdir -p /usr/local/share/clc/doc 1> out.out 2> error.outfile" ).c_str());
+    system(string( "mkdir -p /usr/local/share/clc/functions 1> out.out 2> error.outfile" ).c_str());
+    system(string( "mkdir -p /usr/local/share/clc/scripts 1> out.out 2> error.outfile" ).c_str());
+    system(string( "mkdir -p /usr/local/share/clc/variables 1> out.out 2> error.outfile" ).c_str());
+    system(string( "mkdir -p /usr/local/share/clc/src 1> out.out 2> error.outfile" ).c_str());
 
 	//----------------------------------------------------------------------------------
 	//------------------ Transfer resource files to resource directory
 
-	system("sudo cp ./Resources/* /usr/local/resources/CLC_3V0/Resources/"); //" 1> out.out 2> error.outfile");
+	system("cp ./doc/* /usr/local/share/clc/doc"); //" 1> out.out 2> error.outfile");
+    system("cp ./functions/* /usr/local/share/clc/functions"); //" 1> out.out 2> error.outfile");
+    system("cp ./variables/* /usr/local/share/clc/variables"); //" 1> out.out 2> error.outfile");
+    system("cp ./scripts/* /usr/local/share/clc/scripts"); //" 1> out.out 2> error.outfile");
+//    system("cp ./* /usr/local/share/clc/src"); //" 1> out.out 2> error.outfile");
 	cout << "All files transfered to resource directory" << endl;
 
 	//----------------------------------------------------------------------------------
@@ -101,7 +97,7 @@ int install(){
 	//----------------------------------------------------------------------------------
 	//------------------ Set permissions so files are editable by all
 
-	system("sudo chmod u=rwx,g=rw,o=rw /usr/local/resources/CLC_3V0/Resources/*");
+//    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/");
 
 	system("rm *.outfile");
 

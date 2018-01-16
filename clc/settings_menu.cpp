@@ -416,6 +416,14 @@ bool load_settings(std::string filename, program_settings& settings){
     return true;
 }
 
+/*
+ Saves the settings in 'settings' to the conf file 'filename'.
+ 
+ filename - name of file
+ settings - settings to save
+ 
+ Returns true if suceessful, else false.
+ */
 bool save_settings(std::string filename, program_settings& settings){
     
     fstream file;

@@ -38,7 +38,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0D0127911E7B9E13004859EB /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
 		0D16D1111EAFF3C2009DAE94 /* configuration.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = configuration.hpp; sourceTree = "<group>"; };
 		0D7229461E6E6D6F004A9E09 /* clc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = clc; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D7229491E6E6D6F004A9E09 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -71,6 +70,12 @@
 		0D8EA9AE1E9308440053A525 /* settings_menu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = settings_menu.hpp; sourceTree = "<group>"; };
 		0DADDB681E7A32A300B3B9F5 /* interpret_keywords.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interpret_keywords.cpp; sourceTree = "<group>"; };
 		0DADDB691E7A32A300B3B9F5 /* interpret_keywords.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = interpret_keywords.hpp; sourceTree = "<group>"; };
+		0DD75987200EC008009640C9 /* installer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = installer.cpp; sourceTree = "<group>"; };
+		0DD75989200EC3E6009640C9 /* doc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = doc; sourceTree = "<group>"; };
+		0DD7598A200EC3EF009640C9 /* variables */ = {isa = PBXFileReference; lastKnownFileType = folder; path = variables; sourceTree = "<group>"; };
+		0DD7598B200EC3EF009640C9 /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = scripts; sourceTree = "<group>"; };
+		0DD7598C200EC3EF009640C9 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		0DD7598D200EC3EF009640C9 /* functions */ = {isa = PBXFileReference; lastKnownFileType = folder; path = functions; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +112,7 @@
 				0D16D1111EAFF3C2009DAE94 /* configuration.hpp */,
 				0DADDB681E7A32A300B3B9F5 /* interpret_keywords.cpp */,
 				0DADDB691E7A32A300B3B9F5 /* interpret_keywords.hpp */,
+				0DD75987200EC008009640C9 /* installer.cpp */,
 				0D8EA9AD1E9308440053A525 /* settings_menu.cpp */,
 				0D8EA9AE1E9308440053A525 /* settings_menu.hpp */,
 				0D7229511E6E6E10004A9E09 /* KInterp.cpp */,
@@ -133,7 +139,11 @@
 				0D7229681E6E6E10004A9E09 /* kc interpreting help.txt */,
 				0D72296A1E6E6E10004A9E09 /* stdutil.cpp */,
 				0D72296B1E6E6E10004A9E09 /* stdutil.hpp */,
-				0D0127911E7B9E13004859EB /* Resources */,
+				0DD7598D200EC3EF009640C9 /* functions */,
+				0DD7598B200EC3EF009640C9 /* scripts */,
+				0DD7598C200EC3EF009640C9 /* src */,
+				0DD7598A200EC3EF009640C9 /* variables */,
+				0DD75989200EC3E6009640C9 /* doc */,
 				0D72297C1E6E6FF9004A9E09 /* Libraries */,
 			);
 			path = clc;
