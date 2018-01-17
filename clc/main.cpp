@@ -93,7 +93,7 @@ int main(int argc, const char * argv[]){
     if (settings.save_input_history) read_history(string(user_home_path + ".clc_input_history.txt").c_str()); //Read history (returns 0 on success)
     
     //Run the startup script to load any user preferences
-    run_interpret(string(RESOURCE_DIR) + "Resources/startup.clc", kv, result, functions, true, false, "", record, true, settings, in_header, out_header);
+    run_interpret(string(RESOURCE_DIR) + "scripts/startup.clc", kv, result, functions, true, false, "", record, true, settings, in_header, out_header);
     if (settings.hide_startup_sequence){
         record.clear();
         in_header = "";

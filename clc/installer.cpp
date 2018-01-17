@@ -97,7 +97,10 @@ int install(){
 	//----------------------------------------------------------------------------------
 	//------------------ Set permissions so files are editable by all
 
-//    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/");
+    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/scripts/.*");
+    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/doc/.*");
+    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/functions/.*");
+    system("sudo chmod u=rwx,g=rw,o=rw /usr/local/share/clc/variables/.*");
 
 	system("rm *.outfile");
 

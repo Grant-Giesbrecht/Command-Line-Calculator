@@ -37,7 +37,7 @@ void run_settings_menu(program_settings& settings){
         }else if(upin == "VIEW"){
             show_settings(settings);
         }else if(upin == "HELP"){
-            print_file(string(RESOURCE_DIR) + "Resources/settings_menu_help.txt", 1);
+            print_file(string(RESOURCE_DIR) + "doc/settings_menu_help.txt", 1);
         }else if(upin == "1" || upin == "PRECISION"){
             
             //Get new value
@@ -276,7 +276,11 @@ void run_settings_menu(program_settings& settings){
             cout << indent_line(2) << "13: SAVE_INPUT_HISTORY" << endl;
             cout << indent_line(2) << "14: INPUT_HISTORY_LENGTH" << endl;
         }else if(upin == "SAVE"){
-            save_settings(string(RESOURCE_DIR) + "Resources/program_settings.txt", settings);
+            string user_home_path = getenv("HOME");
+            if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '=')){
+                user_home_path = user_home_path + "/";
+            }
+            save_settings(user_home_path + ".clc_settings.conf", settings);
         }else{
             cout << indent_line(2) << "Unrecognized setting. Enter 'help' for instructions." << endl;
         }

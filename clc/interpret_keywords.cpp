@@ -105,22 +105,22 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
 
             //Service request
             if (help_flags & INTRO_FLAG){ //Intro page
-                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_intro_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "doc/clc_intro_help.txt", 1)){
                     IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_intro_help.txt'" << endl;
                 }
             }
             if (help_flags & VERBOSE_FLAG){ //Verbose page
-                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_verbose_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "doc/clc_verbose_help.txt", 1)){
                     IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_verbose_help.txt'" << endl;
                 }
             }
             if (help_flags & LCOMMANDS_FLAG){ //Verbose page
-                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_commands_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "doc/clc_list_commands_help.txt", 1)){
                     IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_list_commands_help.txt'" << endl;
                 }
             }
             if (help_flags & LTOPICS_FLAG){ //Verbose page
-                if (!print_file(string(RESOURCE_DIR) + "Resources/clc_list_topics_help.txt", 1)){
+                if (!print_file(string(RESOURCE_DIR) + "doc/clc_list_topics_help.txt", 1)){
                     IFPRINT << indent_line(1) << "RESOURCE ERROR: Failed to locate file: 'clc_list_topics_help.txt'" << endl;
                 }
             }
@@ -133,7 +133,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             }
             if (page_handler & COMMAND_FLAG){ //Service help page requests
                 for (int k = 0 ; k < pages.size() ; k++){
-                    if (print_file(string(RESOURCE_DIR) + "Resources/clc_command_" + to_lowercase(pages[k]) + "_help.txt", 1)){
+                    if (print_file(string(RESOURCE_DIR) + "doc/clc_command_" + to_lowercase(pages[k]) + "_help.txt", 1)){
                         pages.erase(pages.begin() + k); //If successful, delete page from requests
                         k--;
                     }
@@ -141,7 +141,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             }
             if (page_handler & TOPIC_FLAG){ //Service help page requests
                 for (int k = 0 ; k < pages.size() ; k++){
-                    if (print_file(string(RESOURCE_DIR) + "Resources/clc_topic_" + to_lowercase(pages[k]) + "_help.txt", 1)){
+                    if (print_file(string(RESOURCE_DIR) + "doc/clc_topic_" + to_lowercase(pages[k]) + "_help.txt", 1)){
                         pages.erase(pages.begin() + k); //If successful, delete page from requests
                         k--;
                     }
@@ -196,7 +196,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             }*/
 
         }else if(words_uc[0] == "LOGO"){
-            print_file(string(RESOURCE_DIR) + "Resources/CLC_logo.txt", 1);
+            print_file(string(RESOURCE_DIR) + "doc/CLC_logo.txt", 1);
         }else if(words_uc[0] == "LSVAR"){
 
             bool print_comments = true;
@@ -261,7 +261,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             }
 
         }else if(words_uc[0] == "ABE"){
-            print_file(string(RESOURCE_DIR) + "Resources/Abe_Lincoln.txt", 0);
+            print_file(string(RESOURCE_DIR) + "doc/Abe_Lincoln.txt", 0);
         }else if(words_uc[0] == "VIEW"){
             KVar viewer;
             viewer.set(KV_OVERWRITE_ON_LOAD, true);
@@ -295,11 +295,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }else if(words_uc[i] == "-H" || words_uc[i] == "-HOME"){
                     append_dir = 'h';
                 }else if(words_uc[i] == "-SCI" || words_uc[i] == "-SCIENTIFIC"){
-                    fn = string(RESOURCE_DIR) + "Resources/scientific.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/scientific.kv1";
                 }else if(words_uc[i] == "-STD" || words_uc[i] == "-STANDARD"){
-                    fn = string(RESOURCE_DIR) + "Resources/standard.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/standard.kv1";
                 }else if(words_uc[i] == "-CNV" || words_uc[i] == "-CONVERSION"){
-                    fn = string(RESOURCE_DIR) + "Resources/conversion.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/conversion.kv1";
                 }else{
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }
@@ -434,11 +434,11 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
                 }else if(words_uc[i] == "-H" || words_uc[i] == "-HOME"){
                     append_dir = 'h';
                 }else if(words_uc[i] == "-SCI" || words_uc[i] == "-SCIENTIFIC"){
-                    fn = string(RESOURCE_DIR) + "Resources/scientific.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/scientific.kv1";
                 }else if(words_uc[i] == "-STD" || words_uc[i] == "-STANDARD"){
-                    fn = string(RESOURCE_DIR) + "Resources/standard.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/standard.kv1";
                 }else if(words_uc[i] == "-CNV" || words_uc[i] == "-CONVERSION"){
-                    fn = string(RESOURCE_DIR) + "Resources/conversion.kv1";
+                    fn = string(RESOURCE_DIR) + "variables/conversion.kv1";
                 }else{
                     IFPRINT << indent_line(1) << "ERROR: Failed to recognize flag '" + words[i] + "'." << endl;
                 }

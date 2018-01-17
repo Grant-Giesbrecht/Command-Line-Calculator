@@ -19,7 +19,7 @@
 #else
 #define CLEAR_COMMAND "clear"
 #define LIST_COMMAND "ls"
-#define RESOURCE_DIR "/usr/local/resources/CLC_3V0/"
+#define RESOURCE_DIR "/usr/local/share/clc/"
 #define HOME_DIR "/"
 #endif
 

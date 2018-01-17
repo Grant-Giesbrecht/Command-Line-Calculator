@@ -29,6 +29,11 @@ PRCD does not print startup program commands.
 
 Precision = 5e5
 
+precision issues:
+	matrix doesn't obey CLC precision
+	matrix never goes scientific notation
+	check KV's read and write precision quality
+
 KMAtrix - ask for row oob and will cause error!
 
 KMatrix print() has endl;
