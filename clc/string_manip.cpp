@@ -618,6 +618,40 @@ std::string tabulate_newline(std::string input, int num_tabs, int num_spaces){
 }
 
 /*
+ 
+ */
+size_t number_of_differences(std::string inputA, std::string inputB, bool case_sensitive){
+
+    
+    size_t deltas = 0;
+    
+    //If not case sensitive, make all uppercase
+    if (!case_sensitive){
+        inputA = to_uppercase(inputA);
+        inputB = to_uppercase(inputB);
+    }
+    
+    //Scan through and check number of differences
+    
+    if (inputA.length() >= inputB.length()){
+        for (int i = 0 ; i < inputA.length() ; i++){
+            if (i >= inputB.size() || inputA[i] != inputB[i] ){
+                deltas++;
+            }
+        }
+    }else{
+        for (int i = 0 ; i < inputB.length() ; i++){
+            if (i >= inputA.size() || inputA[i] != inputB[i] ){
+                deltas++;
+            }
+        }
+    }
+    
+    return deltas;
+    
+}
+
+/*
  Determines if a string represents a string literal. If so, it determines its value.
  
  input - string in which to search for string

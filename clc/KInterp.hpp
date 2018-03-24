@@ -8,7 +8,7 @@
 #include "KVar.hpp"
 #include "interpret_keywords.hpp"
 
-bool interpret(std::string input, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool allow_print=false);
+bool interpret(std::string input, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool allow_print=false, bool caseSensitiveFunctions=true);
 
 std::vector<std::string> space_and_parse(std::string input);
 
@@ -30,9 +30,9 @@ std::string akt_tostring(all_ktype akt, bool formal=false);
 
 //bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments=false, int print_precision=15, bool scientific_notation=false);
 
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header, std::vector<int>& fail_lines, std::vector<std::string>& fail_messages);
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header, std::vector<int>& fail_lines, std::vector<std::string>& fail_messages, bool case_sensitive_functions=true);
 
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header);
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, std::string indentation, std::vector<record_entry>& record, bool delete_comments, program_settings settings, std::string& in_header, std::string& out_header, bool case_sensitive_functions=true);
 
 std::vector<std::vector<std::string> > form_sentences(std::vector<std::string> input);
 

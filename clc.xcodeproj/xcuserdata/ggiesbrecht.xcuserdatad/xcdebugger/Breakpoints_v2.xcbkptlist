@@ -10,44 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "clc/KInterp.cpp"
-            timestampString = "534144112.05472"
+            timestampString = "542175962.745339"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "548"
-            endingLineNumber = "548"
-            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clc/KMatrix.cpp"
-            timestampString = "533578864.829767"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1018"
-            endingLineNumber = "1018"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clc/KInterp.cpp"
-            timestampString = "534144112.056223"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "320"
-            endingLineNumber = "320"
-            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print)"
+            startingLineNumber = "516"
+            endingLineNumber = "516"
+            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print, bool case_sensitive_functions)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,92 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "clc/KInterp.cpp"
-            timestampString = "534144112.056535"
+            timestampString = "542175962.746281"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
-            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clc/KInterp.cpp"
-            timestampString = "534144112.056863"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "573"
-            endingLineNumber = "573"
-            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print)"
-            landmarkType = "9">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "interpret(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, KVar&amp;, all_ktype&amp;, std::__1::vector&lt;func_id, std::__1::allocator&lt;func_id&gt; &gt;, bool)"
-                  moduleName = "clc"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ggiesbrecht/Documents/GitHub/Command-Line-Calculator/clc/KInterp.cpp"
-                  timestampString = "537729168.398941"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "573"
-                  endingLineNumber = "573"
-                  offsetFromSymbolStart = "85965">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "interpret(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, KVar&amp;, all_ktype&amp;, std::__1::vector&lt;func_id, std::__1::allocator&lt;func_id&gt; &gt;, bool)"
-                  moduleName = "clc"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/ggiesbrecht/Documents/GitHub/Command-Line-Calculator/clc/KInterp.cpp"
-                  timestampString = "537729168.4016351"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "573"
-                  endingLineNumber = "573"
-                  offsetFromSymbolStart = "86006">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clc/string_manip.hpp"
-            timestampString = "536810040.668928"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14"
-            endingLineNumber = "14"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "clc/main.cpp"
-            timestampString = "537836945.212456"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "main(int argc, const char * argv[])"
+            startingLineNumber = "509"
+            endingLineNumber = "509"
+            landmarkName = "interpret(std::string input, KVar&amp; vars, all_ktype&amp; out, vector&lt;func_id&gt; interp_functions, bool allow_print, bool case_sensitive_functions)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

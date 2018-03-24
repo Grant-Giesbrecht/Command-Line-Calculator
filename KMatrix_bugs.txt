@@ -21,3 +21,14 @@ Does not load matricies!
 - element-wise multiplication, division, mult, ...
 
 - add max(), min(), range(), avg(), stdev(), function
+
+
+
+KMatrix
+
+typedef KMat KMatrix<double>
+
+KVector (One row KMatrix)
+
+typedef KVec KVector<double>
+

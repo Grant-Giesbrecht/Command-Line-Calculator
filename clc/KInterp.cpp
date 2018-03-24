@@ -21,10 +21,11 @@ Interprets a string as a mathematical expression. Accepts variables (specified i
 input - input string to analyze
 vars - KVar object containing variables to use in analysis (and to which to add if new variables are created)
 out - Result of evaluation
-
+caseSensitiveFunctions - if true, function names will be case sensitive
+ 
 Returns true if evaluation completed successfully and without error. Else returns false and reports the error code in 'out'.
 */
-bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> interp_functions, bool allow_print){
+bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> interp_functions, bool allow_print, bool case_sensitive_functions){
 
 	//Process input string (Ensure whitespace and parse)
 	vector<string> words = space_and_parse_negatives(input);
@@ -391,7 +392,8 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 	for (int i = 0 ; i < words.size() ; i++){
 
 		for (int j = 0 ; j < interp_functions.size() ; j++){
-			if (interp_functions[j].identifier == words[i]){ //If interpreted function is found, parse its arguments and evaluate
+            if ((interp_functions[j].identifier == words[i]) || (!case_sensitive_functions && (to_uppercase(interp_functions[j].identifier) == to_uppercase(words[i])))){ //If interpreted function is found, parse its arguments and evaluate
+//            if (!caseSensitiveFunctions && (to_uppercase(interp_functions[j].identifier) == to_uppercase(words[i]) ) ){
 
 				//Verify next char is OPAREN
 				if (i+1 >= words.size() || words[i+1] != "("){
@@ -507,7 +509,46 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 			all_ktype result;
 			if (!interpret(cat_tokens(paren_expression, 0, " "), vars, result, interp_functions)){
 				out.type = 'e';
-				out.s = "ERROR: Failed to interpret expression '" + cat_tokens(paren_expression, 0, " ") + "'.";
+                
+                //Generate error message. If function name was mistyped, the standard message here (in the 'else' statement) will give a cryptic and misleading error message. This if statement looks for potentially misinterpreted function names to point out to the user. It also looks for commas, which (because they are surrounded by parenthesis, not brackets) is a sign of calling a function, which will further alert the user to the possibility that they mistyped a function.
+                if (i > 0){
+                    
+                    out.s = "ERROR: Failed to interpret expression '" + cat_tokens(paren_expression, 0, " ") + "'.";
+                    
+                    //Determine how closely previous word (which may be function call) matches the input word
+                    size_t differences[interp_functions.size()];
+                    for (int j = 0 ; j < interp_functions.size() ; j++){
+                        differences[j] = number_of_differences(words[i-1], interp_functions[j].identifier, false);
+                    }
+                    
+                    //Determine which function was closest if functions were available
+                    if (interp_functions.size() > 0){
+                        size_t min_d = differences[0];
+                        size_t min_index = 0;
+                        for (int d = 1 ; d < interp_functions.size() ; d++){
+                            if (differences[d] < min_d){
+                                min_d = differences[d];
+                                min_index = d;
+                            }
+                        }
+                        
+                        //Change amound of characters that must match, depending on whether or not a comma is present (because commas mean it is more likely that a function was being used)
+                        if (cat_tokens(paren_expression, 0, " ").find(',') != string::npos){ //has comma
+                            if (min_d <= ceil(words[i-1].size()/2)){
+                                out.s = "ERROR: Failed to interpret expression '" + cat_tokens(paren_expression, 0, " ") + "'. Did you mean to call the function '" + interp_functions[min_index].identifier + "'?";
+                            }
+                        }else{ //no comma
+                            if (min_d <= ceil(words[i-1].size()/3)){
+                                out.s = "ERROR: Failed to interpret expression '" + cat_tokens(paren_expression, 0, " ") + "'. Did you mean to call the function '" + interp_functions[min_index].identifier + "'?";
+                            }
+                        }
+                        
+                    }
+                    
+                }else{
+                    out.s = "ERROR: Failed to interpret expression '" + cat_tokens(paren_expression, 0, " ") + "'.";
+                }
+				
 				return false;
 			}
 			if (result.type == 'e'){
@@ -600,6 +641,7 @@ bool interpret(std::string input, KVar& vars, all_ktype& out, vector<func_id> in
 			return false;
 		}
 	}
+    
 
 	//Test Point 6
 //	for (int i = 0 ; i < words.size() ; i++){
@@ -1482,7 +1524,11 @@ void inject_words_into_strvec(std::vector<std::string>& words, std::string injec
 
 	//Clear items in 'words' that are to be erased
 	for (int i = begin ; i <= end ; i++){
-		words.erase(words.begin() + begin);
+        if (words.size() > begin){
+            words.erase(words.begin() + begin);
+        }else{
+            cout << "SOFTWARE ERROR: You used inject_words_into_strvec incorrectly!" << endl;
+        }
 	}
 
 	//parse 'inject' and add into 'words'
@@ -1615,7 +1661,7 @@ string akt_tostring(all_ktype akt, bool formal){
 }
 
 //Delete 'print_error
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header, vector<int>& fail_lines, std::vector<std::string>& fail_messages){
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header, vector<int>& fail_lines, std::vector<std::string>& fail_messages, bool case_sensitive_functions){
 
     //Open file
     ifstream file(filename);
@@ -1641,7 +1687,7 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
             remove_comments(s, "//");
         }
 
-        interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, settings, in_header, out_header);
+        interpret_with_keywords(s, vars, out, interp_functions, running, record, !print_results, settings, in_header, out_header, case_sensitive_functions);
 
         if (out.type == 'e'){
 			fail_lines.push_back(line);
@@ -1661,10 +1707,10 @@ bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector
     return retval;
 }
 
-bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header){
+bool run_interpret(std::string filename, KVar& vars, all_ktype& out, std::vector<func_id> interp_functions, bool persist, bool print_results, string indentation, vector<record_entry>& record, bool delete_comments, program_settings settings, string& in_header, string& out_header, bool case_sensitive_functions){
 	vector<int> dummy;
 	vector<string> fm;
-	return run_interpret(filename, vars, out, interp_functions, persist, print_results, indentation, record, delete_comments, settings, in_header, out_header, dummy, fm);
+	return run_interpret(filename, vars, out, interp_functions, persist, print_results, indentation, record, delete_comments, settings, in_header, out_header, dummy, fm, case_sensitive_functions);
 }
 
 

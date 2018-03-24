@@ -61,7 +61,7 @@ int main(int argc, const char * argv[]){
     string out_header = "";
     
     std::string user_home_path = getenv("HOME"); //UNIX only
-    if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '=')){
+    if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '/')){
         user_home_path = user_home_path + "/";
     }
     
@@ -123,7 +123,7 @@ int main(int argc, const char * argv[]){
             }
         }
         
-        interpret_with_keywords(input, kv, result, functions, running, record, false, settings, in_header, out_header);
+        interpret_with_keywords(input, kv, result, functions, running, record, false, settings, in_header, out_header, settings.case_sensitive_functions);
 
         last_input = input;
     }

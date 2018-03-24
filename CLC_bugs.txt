@@ -6,6 +6,10 @@
 =============== ------------ BUGS --------------- =================
 ===================================================================
 
+Finish mistyped function detection system
+
+##(## gives segfault!
+
 	//functions not working any more (2018!) - atan(2), sqrt()
 
 	//Finish fixing strings
@@ -28,6 +32,8 @@ PRCD does not print startup program commands.
 	//Easter eggs can double load variables
 
 Precision = 5e5
+
+'You used inject_words_into_strvec incorrectly!' is a useless error message where fixed code needs to go. Fix this! (Origionally hunting down what caused ###(#### to give segfault)
 
 precision issues:
 	matrix doesn't obey CLC precision
@@ -94,13 +100,14 @@ Add descriptions of 'set' options.
 ===================== ——————— IMPLEMENT ——————— ===================
 ===================================================================
 
+-Add implied multiplication for parentheses (aka accept 2(4) as 2*4)
 -startup option to stay in directory
 -allow statements like 'matrix a' to declare variables (initialize to 0).
 	//- Header manipulation
 - Plotting! (In CLC 4.0 or CLC 3.0P)
 - Add to help files how to load default variables and what options are
 - Matrix element access!
-- Factorials!
+// - Factorials!
 	//- scrolling back and up (see: http://www.cplusplus.com/forum/beginner/132595/)
 - Imaginary numbers?
 - Update to long double for higher precision
@@ -125,9 +132,11 @@ Quick long precision command or runtime long precision change
 
 Save state as you go functionality
 
-Results are printing unacceptable for #####e+### not #####e### || ####e-##
+Results are printing unacceptably for #####e+### not #####e### || ####e-##
 
 Easter egg which prints holiday things based on clock (maybe)
+
+type command returns data type of value (eg. 'type [4]*3' returns matrix, 'type pi' returns double).
 
 ===================================================================
 ================== ------- ADD VARIABLES --------- ================

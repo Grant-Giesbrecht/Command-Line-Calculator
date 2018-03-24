@@ -48,6 +48,8 @@ std::string tabulate_newline(std::string input, int num_tabs, bool use_spaces=fa
 
 std::string tabulate_newline(std::string input, int num_tabs, int num_space);
 
+size_t number_of_differences(std::string inputA, std::string inputB, bool case_sensitive=true);
+
 //From KInterpAux
 
 bool str_to_string(std::string input, std::string& output);

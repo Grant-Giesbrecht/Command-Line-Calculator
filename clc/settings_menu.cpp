@@ -260,6 +260,16 @@ void run_settings_menu(program_settings& settings){
             }catch(...){
                 cout << indent_line(2) << "ERROR: New value must be a number" << endl;
             }
+        }else if(upin == "15" || upin == "CASE_SENSITIVE_FUNCTIONS"){
+            bool out;
+            if (words.size() > 1){
+                str_to_bool(words[1], out);
+            }else{
+                cout << indent_line(2) << "New value (bool): " << flush;
+                getline(cin, input);
+                str_to_bool(input, out);
+            }
+            settings.case_sensitive_functions = out;
         }else if(upin == "PRINT_CODES"){
             cout << indent_line(2) << "1: PRECISION" << endl;
             cout << indent_line(2) << "2: THRESHOLD" << endl;
@@ -277,7 +287,7 @@ void run_settings_menu(program_settings& settings){
             cout << indent_line(2) << "14: INPUT_HISTORY_LENGTH" << endl;
         }else if(upin == "SAVE"){
             string user_home_path = getenv("HOME");
-            if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '=')){
+            if (user_home_path.length() > 0 && (user_home_path[user_home_path.length()-1] != '/')){
                 user_home_path = user_home_path + "/";
             }
             save_settings(user_home_path + ".clc_settings.conf", settings);
@@ -309,6 +319,7 @@ void show_settings(program_settings settings){
     cout << indent_line(2) << "12. Overwrite variables on conflict load: \t" << bool_to_str(settings.overwrite_on_load) << endl;
     cout << indent_line(2) << "13. Save keyboard input history upon exit: \t" << bool_to_str(settings.save_input_history) << endl;
     cout << indent_line(2) << "14. Number of CLI entries to save in input history: \t" << settings.input_history_length << endl;
+    cout << indent_line(2) << "15. Case sensitive functions: \t" << bool_to_str(settings.case_sensitive_functions) << endl;
 }
 
 bool load_settings(std::string filename, program_settings& settings){
@@ -409,6 +420,12 @@ bool load_settings(std::string filename, program_settings& settings){
             }catch(...){
                 IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
             }
+        }else if(words[0] == "CASE_SENSITIVE_FUNCTIONS"){
+            bool out;
+            if (!str_to_bool(words[1], out)){
+                IFPRINTERR cout << "SOFTWARE ERROR: Failed to interpret value for setting '" << words[0] << "'" << endl;
+            }
+            settings.case_sensitive_functions = out;
         }else{
             /*IFPRINTERR*/ cout << "SOFTWARE ERROR: Failed to recognize setting '" << words[0] << "'" << endl;
         }
@@ -450,6 +467,7 @@ bool save_settings(std::string filename, program_settings& settings){
     file << "OVERWRITE_ON_LOAD " << bool_to_str(settings.overwrite_on_load) << endl;
     file << "SAVE_INPUT_HISTORY " << bool_to_str(settings.save_input_history) << endl;
     file << "INPUT_HISTORY_LENGTH " << hp_string(settings.input_history_length, 15, true) << endl;
+    file << "CASE_SENSITIVE_FUNCTIONS " << bool_to_str(settings.case_sensitive_functions) << endl;
     
     file.close();
     

@@ -67,6 +67,9 @@ public:
     //Statistical functions
     double max();
     double min();
+    double range();
+    double average();
+    double stdev();
 
 	//Arithmetic Functions
 	KMatrix crossprd(KMatrix& rv);

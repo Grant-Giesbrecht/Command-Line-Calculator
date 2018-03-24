@@ -54,9 +54,10 @@ typedef struct{
     bool overwrite_on_load; //Overwrite variables when loaded w/ same name
     bool save_input_history; //Save keyboard input history
     int input_history_length; //Number of entries allowed to be stored in the input history (-1 for unlimited)
+    bool case_sensitive_functions; //If true, requires functions to be written in the correct case.
 }program_settings;
 
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool silence_output, program_settings& settings, std::string& in_header, std::string& out_header);
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, std::vector<record_entry>& record, bool silence_output, program_settings& settings, std::string& in_header, std::string& out_header, bool case_sensitive_functions=true);
 
 bool save_record(std::string filename, std::vector<record_entry> record, program_settings settings);
 

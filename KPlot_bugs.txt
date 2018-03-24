@@ -27,7 +27,13 @@ Tesselation is wrong!{
 
 Allow grid & axis color to be changed. Make default much lighter. Allow small && || large grid to be turned on and off.
 
+
+
 --------- IMPLEMENT -----------
+
+Design choices:
+	- Have a 'plot()' function, where you can give it just vectors or arrays or a KMatrix. Keep it simple for those who don't care (like honeybadger).
+	- Have all style and setting parameters (bounds, grids, colors, etc) saved to structs so that they can be passed around plot easily and allow them to be saved to a standardized KV1 so that they can be read, loaded, saved, etc.
 
 Needs to accept arrays as input!
 

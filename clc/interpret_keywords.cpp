@@ -32,7 +32,7 @@ using namespace std;
 
 string this_filename_0 = "interpret_keywords.cpp";
 
-void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings, string& in_header, string& out_header){
+void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std::vector<func_id> functions, bool& running, vector<record_entry>& record, bool silence_output, program_settings& settings, string& in_header, string& out_header, bool case_sensitive_functions){
 
     record_entry temp_rcd;
 
@@ -694,7 +694,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
 
 			vector<int> fail_lines;
 			vector<string> fail_messages;
-            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings, in_header, out_header, fail_lines, fail_messages)){
+            if (!run_interpret(fn, kv, result, functions, persist, (!silence), indent_line(1), record, true, settings, in_header, out_header, fail_lines, fail_messages, case_sensitive_functions)){
                 if (result.type == 'e'){
                     if (persist){
                     		cout << indent_line(1) << "FAILED TO RUN FILE: '" << fn << "'. Failed " << fail_lines.size() << " times on lines ";
@@ -971,7 +971,8 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
             //read settings file
             
             //delete unzipped file
-            
+        }else if(words_uc[0] == "RABBIT"){
+            print_file(string(RESOURCE_DIR) + "doc/rabbit.txt", 0);
         }else if(words_uc[0] == "CLRCD"){
             record.clear();
             IFPRINT << indent_line(1) << "Record cleared." << endl;
@@ -1030,7 +1031,7 @@ void interpret_with_keywords(std::string input, KVar& kv, all_ktype& result, std
 //            ensure_whitespace(feed_string, "-");
 //            cout << "Feed string: " << feed_string << endl;
 //            cout << "Input: " << input << endl;
-            if (!interpret(feed_string, kv, result, functions, true)){
+            if (!interpret(feed_string, kv, result, functions, true, case_sensitive_functions)){
 //            if (!interpret(input, kv, result, functions, true)){
                 if (result.type == 'e'){
                     IFPRINT << indent_line(1) << result.s << endl;
